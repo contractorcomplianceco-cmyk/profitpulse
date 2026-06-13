@@ -1,174 +1,484 @@
 import { motion } from "framer-motion";
-import { PageHeader } from "@/components/dashboard/PageHeader";
-import { KpiCard } from "@/components/dashboard/KpiCard";
-import { ChartCard } from "@/components/dashboard/ChartCard";
-import { InsightCard } from "@/components/dashboard/InsightCard";
-import { RiskWarning } from "@/components/dashboard/RiskWarning";
-import { RecommendedAction } from "@/components/dashboard/RecommendedAction";
-import { AlertBadge } from "@/components/dashboard/AlertBadge";
-import { companyKpis, historical } from "@/data/mockData";
-import { getActiveAlerts } from "@/lib/alertEngine";
-import { formatCompactCurrency, formatPercent } from "@/lib/format";
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar } from "recharts";
+import { Link } from "wouter";
+import { Sparkline } from "@/components/charts/Sparkline";
+import { DonutChart } from "@/components/charts/DonutChart";
+import { GaugeChart } from "@/components/charts/GaugeChart";
+import { FunnelChart } from "@/components/charts/FunnelChart";
+import { TrendLine } from "@/components/charts/TrendLine";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import {
+  topKpis,
+  executiveInsights,
+  financialKpis,
+  revenueBreakdown,
+  pipelineData,
+  profitMarginData,
+  arAgingData,
+  futurecastData,
+  marketImpact,
+  cashFlowData,
+  alertsData,
+  integrationsData
+} from "@/data/overviewData";
+import { 
+  ArrowUpRight, 
+  ArrowDownRight, 
+  AlertTriangle, 
+  Clock, 
+  TrendingDown, 
+  Inbox, 
+  Users, 
+  ShieldAlert,
+  BookOpen,
+  BarChart2,
+  Target,
+  Activity,
+  Search,
+  Facebook,
+  ChevronRight,
+  FileText
+} from "lucide-react";
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, Cell } from "recharts";
 
 const containerVariants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
+  hidden: { opacity: 1 },
+  show: { opacity: 1, transition: { staggerChildren: 0.015 } }
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.28, ease: "easeOut" as const } }
+};
+
+// Map string icons to components
+const IconMap: Record<string, any> = {
+  AlertTriangle, Clock, TrendingDown, Inbox, Users, ShieldAlert,
+  BookOpen, BarChart2, Target, Activity, Search, Facebook
 };
 
 export default function ExecutiveOverview() {
-  const alerts = getActiveAlerts();
+  const { toast } = useToast();
+
+  const handleReportClick = (name: string) => {
+    toast({
+      title: "Generating Report",
+      description: `${name} is being prepared for download...`,
+    });
+  };
 
   return (
     <motion.div 
       variants={containerVariants}
       initial="hidden"
       animate="show"
-      className="space-y-6 pb-12"
+      className="flex flex-col gap-4 pb-12 w-full"
     >
-      <PageHeader 
-        title="Executive Overview" 
-        description="Command Center for Contractor Compliance Authority" 
-        actions={<Button variant="default">Generate Forecast</Button>}
-      />
-
-      {alerts.length > 0 && (
-        <motion.div variants={itemVariants} className="flex flex-col gap-3 mb-6">
-          {alerts.map(alert => (
-            <div key={alert.id} className="flex items-center gap-3 bg-card border border-border p-3 rounded-md">
-              <AlertBadge severity={alert.severity} />
-              <span className="text-sm font-medium">{alert.title}</span>
-              <span className="text-sm text-muted-foreground hidden sm:inline-block">- {alert.message}</span>
+      {/* A) TOP KPI ROW */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        {topKpis.map((kpi, i) => (
+          <motion.div key={i} variants={itemVariants} className="bg-card/40 backdrop-blur-xl border border-white/5 rounded-xl p-4 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] hover:shadow-[0_0_20px_-4px_hsl(var(--primary)/0.2)] transition-all flex flex-col gap-2">
+            <div className="text-[10px] tracking-wider text-muted-foreground uppercase">{kpi.label}</div>
+            <div className="text-2xl font-bold tracking-tight text-white">{kpi.value}</div>
+            <div className="flex items-center justify-between mt-auto pt-1">
+              <div className="flex flex-col">
+                <span className={`text-xs flex items-center font-medium ${kpi.trendUp ? 'text-success' : 'text-destructive'}`}>
+                  {kpi.trendUp ? <ArrowUpRight className="w-3 h-3 mr-0.5" /> : <ArrowDownRight className="w-3 h-3 mr-0.5" />}
+                  {kpi.trend}
+                </span>
+                <span className="text-[9px] text-muted-foreground/70">{kpi.vs}</span>
+              </div>
+              <div className="w-12 h-6">
+                <Sparkline data={kpi.sparkline} color={kpi.trendUp ? "hsl(var(--success))" : "hsl(var(--destructive))"} type="area" />
+              </div>
             </div>
-          ))}
-        </motion.div>
-      )}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <motion.div variants={itemVariants}>
-          <KpiCard 
-            label="Monthly Revenue" 
-            value={formatCompactCurrency(companyKpis.monthlyRevenue.value)}
-            priorValue={companyKpis.monthlyRevenue.priorValue}
-            trend={companyKpis.monthlyRevenue.trend}
-          />
-        </motion.div>
-        <motion.div variants={itemVariants}>
-          <KpiCard 
-            label="Cash on Hand" 
-            value={formatCompactCurrency(companyKpis.cashOnHand.value)}
-            priorValue={companyKpis.cashOnHand.priorValue}
-            trend={companyKpis.cashOnHand.trend}
-          />
-        </motion.div>
-        <motion.div variants={itemVariants}>
-          <KpiCard 
-            label="Net Profit" 
-            value={formatCompactCurrency(companyKpis.netProfit.value)}
-            priorValue={companyKpis.netProfit.priorValue}
-            trend={companyKpis.netProfit.trend}
-          />
-        </motion.div>
-        <motion.div variants={itemVariants}>
-          <KpiCard 
-            label="AR Outstanding" 
-            value={formatCompactCurrency(companyKpis.arOutstanding.value)}
-            priorValue={companyKpis.arOutstanding.priorValue}
-            trend={companyKpis.arOutstanding.trend}
-            inverseTrend
-          />
-        </motion.div>
+          </motion.div>
+        ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <motion.div variants={itemVariants} className="lg:col-span-2">
-          <ChartCard title="Revenue vs Collected Trend" description="Last 6 months performance">
-            <div className="h-[300px] w-full mt-4">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={historical.revenueTrend} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
-                    </linearGradient>
-                    <linearGradient id="colorCol" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--success))" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="hsl(var(--success))" stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                  <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis 
-                    stroke="hsl(var(--muted-foreground))" 
-                    fontSize={12} 
-                    tickLine={false} 
-                    axisLine={false}
-                    tickFormatter={(val) => `$${val / 1000}k`}
-                  />
-                  <Tooltip 
-                    contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '8px' }}
-                    itemStyle={{ color: 'hsl(var(--foreground))' }}
-                  />
-                  <Area type="monotone" dataKey="revenue" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorRev)" name="Revenue" />
-                  <Area type="monotone" dataKey="collected" stroke="hsl(var(--success))" fillOpacity={1} fill="url(#colorCol)" name="Collected" />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </ChartCard>
-        </motion.div>
-
-        <motion.div variants={itemVariants} className="flex flex-col gap-6">
-          <InsightCard title="Cash Optimization">
-            Accounts receivable over 60 days has increased by 15% this month. Implementing strict automated follow-ups for the top 5 delinquent accounts could free up $85k in immediate cash flow.
-          </InsightCard>
+      {/* B, C, D Wrapper */}
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-4">
+        
+        {/* LEFT SIDE (3 cols) */}
+        <div className="xl:col-span-3 flex flex-col gap-4">
           
-          <RiskWarning 
-            title="Payroll Burden Creep" 
-            message="Payroll has increased to 34% of revenue, slightly above the 30% target. Ensure new hires reach capacity before opening new reqs."
-          />
+          {/* B) TWO-PANEL ROW */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {/* Executive Insights */}
+            <motion.div variants={itemVariants} className="lg:col-span-2 bg-card/40 backdrop-blur-xl border border-white/5 rounded-xl p-5 flex flex-col shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-sm font-semibold tracking-wide text-white">EXECUTIVE INSIGHTS</h3>
+                <Link href="/alerts" className="text-xs text-primary hover:text-primary/80 flex items-center">
+                  View All Insights <ChevronRight className="w-3 h-3 ml-1" />
+                </Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                {executiveInsights.map((insight, i) => (
+                  <div key={i} className="flex items-start gap-3 bg-white/5 rounded-lg p-3">
+                    <div className={`mt-0.5 w-2 h-2 rounded-full flex-shrink-0 ${insight.status === 'warning' ? 'bg-warning shadow-[0_0_8px_hsl(var(--warning))]' : 'bg-destructive shadow-[0_0_8px_hsl(var(--destructive))]'}`} />
+                    <p className="text-sm text-white/90 leading-tight">{insight.text}</p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
 
-          <RecommendedAction 
-            title="Increase Ad Spend" 
-            description="CPL has dropped by 12% in the last 2 weeks. $5k additional spend recommended."
-            actionText="Adjust Budget"
-          />
-        </motion.div>
+            {/* Financial KPI Cluster */}
+            <motion.div variants={itemVariants} className="bg-card/40 backdrop-blur-xl border border-white/5 rounded-xl p-5 flex flex-col shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+               <div className="grid grid-cols-2 gap-y-4 gap-x-2 mb-4">
+                 {financialKpis.map((kpi, i) => (
+                   <div key={i} className="flex flex-col">
+                     <span className="text-[10px] text-muted-foreground uppercase tracking-wider">{kpi.label} {kpi.sub && <span className="opacity-60">{kpi.sub}</span>}</span>
+                     <div className="flex items-center gap-1.5 mt-0.5">
+                       <span className="text-sm font-semibold text-white">{kpi.value}</span>
+                       {kpi.status === 'risk' && <ArrowUpRight className="w-3 h-3 text-destructive" />}
+                       {kpi.status === 'good' && <ArrowDownRight className="w-3 h-3 text-success" />}
+                       {kpi.status === 'risk-up' && <ArrowUpRight className="w-3 h-3 text-destructive" />}
+                     </div>
+                   </div>
+                 ))}
+               </div>
+               <div className="mt-auto pt-3 border-t border-white/5">
+                 <div className="bg-primary/10 border border-primary/20 rounded-md p-2.5 text-xs text-primary-foreground">
+                   <strong className="text-primary block mb-1">Recommended Action:</strong>
+                   Focus on improving collections this week. $127K collectible with immediate follow-up.
+                 </div>
+                 <Link href="/daily-briefing" className="mt-2 text-xs text-primary hover:text-primary/80 flex items-center justify-center w-full bg-white/5 rounded py-1.5 transition-colors">
+                   View All Actions
+                 </Link>
+               </div>
+            </motion.div>
+          </div>
+
+          {/* C) MAIN GRID (8 Chart Cards) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            {/* Cash Flow Forecast */}
+            <motion.div variants={itemVariants} className="bg-card/40 backdrop-blur-xl border border-white/5 rounded-xl p-5 flex flex-col shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+              <h3 className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase mb-4">Cash Flow Forecast</h3>
+              <div className="h-40 mb-4">
+                <TrendLine 
+                  data={cashFlowData} 
+                  lines={[
+                    { key: "balance", color: "hsl(var(--primary))", name: "Cash Balance" },
+                    { key: "in", color: "hsl(var(--success))", name: "Cash In" },
+                    { key: "out", color: "hsl(var(--destructive))", name: "Cash Out" }
+                  ]}
+                  xAxisKey="date"
+                  type="area"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-2 mb-4">
+                <div className="bg-white/5 p-2 rounded text-xs"><span className="text-muted-foreground block mb-1">Runway</span><span className="font-semibold">4.7 months</span></div>
+                <div className="bg-white/5 p-2 rounded text-xs"><span className="text-muted-foreground block mb-1">Cash Pinch Risk</span><span className="font-semibold text-warning">Moderate</span></div>
+                <div className="bg-white/5 p-2 rounded text-xs"><span className="text-muted-foreground block mb-1">Pinch Date</span><span className="font-semibold text-white">May 30 2025</span></div>
+                <div className="bg-white/5 p-2 rounded text-xs"><span className="text-muted-foreground block mb-1">Safe to Spend This Week</span><span className="font-semibold text-success">$23,850</span></div>
+              </div>
+              <Link href="/cash-flow" className="mt-auto block">
+                <Button variant="secondary" className="w-full text-xs h-8 bg-white/5 hover:bg-white/10 border-0">View Cash Flow Center</Button>
+              </Link>
+            </motion.div>
+
+            {/* Revenue Breakdown */}
+            <motion.div variants={itemVariants} className="bg-card/40 backdrop-blur-xl border border-white/5 rounded-xl p-5 flex flex-col shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+              <h3 className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase mb-2">Revenue Breakdown</h3>
+              <div className="flex items-center h-[180px]">
+                <div className="w-1/2 h-full">
+                  <DonutChart data={revenueBreakdown} centerText="$1.25M" centerSubtext="Total Revenue" />
+                </div>
+                <div className="w-1/2 flex flex-col gap-1.5 pl-2 justify-center">
+                  {revenueBreakdown.map((item, i) => (
+                    <div key={i} className="flex items-center text-[10px]">
+                      <div className="w-2 h-2 rounded-full mr-2 flex-shrink-0" style={{ backgroundColor: item.fill }} />
+                      <span className="text-muted-foreground truncate mr-auto">{item.name}</span>
+                      <span className="text-white font-medium ml-2">{item.percentage}%</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <Link href="/revenue-intelligence" className="mt-4 block">
+                <Button variant="secondary" className="w-full text-xs h-8 bg-white/5 hover:bg-white/10 border-0">View Revenue Intelligence</Button>
+              </Link>
+            </motion.div>
+
+            {/* Sales Pipeline */}
+            <motion.div variants={itemVariants} className="bg-card/40 backdrop-blur-xl border border-white/5 rounded-xl p-5 flex flex-col shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+              <h3 className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase mb-4">Sales Pipeline to Cash</h3>
+              <div className="flex gap-4 mb-4 h-44">
+                <div className="w-1/2 h-full">
+                  <FunnelChart data={pipelineData} />
+                </div>
+                <div className="w-1/2 flex flex-col gap-2 justify-center text-xs">
+                  <div className="bg-white/5 p-2 rounded"><span className="text-muted-foreground block mb-0.5">Expected Cash</span><span className="font-semibold text-success">$1.48M</span></div>
+                  <div className="flex justify-between border-b border-white/5 pb-1"><span className="text-muted-foreground">Win Rate</span><span className="text-white">24.4%</span></div>
+                  <div className="flex justify-between border-b border-white/5 pb-1"><span className="text-muted-foreground">Avg Cycle</span><span className="text-white">31 Days</span></div>
+                  <div className="flex justify-between border-b border-white/5 pb-1"><span className="text-muted-foreground">Weighted</span><span className="text-white">$2.31M</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Coverage</span><span className="text-white">2.7x</span></div>
+                </div>
+              </div>
+              <Link href="/sales-pipeline" className="mt-auto block">
+                <Button variant="secondary" className="w-full text-xs h-8 bg-white/5 hover:bg-white/10 border-0">View Pipeline Center</Button>
+              </Link>
+            </motion.div>
+
+            {/* Marketing ROI */}
+            <motion.div variants={itemVariants} className="bg-card/40 backdrop-blur-xl border border-white/5 rounded-xl p-5 flex flex-col shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+              <h3 className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase mb-2">Marketing ROI (True ROI)</h3>
+              <div className="flex h-40 mb-2">
+                <div className="w-1/2 h-full">
+                  <GaugeChart value={3.21} label="Collected Profit" />
+                </div>
+                <div className="w-1/2 flex flex-col gap-1 text-[10px] justify-center pl-2">
+                  <div className="flex justify-between"><span className="text-muted-foreground">Collected Profit</span><span className="text-white font-medium">$281,240</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Total Spend</span><span className="text-white font-medium">$87,540</span></div>
+                  <div className="flex justify-between mt-1"><span className="text-muted-foreground">Cost per Click</span><span className="text-white">$2.18</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Cost per Lead</span><span className="text-white">$24.60</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Cost per SQL</span><span className="text-white">$68.23</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">CAC</span><span className="text-white">$1,122</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">ROAS (Rev)</span><span className="text-white">5.72x</span></div>
+                  <div className="flex justify-between text-success mt-1"><span className="opacity-80">Payback Period</span><span className="font-medium">32 Days</span></div>
+                </div>
+              </div>
+              <Link href="/marketing-roi" className="mt-auto block">
+                <Button variant="secondary" className="w-full text-xs h-8 bg-white/5 hover:bg-white/10 border-0">View Marketing ROI Center</Button>
+              </Link>
+            </motion.div>
+
+            {/* Top Services by Margin */}
+            <motion.div variants={itemVariants} className="bg-card/40 backdrop-blur-xl border border-white/5 rounded-xl p-5 flex flex-col shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+              <h3 className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase mb-4">Top Services by Profit Margin</h3>
+              <div className="h-40 mb-4">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={profitMarginData} layout="vertical" margin={{ top: 0, right: 20, left: 0, bottom: 0 }}>
+                    <XAxis type="number" hide />
+                    <YAxis dataKey="service" type="category" width={110} axisLine={false} tickLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
+                    <RechartsTooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '8px' }} />
+                    <Bar dataKey="margin" radius={[0, 4, 4, 0]} barSize={12} fill="hsl(var(--primary))" isAnimationActive={false}>
+                      {profitMarginData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.margin > 60 ? 'hsl(var(--primary))' : entry.margin > 40 ? 'hsl(var(--primary)/0.6)' : 'hsl(var(--primary)/0.3)'} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <Link href="/profitability" className="mt-auto block">
+                <Button variant="secondary" className="w-full text-xs h-8 bg-white/5 hover:bg-white/10 border-0">View Profitability Center</Button>
+              </Link>
+            </motion.div>
+
+            {/* AR Aging Summary */}
+            <motion.div variants={itemVariants} className="bg-card/40 backdrop-blur-xl border border-white/5 rounded-xl p-5 flex flex-col shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+              <h3 className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase mb-2">AR Aging Summary</h3>
+              <div className="flex items-center h-[180px] mb-2">
+                <div className="w-1/2 h-full">
+                  <DonutChart data={arAgingData} centerText="$487K" centerSubtext="Total AR" />
+                </div>
+                <div className="w-1/2 flex flex-col gap-2 pl-4 justify-center">
+                  {arAgingData.map((item, i) => (
+                    <div key={i} className="flex flex-col text-[10px]">
+                      <div className="flex justify-between mb-0.5">
+                        <span className="text-muted-foreground flex items-center">
+                          <div className="w-1.5 h-1.5 rounded-full mr-1.5" style={{ backgroundColor: item.fill }} />
+                          {item.name}
+                        </span>
+                        <span className="text-white">${(item.value / 1000).toFixed(1)}k</span>
+                      </div>
+                      <div className="w-full bg-white/10 h-1 rounded-full overflow-hidden">
+                        <div className="h-full rounded-full" style={{ width: `${(item.value / 487230) * 100}%`, backgroundColor: item.fill }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <Link href="/ar-ap-collections" className="mt-auto block">
+                <Button variant="secondary" className="w-full text-xs h-8 bg-white/5 hover:bg-white/10 border-0">View Collections Center</Button>
+              </Link>
+            </motion.div>
+
+            {/* Futurecast */}
+            <motion.div variants={itemVariants} className="bg-card/40 backdrop-blur-xl border border-white/5 rounded-xl p-5 flex flex-col shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+              <h3 className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase mb-4">Futurecast (Expected Scenario)</h3>
+              <div className="h-32 mb-4">
+                <TrendLine 
+                  data={futurecastData} 
+                  lines={[
+                    { key: "revenue", color: "hsl(var(--primary))", name: "Revenue" },
+                    { key: "cash", color: "hsl(160 84% 39%)", name: "Cash End" },
+                    { key: "profit", color: "hsl(38 92% 50%)", name: "Profit" }
+                  ]}
+                  xAxisKey="month"
+                  type="line"
+                />
+              </div>
+              <div className="grid grid-cols-4 gap-2 mb-4 text-center text-xs">
+                <div className="bg-white/5 p-2 rounded flex flex-col"><span className="text-muted-foreground mb-1 text-[10px] uppercase">Revenue</span><span className="font-semibold text-white">$4.21M</span></div>
+                <div className="bg-white/5 p-2 rounded flex flex-col"><span className="text-muted-foreground mb-1 text-[10px] uppercase">Cash</span><span className="font-semibold text-success">$1.32M</span></div>
+                <div className="bg-white/5 p-2 rounded flex flex-col"><span className="text-muted-foreground mb-1 text-[10px] uppercase">Profit</span><span className="font-semibold text-warning">$842K</span></div>
+                <div className="bg-primary/20 border border-primary/30 p-2 rounded flex flex-col shadow-[0_0_10px_hsl(var(--primary)/0.2)]"><span className="text-primary mb-1 text-[10px] uppercase">Prob Goal</span><span className="font-bold text-white">78%</span></div>
+              </div>
+              <Link href="/futurecast" className="mt-auto block">
+                <Button variant="secondary" className="w-full text-xs h-8 bg-white/5 hover:bg-white/10 border-0">View Futurecast Center</Button>
+              </Link>
+            </motion.div>
+
+            {/* Market & Economy Impact */}
+            <motion.div variants={itemVariants} className="bg-card/40 backdrop-blur-xl border border-white/5 rounded-xl p-5 flex flex-col shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+              <h3 className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase mb-4">Market & Economy Impact</h3>
+              <div className="flex flex-col gap-2 mb-4 flex-1">
+                {marketImpact.map((item, i) => (
+                  <div key={i} className="flex justify-between items-center bg-white/5 rounded px-3 py-1.5 text-xs">
+                    <span className="text-muted-foreground">{item.label}</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className={`font-medium ${item.risk ? 'text-destructive' : 'text-success'}`}>{item.value}</span>
+                      {item.up ? <ArrowUpRight className={`w-3 h-3 ${item.risk ? 'text-destructive' : 'text-success'}`} /> : <ArrowDownRight className={`w-3 h-3 ${item.risk ? 'text-success' : 'text-destructive'}`} />}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <Link href="/market-economy" className="mt-auto block">
+                <Button variant="secondary" className="w-full text-xs h-8 bg-white/5 hover:bg-white/10 border-0">View Market Impact Center</Button>
+              </Link>
+            </motion.div>
+
+          </div>
+        </div>
+
+        {/* RIGHT SIDE (1 col) */}
+        <div className="xl:col-span-1 flex flex-col gap-4">
+          
+          {/* Alerts Panel */}
+          <motion.div variants={itemVariants} className="bg-card/40 backdrop-blur-xl border border-white/5 rounded-xl p-5 flex flex-col shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase flex items-center">
+                Alerts <span className="ml-2 bg-destructive/20 text-destructive text-[10px] px-1.5 py-0.5 rounded font-bold">14</span>
+              </h3>
+              <Link href="/alerts" className="text-xs text-primary hover:text-primary/80">View All Alerts</Link>
+            </div>
+            <div className="flex flex-col gap-2">
+              {alertsData.map((alert, i) => {
+                const Icon = IconMap[alert.icon];
+                return (
+                  <div key={i} className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/5 cursor-pointer transition-colors border border-transparent hover:border-white/5">
+                    <div className={`mt-0.5 p-1.5 rounded-md ${alert.type === 'risk' ? 'bg-destructive/10 text-destructive' : alert.type === 'warning' ? 'bg-warning/10 text-warning' : 'bg-primary/10 text-primary'}`}>
+                      {Icon && <Icon className="w-4 h-4" />}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-sm text-white font-medium leading-tight">
+                        <span className="font-bold mr-1">{alert.count}</span>
+                        {alert.title}
+                      </span>
+                      <span className="text-[11px] text-muted-foreground mt-0.5">{alert.desc}</span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </motion.div>
+
+          {/* Daily Executive Briefing */}
+          <motion.div variants={itemVariants} className="bg-card/40 backdrop-blur-xl border border-white/5 rounded-xl p-5 flex flex-col shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-[50px] pointer-events-none rounded-full" />
+            <h3 className="text-[11px] font-semibold tracking-wider text-primary uppercase mb-1">Daily Executive Briefing</h3>
+            <div className="text-xs text-muted-foreground mb-4">May 13, 2025</div>
+            
+            <div className="flex flex-col gap-4 text-xs">
+              <div>
+                <strong className="text-success block mb-1">What Improved</strong>
+                <p className="text-white/80">Revenue up 18.6%, cash up 8.7%, pipeline up 12%</p>
+              </div>
+              <div>
+                <strong className="text-destructive block mb-1">What Got Worse</strong>
+                <p className="text-white/80">AR aging up 18%, marketing ROI down 0.4x</p>
+              </div>
+              <div>
+                <strong className="text-warning block mb-1">Needs Action Today</strong>
+                <p className="text-white/80">Follow up on 17 invoices, review Google Ads, 3 stale deals need next steps</p>
+              </div>
+              <div>
+                <strong className="text-destructive block mb-1">At Risk</strong>
+                <p className="text-white/80">Cash pinch in 17 days, 2 clients at payment risk</p>
+              </div>
+              <div>
+                <strong className="text-primary block mb-1">Opportunity to Push</strong>
+                <p className="text-white/80">Florida market expansion, retainer upsell, low CPC keywords</p>
+              </div>
+              <div>
+                <strong className="text-muted-foreground block mb-1">Decision Should Wait</strong>
+                <p className="text-white/80">Hiring additional salesperson, large software purchase</p>
+              </div>
+              
+              <div className="mt-2 pt-4 border-t border-white/5">
+                <strong className="text-white block mb-2 font-semibold">Top 5 Actions Today:</strong>
+                <ol className="list-decimal list-inside space-y-1.5 text-muted-foreground ml-1">
+                  <li>Follow up on $127K collectible invoices</li>
+                  <li>Pause underperforming Google Ads campaigns</li>
+                  <li>Review 3 stale pipeline opportunities</li>
+                  <li>Approve retention email campaign</li>
+                  <li>Update cash forecast for next 30 days</li>
+                </ol>
+              </div>
+            </div>
+            
+            <Link href="/daily-briefing" className="mt-6 block">
+              <Button className="w-full text-xs h-9 bg-primary/20 text-primary border border-primary/30 hover:bg-primary hover:text-white transition-all shadow-[0_0_15px_-3px_hsl(var(--primary)/0.3)]">
+                <FileText className="w-4 h-4 mr-2" />
+                View Full Briefing
+              </Button>
+            </Link>
+          </motion.div>
+
+          {/* Quick Reports */}
+          <motion.div variants={itemVariants} className="bg-card/40 backdrop-blur-xl border border-white/5 rounded-xl p-5 flex flex-col shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+             <div className="flex justify-between items-center mb-4">
+              <h3 className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">Quick Reports</h3>
+              <Link href="/reports" className="text-xs text-primary hover:text-primary/80">View All</Link>
+            </div>
+            <div className="flex flex-col gap-2">
+              {['CFO Weekly Report', 'Marketing ROI Report', 'AR Collection Report', 'Sales Pipeline Report', 'Service Profitability Report', 'Board Summary Report'].map((report, i) => (
+                <button 
+                  key={i} 
+                  onClick={() => handleReportClick(report)}
+                  className="flex items-center justify-between p-2.5 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-left border border-transparent hover:border-white/10"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <FileText className="w-3.5 h-3.5 text-primary" />
+                    <span className="text-xs text-white/90">{report}</span>
+                  </div>
+                  <span className="text-[9px] bg-primary/10 text-primary px-1.5 py-0.5 rounded border border-primary/20">Report</span>
+                </button>
+              ))}
+            </div>
+          </motion.div>
+
+        </div>
       </div>
+
+      {/* E) BOTTOM INTEGRATION STRIP */}
+      <motion.div variants={itemVariants} className="mt-4 pt-4 border-t border-white/5">
+        <div className="flex items-center justify-between mb-3 px-1">
+          <h3 className="text-[10px] font-semibold tracking-wider text-muted-foreground uppercase">System Integrations Sync Status</h3>
+          <Link href="/integrations" className="text-[10px] text-primary hover:text-primary/80">View All Integrations</Link>
+        </div>
+        <div className="flex gap-3 overflow-x-auto pb-2 custom-scrollbar">
+          {integrationsData.map((integration, i) => {
+            const Icon = IconMap[integration.icon];
+            return (
+              <div key={i} className="flex items-center gap-3 bg-card/30 border border-white/5 rounded-lg py-2 px-3 flex-shrink-0 min-w-[160px]">
+                <div className="p-1.5 bg-white/5 rounded flex-shrink-0">
+                  {Icon && <Icon className="w-3.5 h-3.5 text-muted-foreground" />}
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[11px] font-medium text-white/90 flex items-center gap-1.5">
+                    {integration.name}
+                    <div className="w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_5px_hsl(var(--success))]" />
+                  </span>
+                  <span className="text-[9px] text-muted-foreground">Last sync: {integration.time}</span>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </motion.div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <motion.div variants={itemVariants}>
-          <KpiCard 
-            label="Gross Margin" 
-            value={formatPercent(companyKpis.grossMargin.value)}
-            priorValue={companyKpis.grossMargin.priorValue}
-          />
-        </motion.div>
-        <motion.div variants={itemVariants}>
-          <KpiCard 
-            label="Runway" 
-            value={`${companyKpis.runwayMonths.value} mos`}
-            priorValue={companyKpis.runwayMonths.priorValue}
-          />
-        </motion.div>
-        <motion.div variants={itemVariants}>
-          <KpiCard 
-            label="Health Score" 
-            value={companyKpis.financialHealthScore.value}
-            priorValue={companyKpis.financialHealthScore.priorValue}
-          />
-        </motion.div>
-      </div>
     </motion.div>
   );
 }

@@ -1,0 +1,352 @@
+You are now in implementation mode. Do not give me a plan. Do not ask clarifying questions. Immediately update the existing CCA HealthCast OS app to match the attached visual mockup as closely as possible.
+
+Goal:
+Transform the current app into a premium, executive-level, dark cinematic financial command center for Contractor Compliance Authority. The design must look like the attached dashboard mockup: polished, dense, high-trust, enterprise-grade, futuristic, and CFO-level.
+
+Important brand instruction:
+Do NOT use any gold shield or gold logo. Replace any gold shield, generic shield, placeholder crest, or old logo with the uploaded Contractor Compliance Authority brand assets. Use the CCA crest and horizontal logo provided. The header logo should use the horizontal CCA brand mark when space allows, and the compact crest should be used in sidebar or icon areas. Keep the brand colors navy, electric blue, cyan, silver, white, green for positive performance, red for risk, amber for warnings, and purple for futurecast/analytics.
+
+Visual design requirements:
+Use a deep navy/black background with subtle gradients.
+Use glassmorphism cards with soft borders.
+Use glowing electric-blue accents.
+Use compact executive KPI cards.
+Use dense grid layout.
+Use rounded panels.
+Use subtle inner shadows.
+Use micro-glow effects on charts, buttons, and active navigation.
+Use premium typography.
+Use small uppercase section labels.
+Use clean spacing and alignment.
+Use dashboard-style icon badges.
+Use active sidebar state with blue highlight.
+Use green upward indicators, red downward indicators, amber warning indicators.
+Use right-side alert and daily briefing column.
+Use bottom integration status strip.
+Use charts, sparklines, progress rings, donut charts, funnel visuals, and trend lines.
+
+Do not make it look like a generic SaaS dashboard. It must look like a powerful financial intelligence cockpit.
+
+Layout:
+Create a full-screen desktop dashboard layout similar to the attached mockup.
+
+Main structure:
+
+1. Fixed left sidebar
+2. Top header bar
+3. Main executive dashboard grid
+4. Right insight/alerts column
+5. Bottom integration status row
+
+Header:
+At top left, show the CCA horizontal logo from the uploaded brand file.
+Next to it, show:
+CCA HealthCast OS
+Financial Health, Growth Intelligence & Futurecast Command Center
+
+Top center/right should show integration status icons:
+Zoho Books
+Zoho CRM
+Zoho Analytics
+Google Ads
+Google Analytics 4
+Meta Ads
+LinkedIn
+Phone/call tracking
+Email
++5
+
+Top right should show:
+Date
+Time
+Rose
+Owner / CEO
+Small profile image/avatar
+Dropdown chevron
+
+Sidebar navigation:
+Create the following navigation items with numbered/icon badges:
+Executive Overview
+Cash Flow
+Revenue Intelligence
+Profitability
+AR/AP & Collections
+Marketing ROI
+Sales Pipeline to Cash
+Staffing & Payroll
+Department Performance
+Client Profitability
+Historical Trends
+Market & Economy
+Futurecast
+Scenario Builder
+Alerts
+Daily Briefing
+Reports & Exports
+
+Sidebar bottom:
+Financial Health Score card:
+Large circular score: 82 / 100
+Label: Very Healthy
+30-day trend mini-line
++12 pts
+
+Top KPI row:
+Create six premium KPI cards:
+Monthly Revenue: $1,248,850, up 18.6%
+Collected Revenue: $1,075,430, up 16.3%
+Cash on Hand: $842,750, up 8.7%
+Net Profit: $236,540, up 22.4%
+Gross Margin: 68.7%, up 3.2 pts
+Runway: 4.7 Months, up 0.8 mo
+
+Each KPI card must include:
+Icon badge
+Metric label
+Large value
+Green/red change indicator
+Tiny sparkline chart
+Small comparison text such as “vs Apr 2025”
+
+Executive Insights panel:
+Create a wide panel titled Executive Insights.
+Include insight rows:
+Cash is healthy, but AR is aging too fast. AR over 30 days increased 18% vs last month.
+Marketing spend increased 22%, but paid-client conversion only increased 6%.
+Revenue per employee is below target. Current: $18,734 vs Target: $20,000+.
+Recurring revenue covers 41% of fixed overhead. Target should be 100%+.
+
+Add a “View All Insights” link.
+
+Financial KPI cluster:
+Next to the insights panel, create a multi-metric card with:
+AR Outstanding: $487,230, red down/up risk indicator
+AP Upcoming: $186,340, red risk indicator
+Payroll Burden: 32.4%, green improvement indicator
+Marketing Spend: $87,540, red increase indicator
+Marketing ROI Collected Profit: 3.21x, green increase
+Revenue / Employee: $18,734, red decline
+Recurring Rev. Coverage: 41%, red decline
+Break-even Revenue Monthly: $842,000
+
+At the bottom of this card include a bright Recommended Action bar:
+Recommended Action: Focus on improving collections this week. $127K collectible with immediate follow-up.
+Add a blue “View All Actions” button.
+
+Main dashboard grid:
+Create the following cards with charts and buttons.
+
+Cash Flow Forecast:
+Line chart showing cash balance, cash in, and cash out.
+Show:
+Runway 4.7 months
+Cash Pinch Risk: Moderate
+Pinch Date: May 30, 2025
+Safe to Spend This Week: $23,850
+Button: View Cash Flow Center
+
+Revenue Breakdown:
+Donut chart with total revenue center label $1.25M.
+Legend:
+Licensing Services 38% $475,600
+Compliance Monitoring 22% $274,500
+Business Compliance 16% $199,810
+Qualifications 10% $124,350
+Education / Training 7% $87,640
+Other Services 7% $87,910
+Button: View Revenue Intelligence
+
+Sales Pipeline to Cash:
+Create vertical funnel:
+New Leads 1,248
+Qualified Leads 642
+Booked Calls 312
+Proposals Sent 162
+Deals Won 78
+Expected Cash $1.48M
+
+Side metrics:
+Win Rate 24.4%
+Avg Sales Cycle 31 Days
+Weighted Pipeline $2.31M
+Pipeline Coverage 2.7x
+Button: View Pipeline Center
+
+Marketing ROI True ROI:
+Large circular ROI gauge showing 3.21x.
+Collected Profit: $281,240
+Total Spend: $87,540
+Side metrics:
+Cost per Click $2.18
+Cost per Lead $24.60
+Cost per Qualified Lead $68.23
+Cost per Closed Client $1,122
+ROAS Revenue 5.72x
+Payback Period 32 Days
+Button: View Marketing ROI Center
+
+Top Services by Profit Margin:
+Horizontal bar chart:
+Compliance Monitoring 72.4%
+Licensing Services 68.1%
+Business Compliance 61.7%
+Qualifications 55.2%
+Education / Training 48.3%
+Other Services 32.6%
+Button: View Profitability Center
+
+AR Aging Summary:
+Donut chart with center label $487K Total AR.
+Buckets:
+Current 0–15 days: $231,450
+16–30 days: $98,540
+31–60 days: $82,230
+61–90 days: $42,780
+90+ days: $32,230
+Button: View Collections Center
+
+Futurecast Expected Scenario:
+Line chart for revenue, cash, and profit.
+Metrics:
+Revenue $4.21M
+Cash End of Period $1.32M
+Profit $842K
+Probability of Goal 78%
+Button: View Futurecast Center
+
+Market & Economy Impact:
+List cards:
+Construction Spending YOY up 6.2%
+Contractor Employment YOY up 3.8%
+Interest Rate Prime down/risk 7.75%
+Inflation CPI down/risk 2.3%
+Small Business Optimism up 91.3
+Search CPC Trend 30 Days up 12%
+Button: View Market Impact Center
+
+Right column:
+Create an Alerts panel:
+Title: Alerts (14)
+Rows:
+3 Cash Flow Alerts — High risk cash pinch in 17 days
+4 AR Aging Alerts — $127K collectible this week
+2 Marketing Waste Alerts — $24K spent with low return
+2 Pipeline Alerts — $312K in stale opportunities
+1 Payroll Risk Alert — Payroll is 32.4% of revenue
+2 Client Risk Alerts — 2 clients with high payment risk
+
+Create a Daily Executive Briefing panel:
+Title: Daily Executive Briefing
+Date: May 13, 2025
+
+Sections:
+What Improved
+Revenue up 18.6%, cash up 8.7%, pipeline up 12%
+
+What Got Worse
+AR aging up 18%, marketing ROI down 0.4x
+
+Needs Action Today
+Follow up on 17 invoices, review Google Ads campaigns, 3 stale deals need next steps
+
+At Risk
+Cash pinch in 17 days, 2 clients at payment risk
+
+Opportunity to Push
+Florida market expansion, retainer upsell campaign, low CPC keywords
+
+Decision Should Wait
+Hiring additional salesperson, large software purchase
+
+Top 5 Actions Today:
+
+1. Follow up on $127K in collectible invoices
+2. Pause underperforming Google Ads campaigns
+3. Review 3 stale pipeline opportunities
+4. Approve retention email campaign
+5. Update cash forecast for next 30 days
+
+Add a large button: View Full Briefing
+
+Quick Reports panel:
+CFO Weekly Report
+Marketing ROI Report
+AR Collection Report
+Sales Pipeline Report
+Service Profitability Report
+Board Summary Report
+
+Bottom integration status row:
+Create cards:
+Zoho Books Connected Last sync: 5 min ago
+Zoho CRM Connected Last sync: 3 min ago
+Zoho Analytics Connected Last sync: 8 min ago
+Google Ads Connected Last sync: 15 min ago
+Google Analytics 4 Connected Last sync: 15 min ago
+Search Console Connected Last sync: 1 day ago
+Meta Ads Connected Last sync: 3 hrs ago
+
+Functional requirements:
+Use realistic mock data.
+Do not require real API connections yet.
+Keep data in organized mock data files or constants.
+Create reusable components:
+KpiCard
+InsightPanel
+MetricCluster
+ChartCard
+AlertCard
+BriefingPanel
+IntegrationStatusCard
+Sidebar
+Header
+GaugeChart
+DonutChart
+FunnelChart
+Sparkline
+TrendLine
+ReportButton
+
+Charts:
+Use lightweight charting or SVG/CSS if dependencies are not already installed.
+Charts must look polished and close to the mockup.
+Do not leave empty chart placeholders.
+Every card must look populated and executive-ready.
+
+Responsiveness:
+Desktop must be the priority.
+The dashboard must look excellent at 1440px wide and larger.
+It should also scale down without breaking.
+Sidebar may collapse on smaller screens if needed.
+
+Interaction:
+Buttons should have hover effects.
+Cards should lift subtly on hover.
+Active navigation should glow blue.
+Alerts should feel clickable.
+Charts should have subtle animation on load.
+KPI sparklines should animate in.
+Scenario/Futurecast buttons can route to placeholder sections if those pages are not built yet.
+
+Quality bar:
+The finished app must look like the attached visual mockup, not like default Tailwind, not like a basic template, and not like a generic admin dashboard.
+Tighten spacing.
+Align all cards.
+Use consistent card heights where possible.
+Use real-looking numbers.
+Use premium shadows and borders.
+Use the uploaded CCA brand assets.
+Remove all gold branding.
+No lorem ipsum.
+No placeholder boxes.
+No broken icons.
+No white background dashboard sections.
+
+After implementation:
+Run the app.
+Fix any errors.
+Check the page visually.
+Make sure the header logo is CCA branded.
+Make sure there is no gold shield anywhere.
+Make sure every section has real-looking data.
+Make sure the design matches the attached mockup as closely as possible.
