@@ -1,45 +1,53 @@
-# [Project name]
+# CCA HealthCast OS
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A premium, frontend-only executive CFO command center for Contractor Compliance Authority (CCA) — a single-pane "CFO terminal" that turns financial, sales, marketing, staffing, and macroeconomic data into executive-grade insight, scenario modeling, and recommended actions. All data is realistic mock data; the architecture is modular so live integrations can replace the mock layer later.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- App: artifact `healthcast` (slug `healthcast`, previewPath `/`). Runs via its Replit workflow `artifacts/healthcast: web` — do not run `pnpm dev` at the repo root.
+- `pnpm --filter @workspace/healthcast run typecheck` — typecheck the app (use this to verify, not `build`)
 - `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- Frontend: React + Vite (wouter for routing, base path from `import.meta.env.BASE_URL`)
+- UI: Tailwind + shadcn/ui components, lucide-react icons
+- Charts: recharts; Animation: framer-motion
+- No backend, no database, no API codegen for this app — it is purely client-side with mock data.
 
-## Where things live
+## Where things live (artifacts/healthcast/src)
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `components/layout/AppLayout.tsx` — persistent sidebar with all 18 nav sections (source of truth for nav).
+- `App.tsx` — all 18 routes wired to real page components.
+- `pages/` — one file per nav section (default-exported component). `ExecutiveOverview.tsx` is the reference page for structure/density/animation.
+- `components/dashboard/` — the reusable building blocks every page uses: `PageHeader` (title + Export toast), `KpiCard`, `ChartCard`, `InsightCard`, `RiskWarning`, `RecommendedAction`, `AlertBadge`, `ScenarioSlider`.
+- `data/` — one mock-data module per domain (e.g. `cashFlowData.ts`, `marketingData.ts`, `clientsData.ts`, `scenariosData.ts`). `mockData.ts` holds shared company KPIs/AR-AP/historical.
+- `lib/` — `format.ts` (currency/percent/number formatters), `calculations.ts` (live Scenario Builder engine), `alertEngine.ts` (derives alerts from data).
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Frontend-only by design. Mock data is split per-domain under `data/` so each can later be swapped for a real integration without touching pages.
+- Pages are decoupled: each page owns its data module and never imports another page. Shared logic lives in `lib/` and shared UI in `components/dashboard/`.
+- `calculateScenario(baseline, adjustments)` in `lib/calculations.ts` models the P&L impact ONCE (revenue/cost/payroll), then derives profit, cash, runway, break-even from it — avoid adding the same effect to both profit and cash (double-counting).
+- `KpiCard` accepts a display string for `value` (e.g. `"$1.3M"`) plus a numeric `priorValue`; it reconstructs magnitude from compact suffixes (K/M/B/T) to compute the delta. Pass the formatted string for display and the raw number as `priorValue`.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+18 sections: Executive Overview, Cash Flow, Revenue Intelligence, Profitability, AR/AP & Collections, Marketing ROI, Sales Pipeline, Staffing & Payroll, Department Performance, Client Profitability, Historical Trends, Market & Economy, Futurecast, Scenario Builder, Alerts, Daily Briefing, Reports, Integrations. Every page carries KPI cards (with trend vs prior), a trend/historical chart, an insight card, a risk warning, and a recommended executive action, plus Drilldown + Export Report actions. Scenario Builder recomputes live as levers move; Alerts are derived from the data.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- No emojis anywhere in the product UI.
+- Aesthetic: deep navy / electric blue / silver / white, teal-green for positive, amber/red for risk. Cinematic, dense, high-trust "CFO terminal" vibe.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- framer-motion variants: a `transition.type: "spring"` literal must be `type: "spring" as const` (or typed `Variants`) or `tsc` rejects it.
+- Verify with `typecheck`, not `build` (build needs workflow-provided `PORT`/`BASE_PATH`).
+- All frontend work goes through DESIGN subagents per the react-vite skill; do not hand-edit pages without that workflow unless it's a tiny shared fix.
 
 ## Pointers
 
 - See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- See the `react-vite` and `design` skills for the frontend build workflow

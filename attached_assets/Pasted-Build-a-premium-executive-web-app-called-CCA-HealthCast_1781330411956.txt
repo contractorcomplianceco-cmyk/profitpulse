@@ -1,0 +1,148 @@
+Build a premium executive web app called “CCA HealthCast OS” for Contractor Compliance Authority.
+
+The app must be a high-powered accounting, financial health, marketing ROI, and forecasting command center. It should feel like an executive CFO cockpit, not a basic dashboard.
+
+Branding:
+Use CCA premium colors: deep navy, electric blue, silver, white, and subtle teal/green for positive financial indicators. Design should feel cinematic, executive, clean, powerful, and high-trust. Use cards, KPI panels, trend lines, alert badges, scenario sliders, and AI insight boxes.
+
+Core purpose:
+The system must connect financial data, sales data, marketing data, operational data, and forecasting into one command center that tells leadership what is happening, why it is happening, and what action should be taken next.
+
+Initial version:
+Build with realistic mock data and a modular architecture so real integrations can later connect Zoho Books, Zoho Analytics, Zoho CRM, Google Ads, Google Analytics, Google Search Console, Meta Ads, LinkedIn Ads, Microsoft Ads, call tracking, email marketing, FRED, BLS, and Census construction data.
+
+Main navigation:
+
+1. Executive Overview
+2. Cash Flow
+3. Revenue Intelligence
+4. Profitability
+5. AR/AP and Collections
+6. Marketing ROI
+7. Sales Pipeline to Cash
+8. Staffing and Payroll Health
+9. Department Performance
+10. Client Profitability
+11. Historical Trends
+12. Market and Economy Impact
+13. Futurecast
+14. Scenario Builder
+15. Alerts
+16. Daily Executive Briefing
+17. Reports
+
+Executive Overview:
+Create top KPI cards for monthly revenue, collected revenue, cash on hand, net profit, gross margin, operating margin, AR outstanding, AP upcoming, payroll burden, marketing spend, marketing ROI, revenue per employee, recurring revenue coverage, runway, break-even revenue, and financial health score.
+
+Every section must include:
+
+* KPI cards
+* trend comparison
+* historical comparison
+* insight cards
+* risk warnings
+* recommended executive action
+* drilldown buttons
+* report export button
+
+Cash Flow:
+Show cash in, cash out, 7-day projection, 30-day projection, 60-day projection, 90-day projection, runway, payroll coverage, upcoming bills, upcoming expected payments, cash pinch dates, and safe-to-spend amount.
+
+Revenue Intelligence:
+Break revenue down by service line, state, salesperson, lead source, department, package, one-time revenue, recurring revenue, renewals, partner revenue, education revenue, and future software revenue.
+
+Profitability:
+Show gross profit, net profit, margin by service, margin by client, margin by source, pricing leakage, discount impact, refund impact, fulfillment cost, software cost, payroll impact, and low-margin client alerts.
+
+AR/AP and Collections:
+Show invoices current, overdue by aging bucket, clients at risk, follow-up needed, payment plans, failed payments, promise-to-pay, vendor bills, recurring expenses, and upcoming obligations.
+
+Marketing ROI:
+Connect ad spend to CRM leads, booked calls, proposals, closed deals, invoices, collected payments, refunds, and gross profit. Include metrics for cost per click, cost per lead, cost per qualified lead, cost per booked call, cost per closed client, cost per collected dollar, ROAS, true ROI, payback period, campaign quality score, source quality score, and keyword/service/state performance.
+
+Sales Pipeline to Cash:
+Show lead volume, qualified leads, booked calls, proposals, won deals, lost deals, weighted pipeline, expected cash, close rate, sales cycle, no-shows, stale deals, next-step gaps, source performance, and salesperson performance.
+
+Staffing and Payroll Health:
+Show payroll as percentage of revenue, payroll as percentage of collected cash, revenue per employee, profit per employee, department cost, staffing capacity, safe-to-hire threshold, hiring readiness score, workload strain, and break-even impact for each role.
+
+Department Performance:
+Create department scorecards for sales, marketing, compliance operations, licensing operations, education/training, accounting/admin, customer support, partnerships/referrals, and leadership. Each should show cost, output, revenue influence, bottlenecks, risk, productivity, and recommended action.
+
+Client Profitability:
+Show client-level revenue, collected revenue, open invoices, service cost, margin, support load, refund risk, renewal likelihood, upsell opportunity, lifetime value, acquisition source, and executive client status.
+
+Historical Trends:
+Include month-over-month, quarter-over-quarter, year-over-year, rolling 7-day, rolling 30-day, rolling 90-day, and same-period comparisons. Highlight anomalies and trend changes.
+
+Market and Economy Impact:
+Create cards for construction spending, contractor employment, inflation, interest rates, small business conditions, regional contractor demand, state licensing cycles, paid search CPC trends, and economic risk/opportunity notes.
+
+Futurecast:
+Build conservative, expected, aggressive, worst-case, cash-preservation, growth-push, hiring-expansion, marketing-expansion, price-increase, and recurring-revenue scenarios. Show projected revenue, projected cash, projected profit, projected payroll, projected AR, projected marketing ROI, projected runway, break-even, and probability of hitting target.
+
+Scenario Builder:
+Create interactive sliders and input controls:
+
+* increase/decrease ad spend
+* hire salesperson
+* hire compliance specialist
+* hire bookkeeper
+* raise prices
+* reduce expenses
+* increase close rate
+* reduce refund rate
+* improve collection speed
+* add retainer plan
+* launch new marketing channel
+* increase referral payouts
+* cut low-margin service
+
+For every scenario, calculate:
+
+* revenue impact
+* cash impact
+* profit impact
+* runway impact
+* payroll impact
+* break-even impact
+* lead impact
+* capacity impact
+* risk score
+* time to payoff
+* recommended decision
+
+Alerts:
+Create alert categories for cash risk, AR aging, profit margin drop, marketing waste, pipeline slowdown, payroll risk, hiring readiness, client risk, department bottleneck, forecast miss, and economy/market risk.
+
+Daily Executive Briefing:
+Generate a daily narrative briefing that says:
+
+* what improved
+* what got worse
+* what needs action today
+* what is at risk
+* what opportunity should be pushed
+* what decision should wait
+* top 5 executive actions
+
+Reports:
+Allow mock export buttons for:
+
+* CFO Weekly Report
+* Monthly Financial Health Report
+* Marketing ROI Report
+* Sales Pipeline to Cash Report
+* AR Collection Report
+* Service Profitability Report
+* Department Performance Report
+* Client Profitability Report
+* Futurecast Report
+* Scenario Comparison Report
+* Board/Investor Style Summary
+
+Technical requirements:
+Use React, modern component architecture, mock JSON data, responsive layout, reusable KPI components, chart components, scenario calculation functions, alert engine, and mock integration status cards. Include realistic sample data for CCA. Make the app polished and demo-ready.
+
+Important:
+This is not a generic finance dashboard. It must feel like CCA’s executive financial brain. Every screen must include insights, KPIs, recommendations, and clear next actions.
