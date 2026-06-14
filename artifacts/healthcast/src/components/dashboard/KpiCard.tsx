@@ -45,11 +45,11 @@ export function KpiCard({
   const trendData = trend?.map((val, i) => ({ value: val, index: i })) || [];
 
   return (
-    <Card className={cn("overflow-hidden bg-card border-border shadow-lg shadow-black/20 hover:border-primary/50 transition-colors group", className)}>
-      <CardContent className="p-6">
+    <Card className={cn("h-full overflow-hidden bg-card border-border shadow-lg shadow-black/20 hover:border-primary/50 transition-colors group", className)}>
+      <CardContent className="p-6 h-full">
         <div className="flex justify-between items-start">
           <div className="space-y-3">
-            <p className="text-[10px] font-extrabold tracking-widest text-muted-foreground uppercase">{label}</p>
+            <p className="text-[10px] font-extrabold tracking-wide text-muted-foreground uppercase whitespace-nowrap">{label}</p>
             <div className="flex items-baseline gap-2">
               <h3 className="text-3xl font-black tracking-tighter text-foreground">
                 {prefix}{value}{suffix}
