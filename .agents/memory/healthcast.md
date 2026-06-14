@@ -14,6 +14,10 @@ Frontend-only React+Vite executive CFO dashboard, 18 nav sections, realistic moc
 ## Recurring bugs to expect from subagents here
 - framer-motion `transition: { type: "spring" }` fails `tsc` — needs `type: "spring" as const`. Every page copied the same pattern, so fix is a repo-wide sed.
 - `KpiCard` originally `parseFloat`'d its display string for the delta; with compact currency (`"$1.3M"` -> 1.3) the delta was garbage (~-100%). Fix: parse the numeric part AND honor K/M/B/T suffix to reconstruct magnitude. Callers pass formatted string as `value` + raw number as `priorValue`.
+  - Corollary (caused a 14-digit % on Market & Economy): `priorValue` MUST be in the SAME base-unit scale as the parsed `value`. If `value="$2.1T"` (parses to 2.1e12) then `priorValue` must be `1.9e12`, not `1.9`; `"8.2M"` needs `8.0e6`, not `8.0`. Mock data that stores priors in "display units" produces astronomical deltas.
+
+## Equal-height KPI tiles across multiple rows
+- A KPI grid that wraps to 2+ rows (e.g. 6 cards in `lg:grid-cols-3`) sizes each row track independently, so rows differ in height. Fix: add `auto-rows-fr` to the grid + `h-full` on each tile wrapper. If a tile has an extra element below the card (e.g. a "Source:" caption), wrap as `h-full flex flex-col` with the `KpiCard` in a `flex-1` div so the card stretches and the caption pins to the bottom uniformly.
 
 ## Visual-refresh DESIGN passes silently rewrite copy
 - A "styling-only" DESIGN subagent pass will quietly shorten/replace UI copy (header subtitles, add section headings) while restyling. After any design refinement, diff for TEXT changes, not just classes, and restore intended product copy (e.g. the TopHeader brand subtitle).

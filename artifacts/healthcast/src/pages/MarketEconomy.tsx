@@ -26,16 +26,18 @@ export default function MarketEconomy() {
         actions={<Button variant="outline" className="border-border hover:bg-card">Drilldown</Button>}
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-4">
         {macroKpis.map((kpi) => (
-          <motion.div key={kpi.id} variants={itemVariants}>
-            <KpiCard 
-              label={kpi.label} 
-              value={kpi.value}
-              priorValue={kpi.priorValue}
-              trend={kpi.trend}
-              inverseTrend={kpi.inverseTrend}
-            />
+          <motion.div key={kpi.id} variants={itemVariants} className="h-full flex flex-col">
+            <div className="flex-1">
+              <KpiCard 
+                label={kpi.label} 
+                value={kpi.value}
+                priorValue={kpi.priorValue}
+                trend={kpi.trend}
+                inverseTrend={kpi.inverseTrend}
+              />
+            </div>
             <div className="mt-1 text-right px-2">
               <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Source: {kpi.source}</span>
             </div>
