@@ -45,30 +45,28 @@ export function SidebarNav() {
   const [location] = useLocation();
 
   return (
-    <aside className="w-[230px] flex-shrink-0 border-r border-border/50 bg-card/40 flex flex-col backdrop-blur-xl relative z-20">
-      <div className="flex-1 overflow-y-auto py-4 custom-scrollbar">
-        <nav className="space-y-1 px-2">
-          {NAV_ITEMS.map((item, idx) => {
+    <aside className="w-[260px] flex-shrink-0 border-r border-border bg-card/80 flex flex-col relative z-20 shadow-xl shadow-black/20">
+      <div className="flex-1 overflow-y-auto py-6 custom-scrollbar">
+        <div className="px-4 mb-4">
+          <h2 className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest">Modules</h2>
+        </div>
+        <nav className="space-y-1 px-3">
+          {NAV_ITEMS.map((item) => {
             const isActive = location === item.href || (location.startsWith(item.href) && item.href !== "/");
             const Icon = item.icon;
-            const indexStr = (idx + 1).toString().padStart(2, "0");
             
             return (
               <Link key={item.href} href={item.href}>
                 <div
                   className={cn(
-                    "group flex items-center gap-2.5 px-2 py-1.5 rounded-md transition-all duration-200 cursor-pointer text-[13px] font-medium relative",
+                    "group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 cursor-pointer text-[13px] font-semibold relative overflow-hidden",
                     isActive
-                      ? "bg-primary/10 text-primary border border-primary/30 shadow-[0_0_15px_-3px_hsl(var(--primary)/0.2)]"
-                      : "text-muted-foreground hover:bg-white/5 hover:text-foreground border border-transparent"
+                      ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                      : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground border border-transparent"
                   )}
                 >
-                  {isActive && (
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-4 bg-primary rounded-r-full shadow-[0_0_8px_1px_hsl(var(--primary))]"></div>
-                  )}
-                  <span className={cn("text-[10px] w-4 opacity-50 font-mono tracking-tighter", isActive ? "text-primary" : "")}>{indexStr}</span>
-                  <Icon className={cn("w-3.5 h-3.5 flex-shrink-0", isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} />
-                  <span className="truncate">{item.label}</span>
+                  <Icon className={cn("w-4 h-4 flex-shrink-0", isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-primary")} />
+                  <span className="truncate tracking-wide">{item.label}</span>
                 </div>
               </Link>
             );

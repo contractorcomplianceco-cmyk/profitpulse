@@ -45,40 +45,40 @@ export function KpiCard({
   const trendData = trend?.map((val, i) => ({ value: val, index: i })) || [];
 
   return (
-    <Card className={cn("overflow-hidden bg-card/50 backdrop-blur-xl border-border/50", className)}>
-      <CardContent className="p-5">
+    <Card className={cn("overflow-hidden bg-card border-border shadow-lg shadow-black/20 hover:border-primary/50 transition-colors group", className)}>
+      <CardContent className="p-6">
         <div className="flex justify-between items-start">
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-muted-foreground">{label}</p>
+          <div className="space-y-3">
+            <p className="text-[10px] font-extrabold tracking-widest text-muted-foreground uppercase">{label}</p>
             <div className="flex items-baseline gap-2">
-              <h3 className="text-2xl font-bold tracking-tight">
+              <h3 className="text-3xl font-black tracking-tighter text-foreground">
                 {prefix}{value}{suffix}
               </h3>
             </div>
             
             {hasPrior && (
-              <div className="flex items-center gap-1.5 mt-1">
+              <div className="flex items-center gap-2 mt-2">
                 <span className={cn(
-                  "flex items-center text-xs font-medium px-1.5 py-0.5 rounded-sm",
-                  isPositive ? "text-success bg-success/10" : "text-destructive bg-destructive/10"
+                  "flex items-center text-[12px] font-bold px-2 py-0.5 rounded-md",
+                  isPositive ? "text-success bg-success/15" : "text-destructive bg-destructive/15"
                 )}>
-                  {delta >= 0 ? <ArrowUpRight className="w-3 h-3 mr-1" /> : <ArrowDownRight className="w-3 h-3 mr-1" />}
+                  {delta >= 0 ? <ArrowUpRight className="w-3.5 h-3.5 mr-1 stroke-[3]" /> : <ArrowDownRight className="w-3.5 h-3.5 mr-1 stroke-[3]" />}
                   {Math.abs(delta).toFixed(1)}%
                 </span>
-                <span className="text-xs text-muted-foreground">vs prior</span>
+                <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-widest">vs prior</span>
               </div>
             )}
           </div>
           
           {trendData.length > 0 && (
-            <div className="w-20 h-12">
+            <div className="w-24 h-14 opacity-80 group-hover:opacity-100 transition-opacity">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={trendData}>
                   <Line 
                     type="monotone" 
                     dataKey="value" 
                     stroke={isPositive ? "hsl(var(--success))" : "hsl(var(--destructive))"} 
-                    strokeWidth={2} 
+                    strokeWidth={2.5} 
                     dot={false}
                     isAnimationActive={false}
                   />

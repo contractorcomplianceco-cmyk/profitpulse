@@ -8,9 +8,9 @@ interface AlertBadgeProps {
 
 export function AlertBadge({ severity, className }: AlertBadgeProps) {
   const variants = {
-    critical: "bg-destructive/10 text-destructive border-destructive/20",
-    warning: "bg-warning/10 text-warning border-warning/20",
-    info: "bg-primary/10 text-primary border-primary/20",
+    critical: "bg-destructive text-destructive-foreground border-destructive/50 shadow-md shadow-destructive/20 font-bold",
+    warning: "bg-warning text-background border-warning/50 shadow-md shadow-warning/20 font-bold",
+    info: "bg-primary text-primary-foreground border-primary/50 shadow-md shadow-primary/20 font-bold",
   };
 
   const labels = {
@@ -20,7 +20,7 @@ export function AlertBadge({ severity, className }: AlertBadgeProps) {
   };
 
   return (
-    <Badge variant="outline" className={cn("font-medium uppercase tracking-wider text-[10px]", variants[severity], className)}>
+    <Badge variant="outline" className={cn("uppercase tracking-widest text-[10px] px-2 py-0.5 rounded-sm", variants[severity], className)}>
       {labels[severity]}
     </Badge>
   );

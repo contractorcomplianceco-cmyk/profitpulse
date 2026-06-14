@@ -11,10 +11,10 @@ interface ChartCardProps {
 
 export function ChartCard({ title, description, children, className }: ChartCardProps) {
   return (
-    <Card className={cn("bg-card/50 backdrop-blur-xl border-border/50", className)}>
+    <Card className={cn("bg-card border-border rounded-xl shadow-lg shadow-black/20", className)}>
       <CardHeader className="pb-4">
-        <CardTitle className="text-lg font-semibold">{title}</CardTitle>
-        {description && <CardDescription>{description}</CardDescription>}
+        <CardTitle className="text-sm font-extrabold tracking-widest uppercase text-foreground">{title}</CardTitle>
+        {description && <CardDescription className="font-medium">{description}</CardDescription>}
       </CardHeader>
       <CardContent>
         {children}

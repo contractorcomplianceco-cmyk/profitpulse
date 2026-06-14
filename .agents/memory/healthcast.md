@@ -15,6 +15,9 @@ Frontend-only React+Vite executive CFO dashboard, 18 nav sections, realistic moc
 - framer-motion `transition: { type: "spring" }` fails `tsc` — needs `type: "spring" as const`. Every page copied the same pattern, so fix is a repo-wide sed.
 - `KpiCard` originally `parseFloat`'d its display string for the delta; with compact currency (`"$1.3M"` -> 1.3) the delta was garbage (~-100%). Fix: parse the numeric part AND honor K/M/B/T suffix to reconstruct magnitude. Callers pass formatted string as `value` + raw number as `priorValue`.
 
+## Visual-refresh DESIGN passes silently rewrite copy
+- A "styling-only" DESIGN subagent pass will quietly shorten/replace UI copy (header subtitles, add section headings) while restyling. After any design refinement, diff for TEXT changes, not just classes, and restore intended product copy (e.g. the TopHeader brand subtitle).
+
 ## recharts on this dashboard (charts render axes but NO data marks)
 - Symptom: lines/bars/donut-arcs/gauge/sparklines invisible while axes + tick labels still show.
 - Cause 1 (the main one): `isAnimationActive` with a long `animationDuration` on a heavy page. Charts mount LATE (after the framer-motion entrance + ResponsiveContainer's ResizeObserver measures), so marks are captured mid/pre-animation at zero size. Fix: set `isAnimationActive={false}` on every series — the framer-motion entrance already provides the animated feel.

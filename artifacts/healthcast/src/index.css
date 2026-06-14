@@ -72,91 +72,91 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* DEEP NAVY / ELECTRIC BLUE PALETTE */
+/* EXECUTIVE COMMAND CENTER PALETTE */
 :root {
   --button-outline: rgba(255,255,255, .10);
   --badge-outline: rgba(255,255,255, .05);
   --opaque-button-border-intensity: -8;
 
-  --elevate-1: rgba(255,255,255, .03);
+  --elevate-1: rgba(255,255,255, .04);
   --elevate-2: rgba(255,255,255, .08);
 
-  /* Background - Deep Navy */
-  --background: 222 47% 11%;
-  --foreground: 210 40% 98%;
+  /* Background - Obsidian / Deep Slate */
+  --background: 220 38% 6%;
+  --foreground: 0 0% 100%;
 
   /* Borders and UI elements */
-  --border: 217 32% 17%;
-  --input: 217 32% 17%;
-  --ring: 217 91% 60%; /* Electric Blue */
+  --border: 220 25% 15%;
+  --input: 220 25% 15%;
+  --ring: 230 85% 60%; /* Striking Indigo/Royal */
 
-  /* Cards - slightly lighter navy */
-  --card: 222 47% 14%;
-  --card-foreground: 210 40% 98%;
-  --card-border: 217 32% 17%;
+  /* Cards - Darker, higher contrast */
+  --card: 220 35% 9%;
+  --card-foreground: 0 0% 100%;
+  --card-border: 220 25% 15%;
 
-  --popover: 222 47% 14%;
-  --popover-foreground: 210 40% 98%;
-  --popover-border: 217 32% 17%;
+  --popover: 220 35% 9%;
+  --popover-foreground: 0 0% 100%;
+  --popover-border: 220 25% 15%;
 
-  /* Primary Action - Electric Blue */
-  --primary: 217 91% 60%;
+  /* Primary Action - Bold Indigo */
+  --primary: 230 85% 60%;
   --primary-foreground: 0 0% 100%;
 
-  /* Secondary - Silver/Gray */
-  --secondary: 217 19% 27%;
-  --secondary-foreground: 210 40% 98%;
+  /* Secondary - Steel */
+  --secondary: 220 20% 20%;
+  --secondary-foreground: 0 0% 100%;
 
   /* Muted */
-  --muted: 217 32% 17%;
-  --muted-foreground: 215 20.2% 65.1%;
+  --muted: 220 25% 15%;
+  --muted-foreground: 220 15% 65%;
 
   /* Accent */
-  --accent: 217 32% 17%;
-  --accent-foreground: 210 40% 98%;
+  --accent: 230 40% 18%;
+  --accent-foreground: 0 0% 100%;
 
-  /* Destructive - Red */
-  --destructive: 346 84% 61%;
+  /* Destructive - Crisp Crimson */
+  --destructive: 348 83% 55%;
   --destructive-foreground: 0 0% 100%;
 
-  /* Success - Teal/Green */
-  --success: 160 84% 39%;
+  /* Success - Bright Emerald */
+  --success: 152 76% 40%;
   --success-foreground: 0 0% 100%;
 
   /* Warning - Amber */
-  --warning: 38 92% 50%;
+  --warning: 35 92% 50%;
   --warning-foreground: 0 0% 100%;
 
   /* Charts */
-  --chart-1: 217 91% 60%; /* Electric Blue */
-  --chart-2: 160 84% 39%; /* Teal */
-  --chart-3: 210 16% 82%; /* Silver */
-  --chart-4: 38 92% 50%;  /* Amber */
-  --chart-5: 346 84% 61%; /* Red */
+  --chart-1: 230 85% 60%; /* Indigo */
+  --chart-2: 152 76% 40%; /* Emerald */
+  --chart-3: 200 80% 50%; /* Azure */
+  --chart-4: 35 92% 50%;  /* Amber */
+  --chart-5: 348 83% 55%; /* Crimson */
 
   /* Sidebar */
-  --sidebar: 222 47% 10%;
-  --sidebar-foreground: 210 40% 98%;
-  --sidebar-border: 217 32% 17%;
-  --sidebar-primary: 217 91% 60%;
+  --sidebar: 220 40% 5%;
+  --sidebar-foreground: 0 0% 100%;
+  --sidebar-border: 220 25% 15%;
+  --sidebar-primary: 230 85% 60%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 217 32% 17%;
-  --sidebar-accent-foreground: 210 40% 98%;
-  --sidebar-ring: 217 91% 60%;
+  --sidebar-accent: 220 25% 15%;
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-ring: 230 85% 60%;
 
   --app-font-sans: 'Inter', sans-serif;
   --app-font-serif: Georgia, serif;
   --app-font-mono: Menlo, monospace;
-  --radius: .5rem;
+  --radius: 0.5rem;
   
-  --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.1);
-  --shadow-xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.1);
-  --shadow-sm: 0px 2px 0px 0px hsl(0 0% 0% / 0.1), 0px 1px 2px -1px hsl(0 0% 0% / 0.1);
-  --shadow: 0px 2px 0px 0px hsl(0 0% 0% / 0.1), 0px 1px 2px -1px hsl(0 0% 0% / 0.1);
-  --shadow-md: 0px 2px 0px 0px hsl(0 0% 0% / 0.1), 0px 2px 4px -1px hsl(0 0% 0% / 0.1);
-  --shadow-lg: 0px 2px 0px 0px hsl(0 0% 0% / 0.1), 0px 4px 6px -1px hsl(0 0% 0% / 0.1);
-  --shadow-xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.1), 0px 8px 10px -1px hsl(0 0% 0% / 0.1);
-  --shadow-2xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.1);
+  --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.2);
+  --shadow-xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.2);
+  --shadow-sm: 0px 2px 0px 0px hsl(0 0% 0% / 0.2), 0px 1px 2px -1px hsl(0 0% 0% / 0.2);
+  --shadow: 0px 2px 0px 0px hsl(0 0% 0% / 0.2), 0px 1px 2px -1px hsl(0 0% 0% / 0.2);
+  --shadow-md: 0px 2px 0px 0px hsl(0 0% 0% / 0.2), 0px 2px 4px -1px hsl(0 0% 0% / 0.2);
+  --shadow-lg: 0px 2px 0px 0px hsl(0 0% 0% / 0.2), 0px 4px 6px -1px hsl(0 0% 0% / 0.2);
+  --shadow-xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.2), 0px 8px 10px -1px hsl(0 0% 0% / 0.2);
+  --shadow-2xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.2);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 
@@ -170,37 +170,37 @@
 }
 
 .dark {
-  /* Using same colors as default since this is a dark-first executive OS */
-  --background: 222 47% 11%;
-  --foreground: 210 40% 98%;
-  --border: 217 32% 17%;
-  --input: 217 32% 17%;
-  --ring: 217 91% 60%;
-  --card: 222 47% 14%;
-  --card-foreground: 210 40% 98%;
-  --card-border: 217 32% 17%;
-  --popover: 222 47% 14%;
-  --popover-foreground: 210 40% 98%;
-  --popover-border: 217 32% 17%;
-  --primary: 217 91% 60%;
+  /* Same dark-first executive OS palette */
+  --background: 220 38% 6%;
+  --foreground: 0 0% 100%;
+  --border: 220 25% 15%;
+  --input: 220 25% 15%;
+  --ring: 230 85% 60%;
+  --card: 220 35% 9%;
+  --card-foreground: 0 0% 100%;
+  --card-border: 220 25% 15%;
+  --popover: 220 35% 9%;
+  --popover-foreground: 0 0% 100%;
+  --popover-border: 220 25% 15%;
+  --primary: 230 85% 60%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 217 19% 27%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 217 32% 17%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --accent: 217 32% 17%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 346 84% 61%;
+  --secondary: 220 20% 20%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 220 25% 15%;
+  --muted-foreground: 220 15% 65%;
+  --accent: 230 40% 18%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 348 83% 55%;
   --destructive-foreground: 0 0% 100%;
-  --success: 160 84% 39%;
+  --success: 152 76% 40%;
   --success-foreground: 0 0% 100%;
-  --warning: 38 92% 50%;
+  --warning: 35 92% 50%;
   --warning-foreground: 0 0% 100%;
-  --chart-1: 217 91% 60%;
-  --chart-2: 160 84% 39%;
-  --chart-3: 210 16% 82%;
-  --chart-4: 38 92% 50%;
-  --chart-5: 346 84% 61%;
+  --chart-1: 230 85% 60%;
+  --chart-2: 152 76% 40%;
+  --chart-3: 200 80% 50%;
+  --chart-4: 35 92% 50%;
+  --chart-5: 348 83% 55%;
 }
 
 @layer base {
