@@ -22,6 +22,10 @@ import Alerts from "@/pages/Alerts";
 import DailyBriefing from "@/pages/DailyBriefing";
 import Reports from "@/pages/Reports";
 import Integrations from "@/pages/Integrations";
+import CfoCopilot from "@/pages/CfoCopilot";
+import GoalsOkrs from "@/pages/GoalsOkrs";
+import CashCalendar from "@/pages/CashCalendar";
+import ComplianceRisk from "@/pages/ComplianceRisk";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +51,10 @@ function Router() {
         <Route path="/daily-briefing" component={DailyBriefing} />
         <Route path="/reports" component={Reports} />
         <Route path="/integrations" component={Integrations} />
+        <Route path="/copilot" component={CfoCopilot} />
+        <Route path="/goals" component={GoalsOkrs} />
+        <Route path="/cash-calendar" component={CashCalendar} />
+        <Route path="/compliance" component={ComplianceRisk} />
         <Route component={NotFound} />
       </Switch>
     </AppLayout>

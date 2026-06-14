@@ -7,14 +7,22 @@ interface TrendLineProps {
   type?: "line" | "area";
 }
 
+const compactTick = (value: number) => {
+  if (typeof value !== "number" || !isFinite(value)) return `${value}`;
+  const abs = Math.abs(value);
+  if (abs >= 1_000_000) return `${(value / 1_000_000).toFixed(abs % 1_000_000 === 0 ? 0 : 1)}M`;
+  if (abs >= 1_000) return `${(value / 1_000).toFixed(abs % 1_000 === 0 ? 0 : 1)}K`;
+  return `${value}`;
+};
+
 export function TrendLine({ data, lines, xAxisKey, type = "line" }: TrendLineProps) {
   return (
     <ResponsiveContainer width="100%" height="100%">
       {type === "line" ? (
-        <LineChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+        <LineChart data={data} margin={{ top: 5, right: 5, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
           <XAxis dataKey={xAxisKey} stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} axisLine={false} />
-          <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} axisLine={false} />
+          <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} axisLine={false} tickFormatter={compactTick} width={44} />
           <Tooltip 
             contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '8px' }}
             itemStyle={{ color: '#fff' }}
@@ -34,7 +42,7 @@ export function TrendLine({ data, lines, xAxisKey, type = "line" }: TrendLinePro
           ))}
         </LineChart>
       ) : (
-        <AreaChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+        <AreaChart data={data} margin={{ top: 5, right: 5, left: 0, bottom: 0 }}>
           <defs>
             {lines.map((line, i) => (
               <linearGradient key={i} id={`color-${line.key}`} x1="0" y1="0" x2="0" y2="1">
@@ -45,7 +53,7 @@ export function TrendLine({ data, lines, xAxisKey, type = "line" }: TrendLinePro
           </defs>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
           <XAxis dataKey={xAxisKey} stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} axisLine={false} />
-          <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} axisLine={false} />
+          <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} axisLine={false} tickFormatter={compactTick} width={44} />
           <Tooltip 
             contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '8px' }}
             itemStyle={{ color: '#fff' }}

@@ -8,9 +8,9 @@ interface AlertBadgeProps {
 
 export function AlertBadge({ severity, className }: AlertBadgeProps) {
   const variants = {
-    critical: "bg-destructive text-destructive-foreground border-destructive/50 shadow-md shadow-destructive/20 font-bold",
-    warning: "bg-warning text-background border-warning/50 shadow-md shadow-warning/20 font-bold",
-    info: "bg-primary text-primary-foreground border-primary/50 shadow-md shadow-primary/20 font-bold",
+    critical: "bg-gradient-to-br from-destructive to-[hsl(360_80%_45%)] text-destructive-foreground border-destructive/50 shadow-md shadow-destructive/30 font-bold",
+    warning: "bg-gradient-warning text-background border-warning/50 shadow-md shadow-warning/30 font-bold",
+    info: "bg-gradient-primary text-primary-foreground border-primary/50 shadow-md shadow-primary/30 font-bold",
   };
 
   const labels = {

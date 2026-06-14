@@ -4,9 +4,12 @@ import { SidebarNav } from "./SidebarNav";
 export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col h-screen bg-background text-foreground overflow-hidden font-sans relative selection:bg-primary/30">
-      {/* Global Background Gradient - more subtle, darker */}
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-background to-background z-0"></div>
-      
+      {/* Layered ambient backdrop for depth */}
+      <div className="absolute inset-0 pointer-events-none bg-grid opacity-[0.4] z-0"></div>
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/15 via-background/0 to-background z-0"></div>
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-cyan/10 via-background/0 to-background/0 z-0"></div>
+      <div className="absolute -top-24 left-1/3 w-[480px] h-[480px] rounded-full bg-primary/10 blur-[120px] pointer-events-none z-0"></div>
+
       {/* Top Header */}
       <TopHeader />
 

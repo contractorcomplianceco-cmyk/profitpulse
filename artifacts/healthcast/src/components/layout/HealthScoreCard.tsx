@@ -7,8 +7,8 @@ export function HealthScoreCard() {
   const strokeDashoffset = circumference - (score / 100) * circumference;
 
   return (
-    <div className="p-6 border-t border-border bg-card/50 relative overflow-hidden shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent opacity-60 z-0"></div>
+    <div className="p-6 border-t border-border surface-gradient-accent relative overflow-hidden shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/15 via-cyan/5 to-transparent opacity-70 z-0"></div>
       
       <div className="relative z-10">
         <h4 className="text-[10px] tracking-widest text-muted-foreground uppercase mb-4 font-extrabold">Financial Health Score</h4>
@@ -41,13 +41,14 @@ export function HealthScoreCard() {
               />
               <defs>
                 <linearGradient id="health-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="hsl(var(--primary))" />
+                  <stop offset="0%" stopColor="hsl(var(--cyan))" />
+                  <stop offset="50%" stopColor="hsl(var(--primary))" />
                   <stop offset="100%" stopColor="hsl(var(--success))" />
                 </linearGradient>
               </defs>
             </svg>
-            <div className="flex flex-col items-center justify-center bg-background rounded-full w-14 h-14 shadow-inner">
-              <span className="text-xl font-black tracking-tighter text-foreground">{score}</span>
+            <div className="flex flex-col items-center justify-center bg-background rounded-full w-14 h-14 shadow-inner ring-1 ring-primary/20 shadow-[inset_0_0_12px_-2px_hsl(var(--primary)/0.4)]">
+              <span className="text-xl font-black tracking-tighter text-gradient-primary">{score}</span>
             </div>
           </div>
           

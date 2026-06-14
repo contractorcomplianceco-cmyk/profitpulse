@@ -28,6 +28,7 @@ Frontend-only React+Vite executive CFO dashboard, 18 nav sections, realistic moc
 - Cause 2: `ResponsiveContainer` collapses to 0 height when its parent's height is not DEFINITE. `h-full`/`min-h-*` inside a `flex items-center` parent does not give a percentage-resolvable height. Give the chart wrapper an explicit pixel height (e.g. `h-[180px]`, or a fixed-height parent + `h-full` child).
 - Sparkline/Area gradient `id` must be unique per instance — derive from `useId()` (sanitized), not from the color string, or repeated instances collide on the SVG `url(#...)` reference.
 - Funnel counts: recharts `<Bar>` shows values only via `<LabelList dataKey=... position="right">`, not by default.
+- Shared `components/charts/TrendLine.tsx` `<YAxis>` had a negative `left` chart margin and no `tickFormatter`, so large (millions) values rendered full digits ("1000000") and got clipped off the left edge. Fix: compact `tickFormatter` (K/M) + `width={44}` + non-negative left margin. Compact ticks stay correct for small/percent axes too.
 
 ## Scenario engine (`lib/calculations.ts`)
 - Model P&L impact ONCE (revenue/cost/payroll), then derive profit = rev - cost - payroll, cash = profit + one-time collection boost. Do not add the same lever to both profit and cash (the original double-counted).

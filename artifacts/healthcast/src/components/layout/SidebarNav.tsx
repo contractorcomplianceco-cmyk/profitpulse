@@ -17,13 +17,19 @@ import {
   SlidersHorizontal, 
   BellRing, 
   Newspaper, 
-  FileText
+  FileText,
+  Sparkles,
+  Trophy,
+  CalendarClock,
+  ShieldCheck
 } from "lucide-react";
 import { HealthScoreCard } from "./HealthScoreCard";
 
 const NAV_ITEMS = [
   { href: "/", label: "Executive Overview", icon: LayoutDashboard },
+  { href: "/copilot", label: "AI CFO Copilot", icon: Sparkles },
   { href: "/cash-flow", label: "Cash Flow", icon: DollarSign },
+  { href: "/cash-calendar", label: "Cash Calendar", icon: CalendarClock },
   { href: "/revenue-intelligence", label: "Revenue Intelligence", icon: LineChart },
   { href: "/profitability", label: "Profitability", icon: PieChart },
   { href: "/ar-ap-collections", label: "AR/AP & Collections", icon: Wallet },
@@ -36,6 +42,8 @@ const NAV_ITEMS = [
   { href: "/market-economy", label: "Market & Economy", icon: Globe2 },
   { href: "/futurecast", label: "Futurecast", icon: FastForward },
   { href: "/scenario-builder", label: "Scenario Builder", icon: SlidersHorizontal },
+  { href: "/goals", label: "Goals & OKRs", icon: Trophy },
+  { href: "/compliance", label: "Compliance & Risk", icon: ShieldCheck },
   { href: "/alerts", label: "Alerts", icon: BellRing },
   { href: "/daily-briefing", label: "Daily Briefing", icon: Newspaper },
   { href: "/reports", label: "Reports & Exports", icon: FileText },
@@ -45,7 +53,8 @@ export function SidebarNav() {
   const [location] = useLocation();
 
   return (
-    <aside className="w-[260px] flex-shrink-0 border-r border-border bg-card/80 flex flex-col relative z-20 shadow-xl shadow-black/20">
+    <aside className="w-[260px] flex-shrink-0 border-r border-border surface-gradient flex flex-col relative z-20 shadow-xl shadow-black/30">
+      <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-primary/30 to-transparent pointer-events-none"></div>
       <div className="flex-1 overflow-y-auto py-6 custom-scrollbar">
         <div className="px-4 mb-4">
           <h2 className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest">Modules</h2>
@@ -61,11 +70,14 @@ export function SidebarNav() {
                   className={cn(
                     "group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 cursor-pointer text-[13px] font-semibold relative overflow-hidden",
                     isActive
-                      ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
-                      : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground border border-transparent"
+                      ? "bg-gradient-primary text-primary-foreground shadow-lg shadow-primary/30 border border-primary/40"
+                      : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground border border-transparent hover:border-primary/20 hover:translate-x-0.5"
                   )}
                 >
-                  <Icon className={cn("w-4 h-4 flex-shrink-0", isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-primary")} />
+                  {isActive && (
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r-full bg-cyan shadow-[0_0_10px_hsl(var(--cyan))]" />
+                  )}
+                  <Icon className={cn("w-4 h-4 flex-shrink-0 transition-colors", isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-primary")} />
                   <span className="truncate tracking-wide">{item.label}</span>
                 </div>
               </Link>

@@ -22,7 +22,7 @@ export function ScenarioSlider({
   formatValue = (val) => val.toString(),
 }: ScenarioSliderProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 p-4 rounded-xl surface-gradient border border-border/60 hover:border-primary/30 transition-colors">
       <div className="flex items-center justify-between">
         <Label className="text-sm font-medium">{label}</Label>
         <div className="w-24">
@@ -33,7 +33,7 @@ export function ScenarioSlider({
             min={min}
             max={max}
             step={step}
-            className="h-8 text-right font-mono text-sm"
+            className="h-8 text-right font-mono text-sm border-primary/20 focus-visible:ring-primary/40"
           />
         </div>
       </div>
