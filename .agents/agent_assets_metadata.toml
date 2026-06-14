@@ -1,0 +1,50 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "2YrT-p2rADDff7IU-PjJW"
+uri = "file://artifacts/healthcast/public/onboarding/narration-3.mp3"
+type = "audio"
+title = "welcome narration 3"
+
+[[outputs]]
+id = "6FQGAMSNmOVEF-urcFJhJ"
+uri = "file://artifacts/healthcast/public/onboarding/narration-1.mp3"
+type = "audio"
+title = "welcome narration 1"
+
+[[outputs]]
+id = "fdkWbe8A69bpPP0YxCegH"
+uri = "file://artifacts/healthcast/public/onboarding/narration-2.mp3"
+type = "audio"
+title = "welcome narration 2"
+
+[[outputs]]
+id = "aSUzuHfzBC8N1l_PftCvy"
+uri = "file://artifacts/healthcast/public/onboarding/narration-5.mp3"
+type = "audio"
+title = "welcome narration 5"
+
+[[outputs]]
+id = "XTQpE0WdXyR6tMRzZkVCM"
+uri = "file://artifacts/healthcast/public/onboarding/narration-6.mp3"
+type = "audio"
+title = "welcome narration 6"
+
+[[outputs]]
+id = "xLvRYSo_nMFWOSRx0gRh2"
+uri = "file://artifacts/healthcast/public/onboarding/narration-7.mp3"
+type = "audio"
+title = "welcome narration 7"
+
+[[outputs]]
+id = "mMJusBLsppp4LAjrF5ypX"
+uri = "file://artifacts/healthcast/public/onboarding/music-bed.mp3"
+type = "audio"
+title = "onboarding music bed"
+
+[[outputs]]
+id = "ynzjfBqSckIt13uBC974f"
+uri = "file://artifacts/healthcast/public/onboarding/narration-4.mp3"
+type = "audio"
+title = "welcome narration 4"

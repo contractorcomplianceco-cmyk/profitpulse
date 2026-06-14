@@ -21,11 +21,13 @@ import {
   Sparkles,
   Trophy,
   CalendarClock,
-  ShieldCheck
+  ShieldCheck,
+  Compass
 } from "lucide-react";
 import { HealthScoreCard } from "./HealthScoreCard";
 
 const NAV_ITEMS = [
+  { href: "/welcome", label: "Welcome", icon: Compass },
   { href: "/", label: "Executive Overview", icon: LayoutDashboard },
   { href: "/copilot", label: "AI CFO Copilot", icon: Sparkles },
   { href: "/cash-flow", label: "Cash Flow", icon: DollarSign },

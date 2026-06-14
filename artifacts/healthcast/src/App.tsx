@@ -26,6 +26,7 @@ import CfoCopilot from "@/pages/CfoCopilot";
 import GoalsOkrs from "@/pages/GoalsOkrs";
 import CashCalendar from "@/pages/CashCalendar";
 import ComplianceRisk from "@/pages/ComplianceRisk";
+import Welcome from "@/pages/Welcome";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ function Router() {
   return (
     <AppLayout>
       <Switch>
+        <Route path="/welcome" component={Welcome} />
         <Route path="/" component={ExecutiveOverview} />
         <Route path="/cash-flow" component={CashFlow} />
         <Route path="/revenue-intelligence" component={RevenueIntelligence} />
