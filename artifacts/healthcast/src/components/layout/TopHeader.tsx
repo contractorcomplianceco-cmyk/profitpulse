@@ -32,7 +32,9 @@ export function TopHeader() {
       <div className="flex items-center gap-4">
         <CcaLogo className="w-10 h-10 flex-shrink-0 drop-shadow-[0_0_12px_hsl(var(--primary)/0.5)]" />
         <div className="flex flex-col">
-          <span className="font-extrabold text-[16px] tracking-tight text-gradient-primary leading-none">CCA HealthCast OS</span>
+          <span className="font-extrabold text-[16px] tracking-tight leading-none">
+            <span className="text-white">HealthCast</span><span className="text-cyan">OS</span>
+          </span>
           <span className="text-[10px] text-primary font-bold uppercase tracking-widest leading-relaxed mt-0.5">Financial Health, Growth Intelligence &amp; Futurecast Command Center</span>
         </div>
       </div>
