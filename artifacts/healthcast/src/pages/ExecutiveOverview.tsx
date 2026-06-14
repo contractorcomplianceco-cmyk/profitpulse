@@ -80,7 +80,7 @@ export default function ExecutiveOverview() {
           <motion.div key={i} variants={itemVariants} className="bg-card border border-border rounded-xl p-5 shadow-lg shadow-black/20 hover:border-primary/50 transition-all flex flex-col gap-2 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-bl-full pointer-events-none group-hover:bg-primary/10 transition-colors"></div>
             <div className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase">{kpi.label}</div>
-            <div className="text-3xl font-black tracking-tighter text-white">{kpi.value}</div>
+            <div className="text-[clamp(1.25rem,1.7vw,1.875rem)] font-black tracking-tight text-white whitespace-nowrap tabular-nums leading-tight">{kpi.value}</div>
             <div className="flex items-center justify-between mt-auto pt-2 border-t border-border/50">
               <div className="flex flex-col">
                 <span className={`text-[13px] flex items-center font-bold ${kpi.trendUp ? 'text-success' : 'text-destructive'}`}>
