@@ -75,12 +75,12 @@ export default function ExecutiveOverview() {
       className="flex flex-col gap-4 pb-12 w-full"
     >
       {/* A) TOP KPI ROW */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-6 gap-3">
         {topKpis.map((kpi, i) => (
-          <motion.div key={i} variants={itemVariants} className="bg-card border border-border rounded-xl p-5 shadow-lg shadow-black/20 hover:border-primary/50 transition-all flex flex-col gap-2 relative overflow-hidden group">
+          <motion.div key={i} variants={itemVariants} className="bg-card border border-border rounded-xl p-4 shadow-lg shadow-black/20 hover:border-primary/50 transition-all flex flex-col gap-2 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-bl-full pointer-events-none group-hover:bg-primary/10 transition-colors"></div>
-            <div className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase">{kpi.label}</div>
-            <div className="text-[clamp(1.25rem,1.7vw,1.875rem)] font-black tracking-tight text-white whitespace-nowrap tabular-nums leading-tight">{kpi.value}</div>
+            <div className="text-[10px] font-extrabold tracking-wide text-muted-foreground uppercase whitespace-nowrap">{kpi.label}</div>
+            <div className="text-2xl 2xl:text-[1.7rem] font-black tracking-tight text-white whitespace-nowrap tabular-nums leading-tight">{kpi.value}</div>
             <div className="flex items-center justify-between mt-auto pt-2 border-t border-border/50">
               <div className="flex flex-col">
                 <span className={`text-[13px] flex items-center font-bold ${kpi.trendUp ? 'text-success' : 'text-destructive'}`}>
