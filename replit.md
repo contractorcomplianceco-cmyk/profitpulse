@@ -39,7 +39,7 @@ A premium, frontend-only executive CFO command center for Contractor Compliance 
 ## User preferences
 
 - No emojis anywhere in the product UI.
-- Aesthetic: deep navy / electric blue / silver / white, teal-green for positive, amber/red for risk. Cinematic, dense, high-trust "CFO terminal" vibe.
+- Aesthetic: deep navy / teal / silver / white, teal-green for positive, amber/red for risk. Cinematic, dense, high-trust "CFO terminal" vibe.
 
 ## Gotchas
 
