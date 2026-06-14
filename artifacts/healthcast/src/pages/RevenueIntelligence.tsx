@@ -135,17 +135,19 @@ export default function RevenueIntelligence() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <motion.div variants={itemVariants}>
           <ChartCard title="Revenue by Service Line" description="Current month breakdown">
-            <div className="h-[300px] w-full mt-4 flex items-center">
+            <div className="w-full mt-4 grid grid-cols-1 sm:grid-cols-2 items-center gap-4">
+              <div className="h-[260px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={revenueByService}
                     cx="50%"
                     cy="50%"
-                    innerRadius={80}
-                    outerRadius={110}
+                    innerRadius="62%"
+                    outerRadius="92%"
                     paddingAngle={2}
                     dataKey="value"
+                    isAnimationActive={false}
                   >
                     {revenueByService.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -158,7 +160,8 @@ export default function RevenueIntelligence() {
                   />
                 </PieChart>
               </ResponsiveContainer>
-              <div className="w-1/2 flex flex-col justify-center gap-2">
+              </div>
+              <div className="flex flex-col justify-center gap-2">
                 {revenueByService.map((item, i) => (
                   <div key={item.name} className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-2">
