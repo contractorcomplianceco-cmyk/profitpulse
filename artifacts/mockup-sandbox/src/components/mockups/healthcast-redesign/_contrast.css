@@ -1,0 +1,120 @@
+/* PROPOSED CONTRAST THEME — light content + dark navy chrome.
+   Loaded AFTER _group.css so these :root values win by cascade order.
+   The main content area is light/easy on the eyes; the sidebar AND top header
+   are unified deep navy chrome. Same structure / components / data as Current. */
+:root {
+  /* Elevation tints flip to dark-on-light for content */
+  --button-outline: rgba(0,0,0, .10);
+  --badge-outline: rgba(0,0,0, .05);
+  --elevate-1: rgba(0,0,0, .03);
+  --elevate-2: rgba(0,0,0, .06);
+
+  /* CONTENT (light) — canvas */
+  --background: 210 20% 96%;
+  --foreground: 222 45% 16%;
+
+  /* Borders & inputs — light slate */
+  --border: 214 22% 86%;
+  --input: 214 22% 86%;
+  --ring: 175 82% 40%;
+
+  /* Cards / popovers — white */
+  --card: 0 0% 100%;
+  --card-foreground: 222 45% 16%;
+  --card-border: 214 22% 86%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 45% 16%;
+  --popover-border: 214 22% 86%;
+
+  /* Primary — teal deepened for contrast on white */
+  --primary: 175 82% 36%;
+  --primary-foreground: 0 0% 100%;
+
+  /* Secondary — light cool grey */
+  --secondary: 214 28% 91%;
+  --secondary-foreground: 222 40% 22%;
+
+  /* Muted */
+  --muted: 210 24% 92%;
+  --muted-foreground: 215 16% 42%;
+
+  /* Accent — pale teal */
+  --accent: 175 55% 92%;
+  --accent-foreground: 178 70% 22%;
+
+  /* Status — deepened so they read on white content */
+  --destructive: 348 78% 47%;
+  --destructive-foreground: 0 0% 100%;
+  --success: 152 70% 33%;
+  --success-foreground: 0 0% 100%;
+  --warning: 35 90% 42%;
+  --warning-foreground: 0 0% 100%;
+
+  /* Charts — deepened ~8-12% for white surfaces */
+  --chart-1: 175 82% 36%; /* teal */
+  --chart-2: 152 70% 33%; /* emerald */
+  --chart-3: 200 80% 40%; /* azure */
+  --chart-4: 35 90% 42%;  /* amber */
+  --chart-5: 348 78% 47%; /* crimson */
+
+  /* Teal / cyan accent spectrum — deepened for white */
+  --electric: 180 70% 38%;
+  --cyan: 190 88% 38%;
+
+  /* Brand gradients stay teal (deepened) */
+  --gradient-primary: linear-gradient(135deg, hsl(175 82% 36%), hsl(200 80% 42%));
+  --gradient-accent: linear-gradient(135deg, hsl(180 70% 40%), hsl(190 88% 40%));
+  --gradient-success: linear-gradient(135deg, hsl(152 70% 33%), hsl(170 72% 36%));
+  --gradient-warning: linear-gradient(135deg, hsl(35 90% 44%), hsl(15 84% 50%));
+
+  /* Chrome surfaces = deep navy. These tokens are used ONLY by the sidebar
+     (surface-gradient), the header + health-score card (surface-gradient-accent). */
+  --gradient-surface: linear-gradient(160deg, hsl(222 36% 14%), hsl(222 40% 11%));
+  --gradient-surface-accent: linear-gradient(160deg, hsl(222 38% 15%), hsl(222 42% 11%));
+
+  /* Glows — low-opacity teal instead of heavy dark glow */
+  --glow-primary: 0 0 0 1px hsl(175 82% 36% / 0.14), 0 8px 30px -10px hsl(175 82% 36% / 0.22);
+  --glow-cyan: 0 0 24px -6px hsl(190 88% 38% / 0.28);
+
+  /* Sidebar chrome tokens (deep navy) */
+  --sidebar: 222 38% 12%;
+  --sidebar-foreground: 210 22% 82%;
+  --sidebar-border: 222 25% 20%;
+  --sidebar-primary: 175 75% 46%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 222 30% 18%;
+  --sidebar-accent-foreground: 210 22% 86%;
+  --sidebar-ring: 175 75% 46%;
+
+  /* Soften elevation shadows for light content */
+  --shadow-2xs: 0px 1px 2px 0px hsl(215 30% 40% / 0.06);
+  --shadow-xs: 0px 1px 2px 0px hsl(215 30% 40% / 0.06);
+  --shadow-sm: 0px 1px 2px 0px hsl(215 30% 40% / 0.08), 0px 1px 2px -1px hsl(215 30% 40% / 0.06);
+  --shadow: 0px 1px 3px 0px hsl(215 30% 40% / 0.08), 0px 1px 2px -1px hsl(215 30% 40% / 0.06);
+  --shadow-md: 0px 2px 4px -1px hsl(215 30% 40% / 0.08), 0px 4px 6px -1px hsl(215 30% 40% / 0.06);
+  --shadow-lg: 0px 4px 6px -1px hsl(215 30% 40% / 0.08), 0px 8px 12px -2px hsl(215 30% 40% / 0.08);
+  --shadow-xl: 0px 8px 12px -2px hsl(215 30% 40% / 0.10), 0px 16px 24px -4px hsl(215 30% 40% / 0.10);
+  --shadow-2xl: 0px 16px 32px -8px hsl(215 30% 40% / 0.14);
+}
+
+/* CHROME SCOPE — header + sidebar are dark navy. Re-declare the relevant
+   tokens on the chrome containers so every descendant (text, borders,
+   surfaces, hover states, icons) resolves against navy automatically while
+   the light content tokens above stay in effect for the main area. */
+.variant-contrast header,
+.variant-contrast aside {
+  --background: 222 36% 13%;
+  --foreground: 210 24% 92%;
+  --card: 222 32% 16%;
+  --card-foreground: 210 24% 92%;
+  --muted: 222 22% 22%;
+  --muted-foreground: 214 16% 68%;
+  --secondary: 222 26% 22%;
+  --secondary-foreground: 210 22% 90%;
+  --border: 222 22% 26%;
+  --input: 222 22% 26%;
+  /* brighten teal/cyan accents so they pop on navy chrome */
+  --primary: 175 70% 46%;
+  --cyan: 190 80% 56%;
+}

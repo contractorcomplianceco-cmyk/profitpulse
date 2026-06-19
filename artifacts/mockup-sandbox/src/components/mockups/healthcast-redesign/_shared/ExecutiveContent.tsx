@@ -21,6 +21,7 @@ import {
   AlertTriangle,
   Clock,
   TrendingDown,
+  TrendingUp,
   Inbox,
   Users,
   ShieldAlert,
@@ -32,6 +33,17 @@ import {
   Facebook,
   ChevronRight,
   FileText,
+  FileBarChart,
+  DollarSign,
+  Banknote,
+  Landmark,
+  Percent,
+  Lightbulb,
+  Wallet,
+  Bell,
+  LineChart,
+  PieChart,
+  Info,
 } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, Cell } from "recharts";
 
@@ -51,6 +63,9 @@ const IconMap: Record<string, any> = {
   BookOpen, BarChart2, Target, Activity, Search, Facebook,
 };
 
+// Tasteful icon per KPI (order matches data.ts topKpis)
+const kpiIcons = [DollarSign, Banknote, Landmark, TrendingUp, Percent, Clock];
+
 function Link({ href, className, children }: { href: string; className?: string; children: React.ReactNode }) {
   return (
     <a className={className} role="link" data-href={href}>
@@ -59,7 +74,7 @@ function Link({ href, className, children }: { href: string; className?: string;
   );
 }
 
-export function ExecutiveContent() {
+export function ExecutiveContent({ showIcons = false }: { showIcons?: boolean }) {
   const handleReportClick = (_name: string) => {
     // no-op (toast stubbed)
   };
@@ -73,9 +88,16 @@ export function ExecutiveContent() {
     >
       {/* A) TOP KPI ROW */}
       <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-6 gap-3">
-        {topKpis.map((kpi, i) => (
+        {topKpis.map((kpi, i) => {
+          const KpiIcon = kpiIcons[i];
+          return (
           <motion.div key={i} variants={itemVariants} className="bg-card border border-border rounded-xl p-4 shadow-lg shadow-black/20 hover:border-primary/50 transition-all flex flex-col gap-2 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-bl-full pointer-events-none group-hover:bg-primary/10 transition-colors"></div>
+            {showIcons && KpiIcon && (
+              <div className="h-9 w-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                <KpiIcon className="h-5 w-5" />
+              </div>
+            )}
             <div className="text-[10px] font-extrabold tracking-wide text-muted-foreground uppercase whitespace-nowrap">{kpi.label}</div>
             <div className="text-2xl 2xl:text-[1.7rem] font-black tracking-tight text-foreground whitespace-nowrap tabular-nums leading-tight">{kpi.value}</div>
             <div className="flex items-center justify-between mt-auto pt-2 border-t border-border/50">
@@ -91,7 +113,8 @@ export function ExecutiveContent() {
               </div>
             </div>
           </motion.div>
-        ))}
+          );
+        })}
       </div>
 
       {/* B, C, D Wrapper */}
@@ -105,23 +128,36 @@ export function ExecutiveContent() {
             {/* Executive Insights */}
             <motion.div variants={itemVariants} className="lg:col-span-2 bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
               <div className="flex justify-between items-center mb-5">
-                <h3 className="text-sm font-extrabold tracking-widest text-foreground uppercase">EXECUTIVE INSIGHTS</h3>
+                <h3 className={`text-sm font-extrabold tracking-widest text-foreground uppercase${showIcons ? " flex items-center gap-2" : ""}`}>
+                  {showIcons && <Lightbulb className="h-4 w-4 text-primary flex-shrink-0" />}
+                  EXECUTIVE INSIGHTS
+                </h3>
                 <Link href="/alerts" className="text-xs font-bold text-primary hover:text-primary/80 flex items-center tracking-wide">
                   View All Insights <ChevronRight className="w-4 h-4 ml-1" />
                 </Link>
               </div>
               <div className="flex flex-col gap-3">
-                {executiveInsights.map((insight, i) => (
+                {executiveInsights.map((insight, i) => {
+                  const CatIcon = insight.status === 'warning' ? AlertTriangle : insight.status === 'risk' ? TrendingDown : Info;
+                  return (
                   <div key={i} className="flex items-start gap-4 bg-secondary/20 rounded-lg p-4 border border-border/50 hover:bg-secondary/40 transition-colors">
                     <div className={`mt-1 w-2.5 h-2.5 rounded-full flex-shrink-0 ${insight.status === 'warning' ? 'bg-warning shadow-[0_0_10px_hsl(var(--warning))]' : 'bg-destructive shadow-[0_0_10px_hsl(var(--destructive))]'}`} />
+                    {showIcons && <CatIcon className="mt-0.5 h-4 w-4 text-muted-foreground flex-shrink-0" />}
                     <p className="text-[14px] text-foreground font-medium leading-relaxed">{insight.text}</p>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </motion.div>
 
             {/* Financial KPI Cluster */}
             <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
+               {showIcons && (
+                 <h3 className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase mb-4 flex items-center gap-2">
+                   <Wallet className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                   AR / AP Snapshot
+                 </h3>
+               )}
                <div className="grid grid-cols-2 gap-y-5 gap-x-4 mb-5">
                  {financialKpis.map((kpi, i) => (
                    <div key={i} className="flex flex-col">
@@ -137,7 +173,10 @@ export function ExecutiveContent() {
                </div>
                <div className="mt-auto pt-4 border-t border-border">
                  <div className="bg-primary/10 border-l-4 border-primary rounded-r-md p-3.5 text-[13px] text-foreground leading-relaxed">
-                   <strong className="text-primary block mb-1.5 font-extrabold tracking-wide">RECOMMENDED ACTION</strong>
+                   <strong className={`text-primary mb-1.5 font-extrabold tracking-wide${showIcons ? " flex items-center gap-1.5" : " block"}`}>
+                     {showIcons && <Target className="h-3.5 w-3.5 flex-shrink-0" />}
+                     RECOMMENDED ACTION
+                   </strong>
                    Focus on improving collections this week. $127K collectible with immediate follow-up.
                  </div>
                  <Link href="/daily-briefing" className="mt-4 text-[13px] font-bold text-primary hover:text-primary-foreground hover:bg-primary flex items-center justify-center w-full border border-primary rounded-md py-2 transition-colors">
@@ -152,7 +191,10 @@ export function ExecutiveContent() {
 
             {/* Cash Flow Forecast */}
             <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
-              <h3 className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase mb-5">Cash Flow Forecast</h3>
+              <h3 className={`text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase mb-5${showIcons ? " flex items-center gap-2" : ""}`}>
+                {showIcons && <LineChart className="h-3.5 w-3.5 text-primary flex-shrink-0" />}
+                Cash Flow Forecast
+              </h3>
               <div className="h-40 mb-5">
                 <TrendLine
                   data={cashFlowData}
@@ -178,7 +220,10 @@ export function ExecutiveContent() {
 
             {/* Revenue Breakdown */}
             <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
-              <h3 className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase mb-3">Revenue Breakdown</h3>
+              <h3 className={`text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase mb-3${showIcons ? " flex items-center gap-2" : ""}`}>
+                {showIcons && <PieChart className="h-3.5 w-3.5 text-primary flex-shrink-0" />}
+                Revenue Breakdown
+              </h3>
               <div className="flex items-center h-[190px]">
                 <div className="w-1/2 h-full">
                   <DonutChart data={revenueBreakdown} centerText="$1.25M" centerSubtext="Total Revenue" />
@@ -346,8 +391,9 @@ export function ExecutiveContent() {
           {/* Alerts Panel */}
           <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
             <div className="flex justify-between items-center mb-5">
-              <h3 className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase flex items-center">
-                Alerts <span className="ml-3 bg-destructive text-destructive-foreground text-[10px] px-2 py-0.5 rounded-sm font-black shadow-md shadow-destructive/30">14</span>
+              <h3 className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase flex items-center gap-2">
+                {showIcons && <Bell className="h-3.5 w-3.5 text-primary flex-shrink-0" />}
+                Alerts <span className="ml-1 bg-destructive text-destructive-foreground text-[10px] px-2 py-0.5 rounded-sm font-black shadow-md shadow-destructive/30">14</span>
               </h3>
               <Link href="/alerts" className="text-[11px] font-bold tracking-wide text-primary hover:text-primary/80">View All Alerts</Link>
             </div>
@@ -375,7 +421,10 @@ export function ExecutiveContent() {
           {/* Daily Executive Briefing */}
           <motion.div variants={itemVariants} className="bg-primary border border-primary-foreground/20 rounded-xl p-6 flex flex-col shadow-xl shadow-primary/30 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 blur-[50px] pointer-events-none rounded-full" />
-            <h3 className="text-[11px] font-black tracking-widest text-primary-foreground/80 uppercase mb-1">Daily Executive Briefing</h3>
+            <h3 className={`text-[11px] font-black tracking-widest text-primary-foreground/80 uppercase mb-1${showIcons ? " flex items-center gap-2" : ""}`}>
+              {showIcons && <FileText className="h-3.5 w-3.5 text-primary-foreground/80 flex-shrink-0" />}
+              Daily Executive Briefing
+            </h3>
             <div className="text-[12px] font-bold text-primary-foreground/60 mb-6">May 13, 2025</div>
 
             <div className="flex flex-col gap-5 text-[13px]">
@@ -427,7 +476,10 @@ export function ExecutiveContent() {
           {/* Quick Reports */}
           <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-5 flex flex-col shadow-lg shadow-black/20">
              <div className="flex justify-between items-center mb-4">
-              <h3 className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">Quick Reports</h3>
+              <h3 className={`text-[11px] font-semibold tracking-wider text-muted-foreground uppercase${showIcons ? " flex items-center gap-2" : ""}`}>
+                {showIcons && <FileBarChart className="h-3.5 w-3.5 text-primary flex-shrink-0" />}
+                Quick Reports
+              </h3>
               <Link href="/reports" className="text-xs text-primary hover:text-primary/80">View All</Link>
             </div>
             <div className="flex flex-col gap-2">

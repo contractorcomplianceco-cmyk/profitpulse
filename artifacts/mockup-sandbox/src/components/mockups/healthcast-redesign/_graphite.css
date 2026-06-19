@@ -1,0 +1,96 @@
+/* PROPOSED GRAPHITE THEME — refined dim dark, token overrides only.
+   Loaded AFTER _group.css so these :root values win by cascade order.
+   Same structure / components / data as Current; premium graphite console,
+   lower contrast and softer than the heavy near-black navy default. */
+:root {
+  /* Elevation tints — gentler */
+  --button-outline: rgba(255,255,255, .08);
+  --badge-outline: rgba(255,255,255, .04);
+  --elevate-1: rgba(255,255,255, .03);
+  --elevate-2: rgba(255,255,255, .06);
+
+  /* Canvas — premium graphite */
+  --background: 220 16% 13%;
+  --foreground: 210 16% 90%;
+
+  /* Borders & inputs — soft graphite */
+  --border: 220 10% 26%;
+  --input: 220 10% 26%;
+  --ring: 175 65% 48%;
+
+  /* Cards / popovers — raised graphite */
+  --card: 220 14% 17%;
+  --card-foreground: 210 16% 90%;
+  --card-border: 220 10% 26%;
+
+  --popover: 220 14% 17%;
+  --popover-foreground: 210 16% 90%;
+  --popover-border: 220 10% 26%;
+
+  /* Primary — calmer teal */
+  --primary: 175 65% 48%;
+  --primary-foreground: 220 30% 10%;
+
+  /* Secondary — graphite steel */
+  --secondary: 220 12% 22%;
+  --secondary-foreground: 210 16% 88%;
+
+  /* Muted */
+  --muted: 220 12% 22%;
+  --muted-foreground: 215 10% 60%;
+
+  /* Accent */
+  --accent: 220 14% 24%;
+  --accent-foreground: 175 60% 70%;
+
+  /* Status — slightly desaturated so the screen feels calm */
+  --destructive: 348 60% 52%;
+  --destructive-foreground: 0 0% 100%;
+  --success: 152 45% 45%;
+  --success-foreground: 0 0% 100%;
+  --warning: 35 70% 52%;
+  --warning-foreground: 220 30% 10%;
+
+  /* Charts — match the desaturated palette */
+  --chart-1: 175 65% 48%;
+  --chart-2: 152 45% 45%;
+  --chart-3: 200 55% 52%;
+  --chart-4: 35 70% 52%;
+  --chart-5: 348 60% 52%;
+
+  /* Teal / cyan accent spectrum — softened */
+  --electric: 180 55% 55%;
+  --cyan: 190 70% 58%;
+
+  /* Gradients — brand teal calmed; surfaces are subtle graphite top-light -> darker */
+  --gradient-primary: linear-gradient(135deg, hsl(175 65% 48%), hsl(195 60% 50%));
+  --gradient-accent: linear-gradient(135deg, hsl(180 55% 52%), hsl(190 70% 55%));
+  --gradient-success: linear-gradient(135deg, hsl(152 45% 45%), hsl(168 48% 46%));
+  --gradient-warning: linear-gradient(135deg, hsl(35 70% 52%), hsl(20 66% 54%));
+  --gradient-surface: linear-gradient(160deg, hsl(220 14% 18%), hsl(220 16% 13%));
+  --gradient-surface-accent: linear-gradient(160deg, hsl(220 14% 20%), hsl(220 16% 14%));
+
+  /* Glows — lower opacity, easier on the eyes */
+  --glow-primary: 0 0 0 1px hsl(175 65% 48% / 0.10), 0 8px 28px -10px hsl(175 65% 48% / 0.25);
+  --glow-cyan: 0 0 22px -6px hsl(190 70% 58% / 0.30);
+
+  /* Sidebar — deeper graphite */
+  --sidebar: 222 18% 11%;
+  --sidebar-foreground: 210 14% 80%;
+  --sidebar-border: 222 14% 18%;
+  --sidebar-primary: 175 65% 48%;
+  --sidebar-primary-foreground: 220 30% 10%;
+  --sidebar-accent: 222 16% 20%;
+  --sidebar-accent-foreground: 210 16% 88%;
+  --sidebar-ring: 175 65% 48%;
+
+  /* Shadows — gentler than the default heavy black */
+  --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.12);
+  --shadow-xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.12);
+  --shadow-sm: 0px 1px 2px 0px hsl(0 0% 0% / 0.16), 0px 1px 2px -1px hsl(0 0% 0% / 0.12);
+  --shadow: 0px 1px 3px 0px hsl(0 0% 0% / 0.16), 0px 1px 2px -1px hsl(0 0% 0% / 0.12);
+  --shadow-md: 0px 2px 4px -1px hsl(0 0% 0% / 0.16), 0px 4px 6px -1px hsl(0 0% 0% / 0.14);
+  --shadow-lg: 0px 4px 6px -1px hsl(0 0% 0% / 0.18), 0px 8px 12px -2px hsl(0 0% 0% / 0.16);
+  --shadow-xl: 0px 8px 14px -3px hsl(0 0% 0% / 0.20), 0px 16px 24px -4px hsl(0 0% 0% / 0.18);
+  --shadow-2xl: 0px 16px 32px -8px hsl(0 0% 0% / 0.26);
+}

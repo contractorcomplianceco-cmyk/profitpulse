@@ -293,9 +293,16 @@ function SidebarNav() {
   );
 }
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({
+  children,
+  variantClass,
+}: {
+  children: React.ReactNode;
+  showIcons?: boolean;
+  variantClass?: string;
+}) {
   return (
-    <div className="flex flex-col h-screen min-h-screen bg-background text-foreground overflow-hidden font-sans relative selection:bg-primary/30">
+    <div className={cn("flex flex-col h-screen min-h-screen bg-background text-foreground overflow-hidden font-sans relative selection:bg-primary/30", variantClass)}>
       {/* Layered ambient backdrop for depth */}
       <div className="absolute inset-0 pointer-events-none bg-grid opacity-[0.4] z-0"></div>
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/15 via-background/0 to-background z-0"></div>
