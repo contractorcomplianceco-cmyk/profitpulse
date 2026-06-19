@@ -6,7 +6,7 @@ import { ExecutiveContent } from "./_shared/ExecutiveContent";
 export function Contrast() {
   return (
     <AppShell showIcons variantClass="variant-contrast">
-      <ExecutiveContent showIcons />
+      <ExecutiveContent showIcons colorful />
     </AppShell>
   );
 }

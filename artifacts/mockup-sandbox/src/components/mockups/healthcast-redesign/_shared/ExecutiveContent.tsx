@@ -66,6 +66,19 @@ const IconMap: Record<string, any> = {
 // Tasteful icon per KPI (order matches data.ts topKpis)
 const kpiIcons = [DollarSign, Banknote, Landmark, TrendingUp, Percent, Clock];
 
+// Per-KPI accent hues (colorful mode only — order matches data.ts topKpis)
+const kpiAccents = [
+  { tile: "bg-teal-500/10 text-teal-600", bar: "from-teal-500 to-teal-400", spark: "#0d9488" },
+  { tile: "bg-sky-500/10 text-sky-600", bar: "from-sky-500 to-sky-400", spark: "#0284c7" },
+  { tile: "bg-violet-500/10 text-violet-600", bar: "from-violet-500 to-violet-400", spark: "#7c3aed" },
+  { tile: "bg-emerald-500/10 text-emerald-600", bar: "from-emerald-500 to-emerald-400", spark: "#059669" },
+  { tile: "bg-amber-500/10 text-amber-600", bar: "from-amber-500 to-amber-400", spark: "#d97706" },
+  { tile: "bg-indigo-500/10 text-indigo-600", bar: "from-indigo-500 to-indigo-400", spark: "#4f46e5" },
+];
+
+// Rich multi-hue palette for the Revenue Breakdown donut (colorful mode only)
+const revenueColorfulPalette = ["#0d9488", "#2563eb", "#7c3aed", "#d97706", "#e11d48", "#059669", "#475569"];
+
 function Link({ href, className, children }: { href: string; className?: string; children: React.ReactNode }) {
   return (
     <a className={className} role="link" data-href={href}>
@@ -74,7 +87,7 @@ function Link({ href, className, children }: { href: string; className?: string;
   );
 }
 
-export function ExecutiveContent({ showIcons = false }: { showIcons?: boolean }) {
+export function ExecutiveContent({ showIcons = false, colorful = false }: { showIcons?: boolean; colorful?: boolean }) {
   const handleReportClick = (_name: string) => {
     // no-op (toast stubbed)
   };
@@ -90,11 +103,13 @@ export function ExecutiveContent({ showIcons = false }: { showIcons?: boolean })
       <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-6 gap-3">
         {topKpis.map((kpi, i) => {
           const KpiIcon = kpiIcons[i];
+          const accent = kpiAccents[i % kpiAccents.length];
           return (
           <motion.div key={i} variants={itemVariants} className="bg-card border border-border rounded-xl p-4 shadow-lg shadow-black/20 hover:border-primary/50 transition-all flex flex-col gap-2 relative overflow-hidden group">
+            {colorful && <div className={`absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r ${accent.bar} pointer-events-none`} />}
             <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-bl-full pointer-events-none group-hover:bg-primary/10 transition-colors"></div>
             {showIcons && KpiIcon && (
-              <div className="h-9 w-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+              <div className={`h-9 w-9 rounded-lg flex items-center justify-center ${colorful ? accent.tile : "bg-primary/10 text-primary"}`}>
                 <KpiIcon className="h-5 w-5" />
               </div>
             )}
@@ -109,7 +124,7 @@ export function ExecutiveContent({ showIcons = false }: { showIcons?: boolean })
                 <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider mt-0.5">{kpi.vs}</span>
               </div>
               <div className="w-16 h-8">
-                <Sparkline data={kpi.sparkline} color={kpi.trendUp ? "hsl(var(--success))" : "hsl(var(--destructive))"} type="area" />
+                <Sparkline data={kpi.sparkline} color={colorful ? accent.spark : (kpi.trendUp ? "hsl(var(--success))" : "hsl(var(--destructive))")} type="area" />
               </div>
             </div>
           </motion.div>
@@ -129,7 +144,7 @@ export function ExecutiveContent({ showIcons = false }: { showIcons?: boolean })
             <motion.div variants={itemVariants} className="lg:col-span-2 bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
               <div className="flex justify-between items-center mb-5">
                 <h3 className={`text-sm font-extrabold tracking-widest text-foreground uppercase${showIcons ? " flex items-center gap-2" : ""}`}>
-                  {showIcons && <Lightbulb className="h-4 w-4 text-primary flex-shrink-0" />}
+                  {showIcons && <Lightbulb className={`h-4 w-4 flex-shrink-0 ${colorful ? "text-amber-500" : "text-primary"}`} />}
                   EXECUTIVE INSIGHTS
                 </h3>
                 <Link href="/alerts" className="text-xs font-bold text-primary hover:text-primary/80 flex items-center tracking-wide">
@@ -154,7 +169,7 @@ export function ExecutiveContent({ showIcons = false }: { showIcons?: boolean })
             <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
                {showIcons && (
                  <h3 className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase mb-4 flex items-center gap-2">
-                   <Wallet className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                   <Wallet className={`h-3.5 w-3.5 flex-shrink-0 ${colorful ? "text-sky-500" : "text-primary"}`} />
                    AR / AP Snapshot
                  </h3>
                )}
@@ -192,16 +207,16 @@ export function ExecutiveContent({ showIcons = false }: { showIcons?: boolean })
             {/* Cash Flow Forecast */}
             <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
               <h3 className={`text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase mb-5${showIcons ? " flex items-center gap-2" : ""}`}>
-                {showIcons && <LineChart className="h-3.5 w-3.5 text-primary flex-shrink-0" />}
+                {showIcons && <LineChart className={`h-3.5 w-3.5 flex-shrink-0 ${colorful ? "text-teal-500" : "text-primary"}`} />}
                 Cash Flow Forecast
               </h3>
               <div className="h-40 mb-5">
                 <TrendLine
                   data={cashFlowData}
                   lines={[
-                    { key: "balance", color: "hsl(var(--primary))", name: "Cash Balance" },
-                    { key: "in", color: "hsl(var(--success))", name: "Cash In" },
-                    { key: "out", color: "hsl(var(--destructive))", name: "Cash Out" }
+                    { key: "balance", color: colorful ? "#0d9488" : "hsl(var(--primary))", name: "Cash Balance" },
+                    { key: "in", color: colorful ? "#059669" : "hsl(var(--success))", name: "Cash In" },
+                    { key: "out", color: colorful ? "#e11d48" : "hsl(var(--destructive))", name: "Cash Out" }
                   ]}
                   xAxisKey="date"
                   type="area"
@@ -221,17 +236,17 @@ export function ExecutiveContent({ showIcons = false }: { showIcons?: boolean })
             {/* Revenue Breakdown */}
             <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
               <h3 className={`text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase mb-3${showIcons ? " flex items-center gap-2" : ""}`}>
-                {showIcons && <PieChart className="h-3.5 w-3.5 text-primary flex-shrink-0" />}
+                {showIcons && <PieChart className={`h-3.5 w-3.5 flex-shrink-0 ${colorful ? "text-violet-500" : "text-primary"}`} />}
                 Revenue Breakdown
               </h3>
               <div className="flex items-center h-[190px]">
                 <div className="w-1/2 h-full">
-                  <DonutChart data={revenueBreakdown} centerText="$1.25M" centerSubtext="Total Revenue" />
+                  <DonutChart data={revenueBreakdown} centerText="$1.25M" centerSubtext="Total Revenue" palette={colorful ? revenueColorfulPalette : undefined} />
                 </div>
                 <div className="w-1/2 flex flex-col gap-2.5 pl-4 justify-center">
                   {revenueBreakdown.map((item, i) => (
                     <div key={i} className="flex items-center text-[12px] font-medium">
-                      <div className="w-2.5 h-2.5 rounded-sm mr-3 flex-shrink-0" style={{ backgroundColor: item.fill }} />
+                      <div className="w-2.5 h-2.5 rounded-sm mr-3 flex-shrink-0" style={{ backgroundColor: colorful ? revenueColorfulPalette[i % revenueColorfulPalette.length] : item.fill }} />
                       <span className="text-muted-foreground truncate mr-auto">{item.name}</span>
                       <span className="text-foreground font-bold ml-3">{item.percentage}%</span>
                     </div>
@@ -392,7 +407,7 @@ export function ExecutiveContent({ showIcons = false }: { showIcons?: boolean })
           <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
             <div className="flex justify-between items-center mb-5">
               <h3 className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase flex items-center gap-2">
-                {showIcons && <Bell className="h-3.5 w-3.5 text-primary flex-shrink-0" />}
+                {showIcons && <Bell className={`h-3.5 w-3.5 flex-shrink-0 ${colorful ? "text-rose-500" : "text-primary"}`} />}
                 Alerts <span className="ml-1 bg-destructive text-destructive-foreground text-[10px] px-2 py-0.5 rounded-sm font-black shadow-md shadow-destructive/30">14</span>
               </h3>
               <Link href="/alerts" className="text-[11px] font-bold tracking-wide text-primary hover:text-primary/80">View All Alerts</Link>
@@ -422,7 +437,7 @@ export function ExecutiveContent({ showIcons = false }: { showIcons?: boolean })
           <motion.div variants={itemVariants} className="bg-primary border border-primary-foreground/20 rounded-xl p-6 flex flex-col shadow-xl shadow-primary/30 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 blur-[50px] pointer-events-none rounded-full" />
             <h3 className={`text-[11px] font-black tracking-widest text-primary-foreground/80 uppercase mb-1${showIcons ? " flex items-center gap-2" : ""}`}>
-              {showIcons && <FileText className="h-3.5 w-3.5 text-primary-foreground/80 flex-shrink-0" />}
+              {showIcons && <FileText className={`h-3.5 w-3.5 flex-shrink-0 ${colorful ? "text-emerald-300" : "text-primary-foreground/80"}`} />}
               Daily Executive Briefing
             </h3>
             <div className="text-[12px] font-bold text-primary-foreground/60 mb-6">May 13, 2025</div>
@@ -477,7 +492,7 @@ export function ExecutiveContent({ showIcons = false }: { showIcons?: boolean })
           <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-5 flex flex-col shadow-lg shadow-black/20">
              <div className="flex justify-between items-center mb-4">
               <h3 className={`text-[11px] font-semibold tracking-wider text-muted-foreground uppercase${showIcons ? " flex items-center gap-2" : ""}`}>
-                {showIcons && <FileBarChart className="h-3.5 w-3.5 text-primary flex-shrink-0" />}
+                {showIcons && <FileBarChart className={`h-3.5 w-3.5 flex-shrink-0 ${colorful ? "text-indigo-500" : "text-primary"}`} />}
                 Quick Reports
               </h3>
               <Link href="/reports" className="text-xs text-primary hover:text-primary/80">View All</Link>

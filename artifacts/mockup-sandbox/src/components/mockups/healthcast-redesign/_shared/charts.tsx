@@ -50,7 +50,7 @@ export function Sparkline({
   );
 }
 
-export function DonutChart({ data, centerText, centerSubtext }: { data: any[]; centerText?: string; centerSubtext?: string }) {
+export function DonutChart({ data, centerText, centerSubtext, palette }: { data: any[]; centerText?: string; centerSubtext?: string; palette?: string[] }) {
   return (
     <div className="relative w-full h-full">
       <ResponsiveContainer width="100%" height="100%">
@@ -65,7 +65,7 @@ export function DonutChart({ data, centerText, centerSubtext }: { data: any[]; c
             isAnimationActive={false}
           >
             {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.fill} />
+              <Cell key={`cell-${index}`} fill={palette ? palette[index % palette.length] : entry.fill} />
             ))}
           </Pie>
           <Tooltip

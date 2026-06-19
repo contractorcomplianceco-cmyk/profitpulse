@@ -69,9 +69,10 @@
   --gradient-warning: linear-gradient(135deg, hsl(35 90% 44%), hsl(15 84% 50%));
 
   /* Chrome surfaces = deep navy. These tokens are used ONLY by the sidebar
-     (surface-gradient), the header + health-score card (surface-gradient-accent). */
-  --gradient-surface: linear-gradient(160deg, hsl(222 36% 14%), hsl(222 40% 11%));
-  --gradient-surface-accent: linear-gradient(160deg, hsl(222 38% 15%), hsl(222 42% 11%));
+     (surface-gradient), the header + health-score card (surface-gradient-accent).
+     The header gradient shifts deep navy -> a faint teal-navy for richness. */
+  --gradient-surface: linear-gradient(160deg, hsl(222 36% 14%), hsl(210 34% 12%) 70%, hsl(192 34% 12%));
+  --gradient-surface-accent: linear-gradient(115deg, hsl(222 40% 13%) 0%, hsl(205 38% 14%) 60%, hsl(186 44% 14%) 100%);
 
   /* Glows — low-opacity teal instead of heavy dark glow */
   --glow-primary: 0 0 0 1px hsl(175 82% 36% / 0.14), 0 8px 30px -10px hsl(175 82% 36% / 0.22);
@@ -117,4 +118,16 @@
   /* brighten teal/cyan accents so they pop on navy chrome */
   --primary: 175 70% 46%;
   --cyan: 190 80% 56%;
+}
+
+/* Richer chrome accents (Contrast only) — subtle + executive. */
+/* Thin teal accent underline beneath the top header. */
+.variant-contrast header {
+  border-bottom-color: hsl(175 70% 44% / 0.30);
+  box-shadow: 0 1px 0 0 hsl(175 75% 46% / 0.18), 0 10px 30px -12px hsl(222 60% 4% / 0.6);
+}
+
+/* Faint teal glow on the active sidebar nav item. */
+.variant-contrast aside .bg-gradient-primary {
+  box-shadow: 0 0 0 1px hsl(175 75% 48% / 0.35), 0 6px 22px -6px hsl(175 80% 46% / 0.45);
 }
