@@ -235,7 +235,7 @@ export default function Welcome() {
             <Compass className="w-8 h-8 text-primary" />
           </div>
           <div>
-            <h2 className="text-3xl font-black text-white tracking-tight mb-1">Welcome to CCA HealthCast OS</h2>
+            <h2 className="text-3xl font-black text-foreground tracking-tight mb-1">Welcome to CCA HealthCast OS</h2>
             <p className="text-muted-foreground text-sm font-medium">Get oriented with a narrated tour, a self-paced guide, or our detailed documentation.</p>
           </div>
         </div>
@@ -257,7 +257,7 @@ export default function Welcome() {
             className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2 ${
               mode === "narrated" 
                 ? "bg-primary text-primary-foreground shadow-md shadow-primary/25" 
-                : "text-muted-foreground hover:text-white hover:bg-secondary"
+                : "text-muted-foreground hover:text-foreground hover:bg-secondary"
             }`}
           >
             <Video className="w-4 h-4" /> Narrated Video
@@ -268,7 +268,7 @@ export default function Welcome() {
             className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2 ${
               mode === "guided" 
                 ? "bg-primary text-primary-foreground shadow-md shadow-primary/25" 
-                : "text-muted-foreground hover:text-white hover:bg-secondary"
+                : "text-muted-foreground hover:text-foreground hover:bg-secondary"
             }`}
           >
             <Compass className="w-4 h-4" /> Guided Tour
@@ -291,7 +291,7 @@ export default function Welcome() {
                 <div className="text-[10px] font-extrabold text-primary uppercase tracking-widest mb-1">
                   {mode === "narrated" ? `CHAPTER ${currentIndex + 1} OF ${onboardingSections.length}` : `STEP ${currentIndex + 1} OF ${onboardingSections.length}`}
                 </div>
-                <h3 className="text-xl font-black text-white">{currentSection?.title || "Complete"}</h3>
+                <h3 className="text-xl font-black text-foreground">{currentSection?.title || "Complete"}</h3>
               </div>
             </div>
 
@@ -319,7 +319,7 @@ export default function Welcome() {
                     <div className="w-20 h-20 bg-success/20 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_hsl(var(--success)/0.3)]">
                       <Compass className="w-10 h-10 text-success" />
                     </div>
-                    <h3 className="text-3xl font-black text-white mb-2">You're all set.</h3>
+                    <h3 className="text-3xl font-black text-foreground mb-2">You're all set.</h3>
                     <p className="text-muted-foreground max-w-md mb-8">
                       You've completed the orientation. You're ready to explore CCA HealthCast OS.
                     </p>
@@ -372,7 +372,7 @@ export default function Welcome() {
                     ))}
                   </div>
 
-                  <button onClick={toggleMute} className="w-10 h-10 rounded-full flex items-center justify-center text-muted-foreground hover:text-white hover:bg-secondary transition-colors flex-shrink-0">
+                  <button onClick={toggleMute} className="w-10 h-10 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors flex-shrink-0">
                     {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
                   </button>
                 </div>
@@ -404,14 +404,14 @@ export default function Welcome() {
                   {!isCompleted ? (
                     <Button 
                       onClick={handleNext} 
-                      className="bg-cyan hover:bg-cyan/90 text-black font-bold"
+                      className="bg-cyan hover:bg-cyan/90 text-white font-bold"
                     >
                       Next <SkipForward className="w-4 h-4 ml-2" />
                     </Button>
                   ) : (
                     <Button 
                       onClick={handleRestart}
-                      className="bg-cyan hover:bg-cyan/90 text-black font-bold"
+                      className="bg-cyan hover:bg-cyan/90 text-white font-bold"
                     >
                       <RotateCcw className="w-4 h-4 mr-2" /> Restart
                     </Button>
@@ -441,7 +441,7 @@ export default function Welcome() {
                   }`}
                 >
                   <div className="flex justify-between items-center">
-                    <span className={`text-sm font-bold ${!isCompleted && currentIndex === i ? 'text-white' : 'text-foreground'}`}>
+                    <span className={`text-sm font-bold ${!isCompleted && currentIndex === i ? 'text-foreground' : 'text-foreground'}`}>
                       {i + 1}. {section.title}
                     </span>
                     {/* Deep link into the actual app route */}
@@ -463,7 +463,7 @@ export default function Welcome() {
           <div className="surface-gradient-accent border border-border rounded-xl p-5 shadow-lg flex flex-col gap-3">
             <div className="flex items-center gap-3">
               <FileText className="w-5 h-5 text-cyan" />
-              <h3 className="text-sm font-bold text-white">Full Documentation</h3>
+              <h3 className="text-sm font-bold text-foreground">Full Documentation</h3>
             </div>
             <p className="text-[12px] text-muted-foreground leading-relaxed">
               Prefer reading? Download the comprehensive PDF guide covering every feature and setting in detail.

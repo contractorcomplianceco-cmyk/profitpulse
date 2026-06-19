@@ -39,10 +39,13 @@ A premium, frontend-only executive CFO command center for Contractor Compliance 
 ## User preferences
 
 - No emojis anywhere in the product UI.
-- Aesthetic: deep navy / teal / silver / white, teal-green for positive, amber/red for risk. Cinematic, dense, high-trust "CFO terminal" vibe.
+- Aesthetic: "Executive Contrast" theme — LIGHT content (white / light-slate cards on a light canvas) inside DEEP-NAVY chrome (the top header bar + the sidebar stay dark navy). Teal primary, teal-green for positive, amber/red for risk; colorful per-KPI accents (teal/sky/violet/emerald/amber/indigo). Dense, high-trust "CFO terminal" vibe.
 
 ## Gotchas
 
+- Theme = light content + navy chrome via CSS-variable scoping in `index.css`: `:root` holds LIGHT content tokens; a `header, aside { ... }` block re-declares background/foreground/card/muted/secondary/border/primary/cyan AND both surface gradients (`--gradient-surface`, `--gradient-surface-accent`) to navy so every chrome descendant resolves dark automatically. This works ONLY because just `TopHeader` renders `<header>` and just `SidebarNav` renders `<aside>` — do NOT use semantic `<header>`/`<aside>` in content (PageHeader uses `<div>`); use `<div>`/`<section>` or those content blocks will turn navy.
+- Content surface gradients MUST stay light in `:root` (diverges from the navy mockup) because content components (KpiCard/ChartCard/InsightCard/RecommendedAction) consume `surface-gradient`/`surface-gradient-accent`. The chrome scope overrides them back to navy.
+- Chrome accent rules need an extra class to outrank Tailwind utilities: `header.surface-gradient-accent` (teal underline) and `aside .bg-gradient-primary` (active-nav glow).
 - framer-motion variants: a `transition.type: "spring"` literal must be `type: "spring" as const` (or typed `Variants`) or `tsc` rejects it.
 - Verify with `typecheck`, not `build` (build needs workflow-provided `PORT`/`BASE_PATH`).
 - All frontend work goes through DESIGN subagents per the react-vite skill; do not hand-edit pages without that workflow unless it's a tiny shared fix.

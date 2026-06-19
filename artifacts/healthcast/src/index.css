@@ -75,105 +75,112 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* EXECUTIVE COMMAND CENTER PALETTE */
+/* EXECUTIVE CONTRAST PALETTE — light content + deep navy chrome */
 :root {
-  --button-outline: rgba(255,255,255, .10);
-  --badge-outline: rgba(255,255,255, .05);
+  /* Elevation tints flip to dark-on-light for content */
+  --button-outline: rgba(0,0,0, .10);
+  --badge-outline: rgba(0,0,0, .05);
   --opaque-button-border-intensity: -8;
 
-  --elevate-1: rgba(255,255,255, .04);
-  --elevate-2: rgba(255,255,255, .08);
+  --elevate-1: rgba(0,0,0, .03);
+  --elevate-2: rgba(0,0,0, .06);
 
-  /* Background - Obsidian / Deep Slate */
-  --background: 220 38% 6%;
-  --foreground: 0 0% 100%;
+  /* CONTENT (light) — canvas */
+  --background: 210 20% 96%;
+  --foreground: 222 45% 16%;
 
-  /* Borders and UI elements */
-  --border: 220 25% 15%;
-  --input: 220 25% 15%;
-  --ring: 175 75% 47%; /* Striking Teal */
+  /* Borders and UI elements — light slate */
+  --border: 214 22% 86%;
+  --input: 214 22% 86%;
+  --ring: 175 82% 40%;
 
-  /* Cards - Darker, higher contrast */
-  --card: 220 35% 9%;
-  --card-foreground: 0 0% 100%;
-  --card-border: 220 25% 15%;
+  /* Cards / popovers — white */
+  --card: 0 0% 100%;
+  --card-foreground: 222 45% 16%;
+  --card-border: 214 22% 86%;
 
-  --popover: 220 35% 9%;
-  --popover-foreground: 0 0% 100%;
-  --popover-border: 220 25% 15%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 45% 16%;
+  --popover-border: 214 22% 86%;
 
-  /* Primary Action - Bold Teal */
-  --primary: 175 75% 47%;
+  /* Primary Action — teal deepened for contrast on white */
+  --primary: 175 82% 36%;
   --primary-foreground: 0 0% 100%;
 
-  /* Secondary - Steel */
-  --secondary: 220 20% 20%;
-  --secondary-foreground: 0 0% 100%;
+  /* Secondary — light cool grey */
+  --secondary: 214 28% 91%;
+  --secondary-foreground: 222 40% 22%;
 
   /* Muted */
-  --muted: 220 25% 15%;
-  --muted-foreground: 220 15% 65%;
+  --muted: 210 24% 92%;
+  --muted-foreground: 215 16% 42%;
 
-  /* Accent */
-  --accent: 178 40% 16%;
-  --accent-foreground: 0 0% 100%;
+  /* Accent — pale teal */
+  --accent: 175 55% 92%;
+  --accent-foreground: 178 70% 22%;
 
-  /* Destructive - Crisp Crimson */
-  --destructive: 348 83% 55%;
+  /* Destructive — deepened to read on white */
+  --destructive: 348 78% 47%;
   --destructive-foreground: 0 0% 100%;
 
-  /* Success - Bright Emerald */
-  --success: 152 76% 40%;
+  /* Success — deepened emerald */
+  --success: 152 70% 33%;
   --success-foreground: 0 0% 100%;
 
-  /* Warning - Amber */
-  --warning: 35 92% 50%;
+  /* Warning — deepened amber */
+  --warning: 35 90% 42%;
   --warning-foreground: 0 0% 100%;
 
-  /* Charts */
-  --chart-1: 175 75% 47%; /* Indigo */
-  --chart-2: 152 76% 40%; /* Emerald */
-  --chart-3: 200 80% 50%; /* Azure */
-  --chart-4: 35 92% 50%;  /* Amber */
-  --chart-5: 348 83% 55%; /* Crimson */
+  /* Charts — deepened ~8-12% for white surfaces */
+  --chart-1: 175 82% 36%; /* teal */
+  --chart-2: 152 70% 33%; /* emerald */
+  --chart-3: 200 80% 40%; /* azure */
+  --chart-4: 35 90% 42%;  /* amber */
+  --chart-5: 348 78% 47%; /* crimson */
 
-  /* Accent spectrum - teal / cyan */
-  --electric: 180 78% 55%; /* Electric Teal */
-  --cyan: 190 95% 55%;     /* Bright Cyan */
+  /* Accent spectrum — teal / cyan deepened for white */
+  --electric: 180 70% 38%;
+  --cyan: 190 88% 38%;
 
-  /* Gradient & glow tokens */
-  --gradient-primary: linear-gradient(135deg, hsl(175 75% 47%), hsl(200 90% 52%));
-  --gradient-accent: linear-gradient(135deg, hsl(180 78% 55%), hsl(190 95% 55%));
-  --gradient-success: linear-gradient(135deg, hsl(152 76% 40%), hsl(170 80% 45%));
-  --gradient-warning: linear-gradient(135deg, hsl(35 92% 50%), hsl(15 88% 55%));
-  --gradient-surface: linear-gradient(160deg, hsl(220 35% 11%), hsl(220 38% 8%));
-  --gradient-surface-accent: linear-gradient(160deg, hsl(224 45% 13%), hsl(220 38% 8%));
-  --glow-primary: 0 0 0 1px hsl(175 75% 47% / 0.18), 0 8px 30px -8px hsl(175 75% 47% / 0.45);
-  --glow-cyan: 0 0 24px -4px hsl(190 95% 55% / 0.55);
+  /* Brand gradients stay teal (deepened) */
+  --gradient-primary: linear-gradient(135deg, hsl(175 82% 36%), hsl(200 80% 42%));
+  --gradient-accent: linear-gradient(135deg, hsl(180 70% 40%), hsl(190 88% 40%));
+  --gradient-success: linear-gradient(135deg, hsl(152 70% 33%), hsl(170 72% 36%));
+  --gradient-warning: linear-gradient(135deg, hsl(35 90% 44%), hsl(15 84% 50%));
 
-  /* Sidebar */
-  --sidebar: 220 40% 5%;
-  --sidebar-foreground: 0 0% 100%;
-  --sidebar-border: 220 25% 15%;
-  --sidebar-primary: 175 75% 47%;
+  /* CONTENT surfaces — light/airy (KpiCard, ChartCard, InsightCard, RecommendedAction).
+     Chrome (header/aside) re-declares these as navy below. */
+  --gradient-surface: linear-gradient(160deg, hsl(0 0% 100%), hsl(210 24% 97%) 70%, hsl(192 30% 97%));
+  --gradient-surface-accent: linear-gradient(115deg, hsl(175 50% 95%) 0%, hsl(0 0% 100%) 55%, hsl(192 50% 96%) 100%);
+
+  /* Glows — low-opacity teal instead of heavy dark glow */
+  --glow-primary: 0 0 0 1px hsl(175 82% 36% / 0.14), 0 8px 30px -10px hsl(175 82% 36% / 0.22);
+  --glow-cyan: 0 0 24px -6px hsl(190 88% 38% / 0.28);
+
+  /* Sidebar chrome tokens (deep navy) */
+  --sidebar: 222 38% 12%;
+  --sidebar-foreground: 210 22% 82%;
+  --sidebar-border: 222 25% 20%;
+  --sidebar-primary: 175 75% 46%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 220 25% 15%;
-  --sidebar-accent-foreground: 0 0% 100%;
-  --sidebar-ring: 175 75% 47%;
+  --sidebar-accent: 222 30% 18%;
+  --sidebar-accent-foreground: 210 22% 86%;
+  --sidebar-ring: 175 75% 46%;
 
   --app-font-sans: 'Inter', sans-serif;
   --app-font-serif: Georgia, serif;
   --app-font-mono: Menlo, monospace;
   --radius: 0.5rem;
-  
-  --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.2);
-  --shadow-xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.2);
-  --shadow-sm: 0px 2px 0px 0px hsl(0 0% 0% / 0.2), 0px 1px 2px -1px hsl(0 0% 0% / 0.2);
-  --shadow: 0px 2px 0px 0px hsl(0 0% 0% / 0.2), 0px 1px 2px -1px hsl(0 0% 0% / 0.2);
-  --shadow-md: 0px 2px 0px 0px hsl(0 0% 0% / 0.2), 0px 2px 4px -1px hsl(0 0% 0% / 0.2);
-  --shadow-lg: 0px 2px 0px 0px hsl(0 0% 0% / 0.2), 0px 4px 6px -1px hsl(0 0% 0% / 0.2);
-  --shadow-xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.2), 0px 8px 10px -1px hsl(0 0% 0% / 0.2);
-  --shadow-2xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.2);
+
+  /* Soften elevation shadows for light content */
+  --shadow-2xs: 0px 1px 2px 0px hsl(215 30% 40% / 0.06);
+  --shadow-xs: 0px 1px 2px 0px hsl(215 30% 40% / 0.06);
+  --shadow-sm: 0px 1px 2px 0px hsl(215 30% 40% / 0.08), 0px 1px 2px -1px hsl(215 30% 40% / 0.06);
+  --shadow: 0px 1px 3px 0px hsl(215 30% 40% / 0.08), 0px 1px 2px -1px hsl(215 30% 40% / 0.06);
+  --shadow-md: 0px 2px 4px -1px hsl(215 30% 40% / 0.08), 0px 4px 6px -1px hsl(215 30% 40% / 0.06);
+  --shadow-lg: 0px 4px 6px -1px hsl(215 30% 40% / 0.08), 0px 8px 12px -2px hsl(215 30% 40% / 0.08);
+  --shadow-xl: 0px 8px 12px -2px hsl(215 30% 40% / 0.10), 0px 16px 24px -4px hsl(215 30% 40% / 0.10);
+  --shadow-2xl: 0px 16px 32px -8px hsl(215 30% 40% / 0.14);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 
@@ -184,6 +191,44 @@
   --muted-border: hsl(var(--muted));
   --accent-border: hsl(var(--accent));
   --destructive-border: hsl(var(--destructive));
+}
+
+/* CHROME SCOPE — top header + sidebar are deep navy. Re-declare the relevant
+   tokens on the chrome containers so every descendant (text, borders, surfaces,
+   hover states, icons) resolves against navy automatically, while the light
+   content tokens above stay in effect for the main area. Only TopHeader renders
+   <header> and only SidebarNav renders <aside>, so this never touches content. */
+header,
+aside {
+  --background: 222 36% 13%;
+  --foreground: 210 24% 92%;
+  --card: 222 32% 16%;
+  --card-foreground: 210 24% 92%;
+  --muted: 222 22% 22%;
+  --muted-foreground: 214 16% 68%;
+  --secondary: 222 26% 22%;
+  --secondary-foreground: 210 22% 90%;
+  --border: 222 22% 26%;
+  --input: 222 22% 26%;
+  /* brighten teal/cyan accents so they pop on navy chrome */
+  --primary: 175 70% 46%;
+  --cyan: 190 80% 56%;
+  /* navy chrome surfaces */
+  --gradient-surface: linear-gradient(160deg, hsl(222 36% 14%), hsl(210 34% 12%) 70%, hsl(192 34% 12%));
+  --gradient-surface-accent: linear-gradient(115deg, hsl(222 40% 13%) 0%, hsl(205 38% 14%) 60%, hsl(186 44% 14%) 100%);
+}
+
+/* Richer chrome accents — subtle + executive. Selectors carry an extra class so
+   they outrank Tailwind utility classes (e.g. shadow-lg, border-border). */
+/* Thin teal accent underline + drop shadow beneath the top header. */
+header.surface-gradient-accent {
+  border-bottom-color: hsl(175 70% 44% / 0.30);
+  box-shadow: 0 1px 0 0 hsl(175 75% 46% / 0.18), 0 10px 30px -12px hsl(222 60% 4% / 0.6);
+}
+
+/* Faint teal glow on the active sidebar nav item. */
+aside .bg-gradient-primary {
+  box-shadow: 0 0 0 1px hsl(175 75% 48% / 0.35), 0 6px 22px -6px hsl(175 80% 46% / 0.45);
 }
 
 .dark {

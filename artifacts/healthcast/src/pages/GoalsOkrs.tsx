@@ -213,7 +213,7 @@ export default function GoalsOkrs() {
                   <div key={i} className="flex items-center text-[12px] font-medium">
                     <div className="w-2.5 h-2.5 rounded-sm mr-2.5 flex-shrink-0" style={{ backgroundColor: item.fill }} />
                     <span className="text-muted-foreground truncate mr-auto">{item.name}</span>
-                    <span className="text-white font-bold ml-3 tabular-nums">{item.value}</span>
+                    <span className="text-foreground font-bold ml-3 tabular-nums">{item.value}</span>
                   </div>
                 ))}
               </div>
@@ -327,7 +327,7 @@ export default function GoalsOkrs() {
                         <div className="flex items-center justify-between gap-3 mb-1.5">
                           <div className="flex items-center gap-2 min-w-0">
                             <KrStatusIcon status={kr.status} />
-                            <span className="text-[13px] font-bold text-white truncate">{kr.metric}</span>
+                            <span className="text-[13px] font-bold text-foreground truncate">{kr.metric}</span>
                           </div>
                           <div className="flex items-baseline gap-1.5 flex-shrink-0">
                             <span className={cn("text-[13px] font-black tabular-nums", krm.text)}>

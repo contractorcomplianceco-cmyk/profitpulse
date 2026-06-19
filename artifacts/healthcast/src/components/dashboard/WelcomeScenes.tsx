@@ -17,7 +17,7 @@ export function SceneExecutiveOverview({ isActive }: SceneProps) {
       >
         <div className="flex items-center gap-4 mb-8 justify-center">
           <Activity className="w-12 h-12 text-primary" />
-          <h3 className="text-2xl font-black text-white">Command Center</h3>
+          <h3 className="text-2xl font-black text-foreground">Command Center</h3>
         </div>
         <div className="grid grid-cols-2 gap-4">
           {[1, 2, 3, 4].map((i) => (
@@ -71,7 +71,7 @@ export function SceneCopilot({ isActive }: SceneProps) {
         >
           <div className="h-2 w-full bg-primary/60 rounded-full mb-2" />
           <div className="h-2 w-4/6 bg-primary/60 rounded-full mb-4" />
-          <div className="h-16 w-full bg-black/20 rounded-lg border border-primary/20" />
+          <div className="h-16 w-full bg-foreground/5 rounded-lg border border-primary/20" />
         </motion.div>
       </motion.div>
     </div>
@@ -131,7 +131,7 @@ export function SceneCashFlow({ isActive }: SceneProps) {
         transition={{ delay: 0.3 }}
         className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-secondary border-4 border-border flex items-center justify-center shadow-xl"
       >
-        <div className="h-4 w-12 bg-white/80 rounded-full" />
+        <div className="h-4 w-12 bg-muted/60 rounded-full" />
       </motion.div>
     </div>
   );

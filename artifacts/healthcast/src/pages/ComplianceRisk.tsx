@@ -100,7 +100,7 @@ export default function ComplianceRisk() {
           >
             <div className="absolute -top-8 -right-8 w-24 h-24 bg-primary/5 rounded-full blur-2xl pointer-events-none group-hover:bg-primary/10 transition-colors" />
             <div className="text-[10px] font-extrabold tracking-wide text-muted-foreground uppercase whitespace-nowrap">{kpi.label}</div>
-            <div className="text-2xl 2xl:text-[1.6rem] font-black tracking-tight text-white tabular-nums leading-tight">{kpi.value}</div>
+            <div className="text-2xl 2xl:text-[1.6rem] font-black tracking-tight text-foreground tabular-nums leading-tight">{kpi.value}</div>
             <div
               className={`mt-auto inline-flex w-fit items-center text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider ${
                 kpi.status === "good"
@@ -131,15 +131,15 @@ export default function ComplianceRisk() {
               <div className="grid grid-cols-3 gap-2 w-full mt-2 text-center">
                 <div className="bg-secondary/30 border border-border/50 rounded-lg p-2">
                   <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Prior</div>
-                  <div className="text-sm font-black text-white">{complianceScore.prior}</div>
+                  <div className="text-sm font-black text-foreground">{complianceScore.prior}</div>
                 </div>
                 <div className="bg-success/10 border border-success/30 rounded-lg p-2">
                   <div className="text-[9px] font-bold text-success uppercase tracking-widest">Current</div>
-                  <div className="text-sm font-black text-white">{complianceScore.overall}</div>
+                  <div className="text-sm font-black text-foreground">{complianceScore.overall}</div>
                 </div>
                 <div className="bg-primary/10 border border-primary/30 rounded-lg p-2">
                   <div className="text-[9px] font-bold text-primary uppercase tracking-widest">Target</div>
-                  <div className="text-sm font-black text-white">{complianceScore.target}</div>
+                  <div className="text-sm font-black text-foreground">{complianceScore.target}</div>
                 </div>
               </div>
               <div className="w-full h-10 mt-3">
@@ -159,9 +159,9 @@ export default function ComplianceRisk() {
                 return (
                   <div key={i} className="flex flex-col gap-1.5">
                     <div className="flex justify-between items-center text-[12px]">
-                      <span className="text-white font-bold">{cat.name}</span>
+                      <span className="text-foreground font-bold">{cat.name}</span>
                       <span className="text-muted-foreground font-medium">
-                        Weight {cat.weight}% · <span className="text-white font-bold tabular-nums">{cat.score}</span>
+                        Weight {cat.weight}% · <span className="text-foreground font-bold tabular-nums">{cat.score}</span>
                       </span>
                     </div>
                     <div className="w-full bg-secondary/50 h-2 rounded-full overflow-hidden">
@@ -211,13 +211,13 @@ export default function ComplianceRisk() {
                       <ScrollText className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div className="text-[13px] font-bold text-white truncate">{r.name}</div>
+                      <div className="text-[13px] font-bold text-foreground truncate">{r.name}</div>
                       <div className="text-[11px] text-muted-foreground font-medium truncate">
                         {r.authority} · {r.jurisdiction} · Owner {r.owner}
                       </div>
                     </div>
                     <div className="text-right shrink-0">
-                      <div className="text-[12px] font-bold text-white whitespace-nowrap">{r.dueDate}</div>
+                      <div className="text-[12px] font-bold text-foreground whitespace-nowrap">{r.dueDate}</div>
                       <div
                         className={`text-[10px] font-bold tabular-nums ${
                           r.daysLeft < 0 ? "text-destructive" : r.daysLeft <= 14 ? "text-warning" : "text-muted-foreground"
@@ -254,7 +254,7 @@ export default function ComplianceRisk() {
                           }`}
                         />
                         <div className="min-w-0">
-                          <div className="text-[12px] font-bold text-white truncate">{f.name}</div>
+                          <div className="text-[12px] font-bold text-foreground truncate">{f.name}</div>
                           <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{f.type}</div>
                         </div>
                       </div>
@@ -291,7 +291,7 @@ export default function ComplianceRisk() {
           <div className="mb-5">
             <div className="flex justify-between items-center mb-2 text-[12px]">
               <span className="text-muted-foreground font-bold uppercase tracking-widest">Readiness</span>
-              <span className="text-white font-black tabular-nums">{auditPct}%</span>
+              <span className="text-foreground font-black tabular-nums">{auditPct}%</span>
             </div>
             <div className="w-full bg-secondary/50 h-2.5 rounded-full overflow-hidden">
               <div className="h-full rounded-full bg-gradient-success shadow-[0_0_12px_-2px_hsl(var(--success)/0.7)]" style={{ width: `${auditPct}%` }} />
@@ -313,7 +313,7 @@ export default function ComplianceRisk() {
                   <Circle className="w-4 h-4 text-warning shrink-0" />
                 )}
                 <div className="min-w-0 flex-1">
-                  <div className={`text-[12px] font-bold truncate ${item.complete ? "text-white" : "text-warning-foreground"}`}>
+                  <div className={`text-[12px] font-bold truncate ${item.complete ? "text-foreground" : "text-warning-foreground"}`}>
                     {item.label}
                   </div>
                   <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
@@ -353,7 +353,7 @@ export default function ComplianceRisk() {
                         }`}
                       />
                       <div className="min-w-0">
-                        <h4 className="text-[14px] font-bold text-white truncate">{risk.title}</h4>
+                        <h4 className="text-[14px] font-bold text-foreground truncate">{risk.title}</h4>
                         <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{risk.category}</span>
                       </div>
                     </div>
@@ -363,7 +363,7 @@ export default function ComplianceRisk() {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-background/40 rounded-lg p-3 border border-border/50 ml-7">
                     <div className="min-w-0">
                       <span className="text-[10px] font-bold text-primary uppercase tracking-wider">Recommended Action</span>
-                      <p className="text-[12px] font-medium text-white mt-0.5">{risk.recommendedAction}</p>
+                      <p className="text-[12px] font-medium text-foreground mt-0.5">{risk.recommendedAction}</p>
                       <div className="flex gap-4 mt-1.5 text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
                         <span>Likelihood {risk.likelihood}</span>
                         <span>Owner {risk.owner}</span>

@@ -250,7 +250,7 @@ export default function CashCalendar() {
                             <Icon className="w-4 h-4" />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <div className="text-[13px] font-bold text-white leading-tight truncate">{event.label}</div>
+                            <div className="text-[13px] font-bold text-foreground leading-tight truncate">{event.label}</div>
                             <div className="text-[11px] font-medium text-muted-foreground mt-0.5 truncate">{event.detail}</div>
                           </div>
                           <span className="hidden sm:inline-flex text-[10px] font-bold uppercase tracking-wider text-muted-foreground bg-secondary/40 border border-border/50 px-2 py-0.5 rounded">

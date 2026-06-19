@@ -33,7 +33,7 @@ export function GaugeChart({ value, label }: { value: number, label: string }) {
         </PieChart>
       </ResponsiveContainer>
       <div className="absolute inset-0 flex flex-col items-center justify-end pb-6 pointer-events-none">
-        <span className="text-4xl font-bold tracking-tight text-white drop-shadow-[0_0_10px_hsl(var(--primary)/0.5)]">{value.toFixed(2)}x</span>
+        <span className="text-4xl font-bold tracking-tight text-foreground drop-shadow-[0_0_10px_hsl(var(--primary)/0.5)]">{value.toFixed(2)}x</span>
         <span className="text-xs tracking-wider text-muted-foreground uppercase mt-1">{label}</span>
       </div>
     </div>

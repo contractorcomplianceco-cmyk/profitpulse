@@ -1,1 +1,1 @@
-- [CCA HealthCast OS](healthcast.md) — frontend-only React+Vite CFO dashboard: build approach, recharts empty-chart gotchas, KpiCard delta parsing, scenario engine rules.
+- [CCA HealthCast OS](healthcast.md) — frontend-only React+Vite CFO dashboard: build approach, recharts empty-chart gotchas, KpiCard delta parsing, scenario engine rules, "Executive Contrast" light-content/navy-chrome theme scoping.
