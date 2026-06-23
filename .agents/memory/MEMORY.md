@@ -1,2 +1,1 @@
-- [video-js artifacts](video-js-artifacts.md) — tsc is NOT the verify gate; scaffold lacks DOM lib + has framer-motion preset errors; verify via validate-recording.sh + Vite logs.
-- [Cross-artifact navigation](cross-artifact-navigation.md) — link between artifacts with plain `<a href="/path/">`, never the in-app SPA router (wouter Link).
+- [Vite first-use Dialog crash](vite-dialog-first-use.md) — first render of a not-yet-bundled radix dep (e.g. shadcn Dialog) throws a transient null-React useRef error; restart the workflow to clear it.

@@ -1,6 +1,7 @@
 import { ShieldAlert } from "lucide-react";
 import { TopHeader } from "./TopHeader";
 import { SidebarNav } from "./SidebarNav";
+import { DemoPromo } from "./DemoPromo";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -13,6 +14,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
       {/* Top Header */}
       <TopHeader />
+
+      {/* Walkthrough promo banner + first-visit popup */}
+      <DemoPromo />
 
       {/* Internal demo disclosure banner */}
       <div className="relative z-10 flex items-center justify-center gap-2 px-4 py-2 border-b border-amber-500/40 bg-amber-50 text-amber-900">
