@@ -1,1 +1,2 @@
-- [CCA HealthCast OS](healthcast.md) — frontend-only React+Vite CFO dashboard: build approach, recharts empty-chart gotchas, KpiCard delta parsing, scenario engine rules, "Executive Contrast" light-content/navy-chrome theme scoping.
+- [video-js artifacts](video-js-artifacts.md) — tsc is NOT the verify gate; scaffold lacks DOM lib + has framer-motion preset errors; verify via validate-recording.sh + Vite logs.
+- [Cross-artifact navigation](cross-artifact-navigation.md) — link between artifacts with plain `<a href="/path/">`, never the in-app SPA router (wouter Link).

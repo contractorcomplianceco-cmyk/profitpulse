@@ -1,0 +1,117 @@
+Important: do NOT replace or rebuild the HealthCast app.
+
+Keep the existing HealthCast app/pages/design already in this Replit project unless a change is only adding the demo/walkthrough layer.
+
+Goal:
+Add a BuildConnect-style animated demo video/walkthrough artifact for HealthCast.
+
+Do not build a backend.
+Do not connect APIs.
+Do not use real patient data.
+Do not create clinical diagnosis features.
+Do not replace existing app pages.
+Do not remove existing tabs/design.
+Do not add private keys or secrets.
+Do not pretend demo data is live.
+
+Add only:
+
+1. Demo banner
+Add a polished banner visible in the app:
+“Internal demo — fictional healthcare operations data only. Not connected to live systems.”
+
+2. Demo / Walkthrough page or section
+Add a visible navigation item or button:
+“Watch Demo” or “Product Walkthrough”
+
+3. Animated demo video artifact
+Build a short, auto-playing animated demo video as a video-js style artifact:
+- React + Vite + Framer Motion + GSAP if available
+- generated from code/motion graphics
+- not a screen recording
+- not a real backend
+- not fake live data
+
+Specs:
+- 16:9
+- about 30 seconds
+- auto-plays and loops
+- in-preview playback controls:
+  - play/pause
+  - scrubber
+  - mute
+- background music bed if available, or placeholder audio controls if audio is not supported
+- 6 scenes, each its own component
+- one central timing config so durations are easy to tune
+
+Scenes:
+1. Intro (~4s)
+Logo + HealthCast name + tagline
+
+2. Dashboard (~6s)
+Stylized hero shot of healthcare operations dashboard
+
+3. Navigation (~6s)
+Animated movement through key sections:
+Forecasts, Patient Demand, Staffing, Capacity, Risk Alerts, Service Lines, Care Coordination, Reports, Command Center
+
+4. Action / Wow Moment (~6s)
+Show the main value:
+HealthCast detects rising demand, staffing pressure, and capacity risk before the week breaks.
+
+5. Connected / Payoff (~5s)
+Show how demand forecasts, staffing, service lines, capacity, and care coordination connect into one operating picture.
+
+6. Outro (~5s)
+Logo lockup + call to action:
+“Forecast demand. Protect capacity. Coordinate care operations.”
+
+Style:
+- clean, premium healthcare intelligence
+- calm, high-trust, operational
+- persistent soft blurred-gradient background in HealthCast brand colors
+- brand fonts
+- CSS variables for colors so palette can be changed easily
+- smooth spring transitions between scenes
+- polished motion graphics, not a static slideshow
+- app-like visuals but not pretending to be live patient data
+
+HealthCast one-sentence description:
+HealthCast helps healthcare operations teams forecast demand, manage staffing pressure, monitor capacity, and coordinate care operations using fictional aggregate demo data.
+
+Suggested brand colors:
+- Deep navy: #071827
+- Healthcare blue: #2563eb
+- Soft cyan: #7dd3fc
+- Teal: #14b8a6
+- Amber: #f59e0b
+- Rose alert: #fb7185
+- White: #f8fafc
+
+Value props to include:
+- Forecast patient demand
+- See staffing pressure early
+- Monitor capacity across service lines
+- Identify operational risk alerts
+- Coordinate follow-up and care workflows
+- Generate executive-ready operational reports
+
+HealthCast safety rules:
+- Use fictional aggregate data only.
+- Do not show real patient names.
+- Do not show real medical records.
+- Do not make clinical recommendations.
+- Do not diagnose conditions.
+- Frame everything as operational forecasting and capacity planning.
+
+Important:
+This video/walkthrough should be a separate demo layer. It should not replace the actual HealthCast app dashboard or existing pages.
+
+After finishing, tell me:
+- What files were added or changed
+- Where the Watch Demo / Product Walkthrough is located
+- How to preview the animation
+- Whether it loops/autoplays
+- How to export or share it
+- What existing app pages remain unchanged
+- Any warnings or limitations

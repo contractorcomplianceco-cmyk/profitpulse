@@ -22,7 +22,8 @@ import {
   Trophy,
   CalendarClock,
   ShieldCheck,
-  Compass
+  Compass,
+  PlayCircle
 } from "lucide-react";
 import { HealthScoreCard } from "./HealthScoreCard";
 
@@ -33,6 +34,7 @@ const NAV_SECTIONS = [
       { href: "/welcome", label: "Welcome", icon: Compass },
       { href: "/", label: "Executive Overview", icon: LayoutDashboard },
       { href: "/copilot", label: "AI CFO Copilot", icon: Sparkles },
+      { href: "/demo/", label: "Watch Demo", icon: PlayCircle, external: true },
     ],
   },
   {
@@ -95,25 +97,38 @@ export function SidebarNav() {
             </div>
             <nav className="space-y-1 px-3">
               {section.items.map((item) => {
-                const isActive = location === item.href || (location.startsWith(item.href) && item.href !== "/");
+                const isExternal = "external" in item && item.external;
+                const isActive = !isExternal && (location === item.href || (location.startsWith(item.href) && item.href !== "/"));
                 const Icon = item.icon;
+
+                const inner = (
+                  <div
+                    className={cn(
+                      "group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 cursor-pointer text-[13px] font-semibold relative overflow-hidden",
+                      isActive
+                        ? "bg-gradient-primary text-primary-foreground shadow-lg shadow-primary/30 border border-primary/40"
+                        : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground border border-transparent hover:border-primary/20 hover:translate-x-0.5"
+                    )}
+                  >
+                    {isActive && (
+                      <span className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r-full bg-cyan shadow-[0_0_10px_hsl(var(--cyan))]" />
+                    )}
+                    <Icon className={cn("w-4 h-4 flex-shrink-0 transition-colors", isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-primary")} />
+                    <span className="truncate tracking-wide">{item.label}</span>
+                  </div>
+                );
+
+                if (isExternal) {
+                  return (
+                    <a key={item.href} href={item.href}>
+                      {inner}
+                    </a>
+                  );
+                }
 
                 return (
                   <Link key={item.href} href={item.href}>
-                    <div
-                      className={cn(
-                        "group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 cursor-pointer text-[13px] font-semibold relative overflow-hidden",
-                        isActive
-                          ? "bg-gradient-primary text-primary-foreground shadow-lg shadow-primary/30 border border-primary/40"
-                          : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground border border-transparent hover:border-primary/20 hover:translate-x-0.5"
-                      )}
-                    >
-                      {isActive && (
-                        <span className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r-full bg-cyan shadow-[0_0_10px_hsl(var(--cyan))]" />
-                      )}
-                      <Icon className={cn("w-4 h-4 flex-shrink-0 transition-colors", isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-primary")} />
-                      <span className="truncate tracking-wide">{item.label}</span>
-                    </div>
+                    {inner}
                   </Link>
                 );
               })}

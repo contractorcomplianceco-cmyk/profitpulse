@@ -1,3 +1,4 @@
+import { ShieldAlert } from "lucide-react";
 import { TopHeader } from "./TopHeader";
 import { SidebarNav } from "./SidebarNav";
 
@@ -12,6 +13,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
       {/* Top Header */}
       <TopHeader />
+
+      {/* Internal demo disclosure banner */}
+      <div className="relative z-10 flex items-center justify-center gap-2 px-4 py-2 border-b border-amber-500/40 bg-amber-50 text-amber-900">
+        <ShieldAlert className="w-3.5 h-3.5 flex-shrink-0 text-amber-600" />
+        <span className="text-[12px] font-semibold tracking-wide text-center">
+          Internal demo — fictional healthcare operations data only. Not connected to live systems.
+        </span>
+      </div>
 
       {/* Bottom Area: Sidebar + Content */}
       <div className="flex flex-1 overflow-hidden relative z-10">

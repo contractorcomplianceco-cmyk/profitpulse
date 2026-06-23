@@ -48,3 +48,9 @@ id = "ynzjfBqSckIt13uBC974f"
 uri = "file://artifacts/healthcast/public/onboarding/narration-4.mp3"
 type = "audio"
 title = "welcome narration 4"
+
+[[outputs]]
+id = "esMJSssfCtMMKBRWfpV23"
+uri = "file://artifacts/healthcast-demo/public/audio/bg_music.mp3"
+type = "audio"
+title = "background music"
