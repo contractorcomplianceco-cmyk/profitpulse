@@ -27,6 +27,7 @@ import GoalsOkrs from "@/pages/GoalsOkrs";
 import CashCalendar from "@/pages/CashCalendar";
 import ComplianceRisk from "@/pages/ComplianceRisk";
 import Welcome from "@/pages/Welcome";
+import DemoWalkthrough from "@/demo/DemoWalkthrough";
 
 const queryClient = new QueryClient();
 
@@ -68,7 +69,11 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <Router />
+          <Switch>
+            <Route path="/demo" component={DemoWalkthrough} />
+            <Route path="/demo/" component={DemoWalkthrough} />
+            <Route component={Router} />
+          </Switch>
         </WouterRouter>
         <Toaster />
       </TooltipProvider>

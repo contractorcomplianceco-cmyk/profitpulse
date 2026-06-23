@@ -34,7 +34,7 @@ const NAV_SECTIONS = [
       { href: "/welcome", label: "Welcome", icon: Compass },
       { href: "/", label: "Executive Overview", icon: LayoutDashboard },
       { href: "/copilot", label: "AI CFO Copilot", icon: Sparkles },
-      { href: "/demo/", label: "Watch Demo", icon: PlayCircle, external: true },
+      { href: "/demo/", label: "Watch Demo", icon: PlayCircle },
     ],
   },
   {

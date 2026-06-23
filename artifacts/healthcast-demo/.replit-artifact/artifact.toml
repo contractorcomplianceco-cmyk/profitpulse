@@ -1,5 +1,5 @@
 kind = "video"
-previewPath = "/demo/"
+previewPath = "/demo-preview/"
 title = "HealthCast Product Walkthrough"
 version = "1.0.0"
 id = "artifacts/healthcast-demo"
@@ -11,7 +11,7 @@ version = "1.0.0"
 
 [[services]]
 name = "web"
-paths = [ "/demo/" ]
+paths = [ "/demo-preview/" ]
 localPort = 19446
 
 [services.development]
@@ -28,4 +28,4 @@ to = "/index.html"
 
 [services.env]
 PORT = "19446"
-BASE_PATH = "/demo/"
+BASE_PATH = "/demo-preview/"

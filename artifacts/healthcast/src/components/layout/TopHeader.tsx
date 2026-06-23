@@ -1,3 +1,4 @@
+import { Link } from "wouter";
 import { CcaLogo } from "./CcaLogo";
 import { 
   BookOpen, 
@@ -9,7 +10,8 @@ import {
   Linkedin, 
   Phone, 
   Mail, 
-  ChevronDown 
+  ChevronDown,
+  PlayCircle 
 } from "lucide-react";
 
 const INTEGRATIONS = [
@@ -64,6 +66,13 @@ export function TopHeader() {
 
       {/* Far Right: User & Time */}
       <div className="flex items-center gap-6 text-sm">
+        <Link href="/demo/">
+          <div className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-primary/15 border border-primary/30 text-primary hover:bg-primary/25 hover:border-primary/50 transition-all cursor-pointer shadow-[0_0_12px_-4px_hsl(var(--primary)/0.7)]">
+            <PlayCircle className="w-4 h-4" />
+            <span className="text-[13px] font-bold tracking-wide hidden sm:inline">Watch Demo</span>
+          </div>
+        </Link>
+
         <div className="hidden md:flex flex-col items-end text-right">
           <span className="text-foreground font-semibold text-[13px] tracking-wide">May 13, 2025</span>
           <span className="text-muted-foreground text-[11px] font-medium tracking-wide">Tuesday, 8:30 AM</span>

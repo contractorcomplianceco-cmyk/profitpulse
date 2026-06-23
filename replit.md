@@ -24,6 +24,7 @@ A premium, frontend-only executive CFO command center for Contractor Compliance 
 - `components/dashboard/` — the reusable building blocks every page uses: `PageHeader` (title + Export toast), `KpiCard`, `ChartCard`, `InsightCard`, `RiskWarning`, `RecommendedAction`, `AlertBadge`, `ScenarioSlider`.
 - `data/` — one mock-data module per domain (e.g. `cashFlowData.ts`, `marketingData.ts`, `clientsData.ts`, `scenariosData.ts`). `mockData.ts` holds shared company KPIs/AR-AP/historical.
 - `lib/` — `format.ts` (currency/percent/number formatters), `calculations.ts` (live Scenario Builder engine), `alertEngine.ts` (derives alerts from data).
+- `demo/` — the 6-scene animated product walkthrough, ported INTO this app as a normal route at `/demo` + `/demo/` (so it actually deploys). `DemoWalkthrough.tsx` (page, wraps in `.hc-demo`), `DemoPlayer.tsx` (always-on control bar), `VideoTemplate.tsx`, `useSceneControls.ts`, `lib/hooks.ts`, `scenes/Scene1-6.tsx`, `demo.css` (scoped theme). Audio is a real static file at `public/demo/audio/bg_music.mp3`, served at `/demo/audio/bg_music.mp3`.
 
 ## Architecture decisions
 
@@ -49,6 +50,8 @@ A premium, frontend-only executive CFO command center for Contractor Compliance 
 - framer-motion variants: a `transition.type: "spring"` literal must be `type: "spring" as const` (or typed `Variants`) or `tsc` rejects it.
 - Verify with `typecheck`, not `build` (build needs workflow-provided `PORT`/`BASE_PATH`).
 - All frontend work goes through DESIGN subagents per the react-vite skill; do not hand-edit pages without that workflow unless it's a tiny shared fix.
+- `/demo` walkthrough lives INSIDE this app (not the separate `healthcast-demo` video artifact). Only healthcast's static handler is deployed, so a standalone artifact at `/demo/` never publishes — that's why the walkthrough was moved here. App.tsx wraps the demo in an outer `<Switch>` (`/demo`, `/demo/`, then catch-all `Router`) so it renders fullscreen OUTSIDE AppLayout. The `healthcast-demo` artifact was repointed off `/demo/` to `/demo-preview/` (its `artifact.toml`) so healthcast owns `/demo/` in dev too — keep it there or the SPA route is shadowed by the video artifact in dev. To re-export the video, edit/run `healthcast-demo` at `/demo-preview/`, then re-port changes here.
+- Demo theme is isolated under a `.hc-demo` wrapper in `src/demo/demo.css` (color vars + `perspective-1000`/`font-display`/`font-body`, which are NOT defined globally in this Tailwind v4 app). Do not move these to `:root` — they would collide with the Executive-Contrast theme. Only global side effect is a Google-Fonts `@import` (Space Grotesk / DM Sans / JetBrains Mono).
 
 ## Pointers
 
