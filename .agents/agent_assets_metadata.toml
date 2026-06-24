@@ -54,3 +54,39 @@ id = "esMJSssfCtMMKBRWfpV23"
 uri = "file://artifacts/healthcast-demo/public/audio/bg_music.mp3"
 type = "audio"
 title = "background music"
+
+[[outputs]]
+id = "GBYcYjnEgB2Ly9u025bJa"
+uri = "file://artifacts/healthcast/public/demo/audio/narration/intro.mp3"
+type = "audio"
+title = "narration intro"
+
+[[outputs]]
+id = "TczQLmGjwDraKheqWTSxl"
+uri = "file://artifacts/healthcast/public/demo/audio/narration/dashboard.mp3"
+type = "audio"
+title = "narration dashboard"
+
+[[outputs]]
+id = "WbLWFhPQe4JXoKdeUvV9P"
+uri = "file://artifacts/healthcast/public/demo/audio/narration/navigation.mp3"
+type = "audio"
+title = "narration navigation"
+
+[[outputs]]
+id = "fg1DrvNOaG6lLcTTeSsfC"
+uri = "file://artifacts/healthcast/public/demo/audio/narration/action.mp3"
+type = "audio"
+title = "narration action"
+
+[[outputs]]
+id = "HZR0B433AHMvqzM4ZbJGX"
+uri = "file://artifacts/healthcast/public/demo/audio/narration/connected.mp3"
+type = "audio"
+title = "narration connected"
+
+[[outputs]]
+id = "SGl2LFm2dfqD8RwKJ_L0y"
+uri = "file://artifacts/healthcast/public/demo/audio/narration/outro.mp3"
+type = "audio"
+title = "narration outro"

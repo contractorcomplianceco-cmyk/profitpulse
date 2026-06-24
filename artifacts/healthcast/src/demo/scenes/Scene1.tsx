@@ -60,7 +60,7 @@ export function Scene1() {
           animate={phase >= 3 ? { opacity: 1, y: 0, filter: 'blur(0px)' } : { opacity: 0, y: 20, filter: 'blur(5px)' }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
-          Healthcare Operations Intelligence
+          Where operations meet financial intelligence
         </motion.div>
       </div>
 

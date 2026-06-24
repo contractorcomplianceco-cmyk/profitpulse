@@ -39,6 +39,7 @@ export function DemoPromo() {
       const t = setTimeout(() => setPopupOpen(true), 600);
       return () => clearTimeout(t);
     }
+    return undefined;
   }, []);
 
   const dismissPopup = () => {

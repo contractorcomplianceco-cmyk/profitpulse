@@ -33,7 +33,7 @@ export function Scene6() {
         
         {/* Final CTA Text */}
         <div className="flex flex-col gap-2 mb-16 overflow-hidden">
-          {['Forecast demand.', 'Protect capacity.', 'Coordinate care operations.'].map((text, i) => (
+          {['See everything.', 'Decide faster.', 'Lead with confidence.'].map((text, i) => (
             <motion.h2
               key={i}
               className="text-4xl md:text-5xl font-display font-bold text-white"

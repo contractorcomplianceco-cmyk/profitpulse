@@ -9,12 +9,12 @@ import { Scene5 } from './scenes/Scene5';
 import { Scene6 } from './scenes/Scene6';
 
 export const SCENE_DURATIONS = {
-  intro: 4000,
-  dashboard: 6000,
-  navigation: 6000,
-  action: 6000,
-  connected: 5000,
-  outro: 5000
+  intro: 8000,
+  dashboard: 12500,
+  navigation: 12500,
+  action: 11500,
+  connected: 9000,
+  outro: 6000
 };
 
 const SCENE_COMPONENTS: Record<string, React.ComponentType> = {
@@ -26,17 +26,8 @@ const SCENE_COMPONENTS: Record<string, React.ComponentType> = {
   outro: Scene6,
 };
 
-const SCENE_START_SEC: Record<string, number> = (() => {
-  const out: Record<string, number> = {};
-  let cumulativeMs = 0;
-  for (const [key, ms] of Object.entries(SCENE_DURATIONS)) {
-    out[key] = cumulativeMs / 1000;
-    cumulativeMs += ms;
-  }
-  return out;
-})();
-
-const AUDIO_SEEK_EPSILON_SEC = 0.18;
+const MUSIC_BASE_VOLUME = 0.16;
+const MUSIC_DUCKED_VOLUME = 0.05;
 
 export default function VideoTemplate({
   durations = SCENE_DURATIONS,
@@ -58,17 +49,54 @@ export default function VideoTemplate({
   const baseSceneKey = currentSceneKey.replace(/_r[12]$/, '') as keyof typeof SCENE_DURATIONS;
   const SceneComponent = SCENE_COMPONENTS[baseSceneKey];
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const musicRef = useRef<HTMLAudioElement | null>(null);
+  const narrationRef = useRef<HTMLAudioElement | null>(null);
 
+  // Continuous background music bed.
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.volume = 0.45;
-    const targetTime = SCENE_START_SEC[baseSceneKey] ?? 0;
-    if (Math.abs(audio.currentTime - targetTime) > AUDIO_SEEK_EPSILON_SEC) {
-      audio.currentTime = targetTime;
+    const music = musicRef.current;
+    if (!music) return;
+    music.volume = MUSIC_BASE_VOLUME;
+    music.play().catch(() => {});
+  }, []);
+
+  // Per-scene narration: restart from the top on each scene, duck the music
+  // while it plays, then restore the music bed when it finishes. Narration only
+  // starts once the player is unmuted (browser autoplay policy / UX), and the
+  // music volume is always restored on end/error/cleanup so it can never get
+  // stuck ducked if playback is interrupted.
+  useEffect(() => {
+    const narration = narrationRef.current;
+    const music = musicRef.current;
+    if (!narration) return;
+
+    const restoreMusic = () => {
+      if (music) music.volume = MUSIC_BASE_VOLUME;
+    };
+
+    narration.src = `${import.meta.env.BASE_URL}demo/audio/narration/${baseSceneKey}.mp3`;
+    narration.currentTime = 0;
+    narration.volume = 1;
+
+    // While muted, keep the (silent) music bed at base volume and don't bother
+    // ducking; restart narration from the scene boundary once unmuted.
+    if (muted) {
+      restoreMusic();
+      return;
     }
-    audio.play().catch(() => {});
+
+    if (music) music.volume = MUSIC_DUCKED_VOLUME;
+    narration.play().catch(restoreMusic);
+
+    narration.addEventListener('ended', restoreMusic);
+    narration.addEventListener('error', restoreMusic);
+    narration.addEventListener('pause', restoreMusic);
+    return () => {
+      narration.removeEventListener('ended', restoreMusic);
+      narration.removeEventListener('error', restoreMusic);
+      narration.removeEventListener('pause', restoreMusic);
+      restoreMusic();
+    };
   }, [currentSceneKey, baseSceneKey, muted]);
 
   return (
@@ -116,10 +144,16 @@ export default function VideoTemplate({
       </AnimatePresence>
 
       <audio
-        ref={audioRef}
+        ref={musicRef}
         src={`${import.meta.env.BASE_URL}demo/audio/bg_music.mp3`}
         preload="auto"
         autoPlay
+        loop
+        muted={muted}
+      />
+      <audio
+        ref={narrationRef}
+        preload="auto"
         muted={muted}
       />
     </div>

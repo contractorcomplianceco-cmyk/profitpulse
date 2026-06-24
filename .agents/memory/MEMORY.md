@@ -1,1 +1,1 @@
-- [Vite first-use Dialog crash](vite-dialog-first-use.md) — first render of a not-yet-bundled radix dep (e.g. shadcn Dialog) throws a transient null-React useRef error; restart the workflow to clear it.
+- [Demo audio ducking](demo-audio-ducking.md) — un-duck background music on ended/error/cleanup (not just 'ended'), gate narration on unmute, or music stays stuck quiet.
