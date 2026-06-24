@@ -23,7 +23,8 @@ import {
   CalendarClock,
   ShieldCheck,
   Compass,
-  PlayCircle
+  PlayCircle,
+  Megaphone
 } from "lucide-react";
 import { HealthScoreCard } from "./HealthScoreCard";
 
@@ -35,6 +36,7 @@ const NAV_SECTIONS = [
       { href: "/", label: "Executive Overview", icon: LayoutDashboard },
       { href: "/copilot", label: "AI CFO Copilot", icon: Sparkles },
       { href: "/demo/", label: "Watch Demo", icon: PlayCircle },
+      { href: "/landing", label: "Marketing Site", icon: Megaphone },
     ],
   },
   {

@@ -27,6 +27,7 @@ import GoalsOkrs from "@/pages/GoalsOkrs";
 import CashCalendar from "@/pages/CashCalendar";
 import ComplianceRisk from "@/pages/ComplianceRisk";
 import Welcome from "@/pages/Welcome";
+import Landing from "@/pages/Landing";
 import DemoWalkthrough from "@/demo/DemoWalkthrough";
 
 const queryClient = new QueryClient();
@@ -72,6 +73,8 @@ function App() {
           <Switch>
             <Route path="/demo" component={DemoWalkthrough} />
             <Route path="/demo/" component={DemoWalkthrough} />
+            <Route path="/landing" component={Landing} />
+            <Route path="/landing/" component={Landing} />
             <Route component={Router} />
           </Switch>
         </WouterRouter>
