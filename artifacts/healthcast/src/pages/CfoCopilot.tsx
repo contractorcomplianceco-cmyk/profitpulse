@@ -173,7 +173,7 @@ export default function CfoCopilot() {
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className="surface-gradient border border-border rounded-xl p-4 shadow-lg shadow-black/20 flex items-center gap-3 accent-topline relative overflow-hidden hover:border-primary/40 transition-colors"
+            className="surface-gradient border border-border rounded-xl p-4 shadow-soft flex items-center gap-3 accent-topline relative overflow-hidden hover:border-primary/40 transition-colors"
           >
             <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
               <stat.icon className={`w-4 h-4 ${stat.accent}`} />
@@ -212,7 +212,7 @@ export default function CfoCopilot() {
           </div>
 
           {/* Answer feed */}
-          <div className="surface-gradient border border-border rounded-xl shadow-lg shadow-black/20 flex flex-col overflow-hidden accent-topline">
+          <div className="surface-gradient border border-border rounded-xl shadow-soft flex flex-col overflow-hidden accent-topline">
             <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/60">
               <div className="flex items-center gap-2.5">
                 <div className="p-1.5 rounded-md bg-gradient-primary border border-primary/30 shadow-md shadow-primary/30">
@@ -412,7 +412,7 @@ export default function CfoCopilot() {
           </motion.div>
 
           <motion.div variants={itemVariants}>
-            <div className="surface-gradient border border-border rounded-xl shadow-lg shadow-black/20 p-5 accent-topline relative overflow-hidden">
+            <div className="surface-gradient border border-border rounded-xl shadow-soft p-5 accent-topline relative overflow-hidden">
               <div className="flex items-center gap-2 mb-4">
                 <History className="w-4 h-4 text-primary" />
                 <h3 className="text-[11px] font-extrabold tracking-widest text-foreground uppercase">Recent Questions</h3>

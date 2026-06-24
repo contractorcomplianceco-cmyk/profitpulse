@@ -96,7 +96,7 @@ export default function ComplianceRisk() {
         {complianceKpis.map((kpi, i) => (
           <div
             key={i}
-            className="surface-gradient border border-border rounded-xl p-4 shadow-lg shadow-black/20 hover:border-primary/50 hover:-translate-y-0.5 transition-all duration-300 flex flex-col gap-2 relative overflow-hidden group accent-topline"
+            className="surface-gradient border border-border rounded-xl p-4 shadow-soft hover:border-primary/50 hover:-translate-y-0.5 transition-all duration-300 flex flex-col gap-2 relative overflow-hidden group accent-topline"
           >
             <div className="absolute -top-8 -right-8 w-24 h-24 bg-primary/5 rounded-full blur-2xl pointer-events-none group-hover:bg-primary/10 transition-colors" />
             <div className="text-[10px] font-extrabold tracking-wide text-muted-foreground uppercase whitespace-nowrap">{kpi.label}</div>

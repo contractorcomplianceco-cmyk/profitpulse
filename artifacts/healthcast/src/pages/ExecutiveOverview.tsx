@@ -108,7 +108,7 @@ export default function ExecutiveOverview() {
           const KpiIcon = kpiIcons[i];
           const accent = kpiAccents[i % kpiAccents.length];
           return (
-          <motion.div key={i} variants={itemVariants} className="bg-card border border-border rounded-xl p-4 shadow-lg shadow-black/20 hover:border-primary/50 transition-all flex flex-col gap-2 relative overflow-hidden group">
+          <motion.div key={i} variants={itemVariants} className="bg-card border border-border rounded-xl p-4 shadow-soft hover:border-primary/50 transition-all flex flex-col gap-2 relative overflow-hidden group">
             <div className={`absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r ${accent.bar} pointer-events-none`} />
             <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-bl-full pointer-events-none group-hover:bg-primary/10 transition-colors"></div>
             {KpiIcon && (
@@ -144,7 +144,7 @@ export default function ExecutiveOverview() {
           {/* B) TWO-PANEL ROW */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             {/* Executive Insights */}
-            <motion.div variants={itemVariants} className="lg:col-span-2 bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
+            <motion.div variants={itemVariants} className="lg:col-span-2 bg-card border border-border rounded-xl p-6 flex flex-col shadow-soft">
               <div className="flex justify-between items-center mb-5">
                 <h3 className="text-sm font-extrabold tracking-widest text-foreground uppercase flex items-center gap-2">
                   <Lightbulb className="h-4 w-4 flex-shrink-0 text-amber-500" />
@@ -169,7 +169,7 @@ export default function ExecutiveOverview() {
             </motion.div>
 
             {/* Financial KPI Cluster */}
-            <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
+            <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-soft">
                <h3 className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase mb-4 flex items-center gap-2">
                  <Wallet className="h-3.5 w-3.5 flex-shrink-0 text-sky-500" />
                  AR / AP Snapshot
@@ -206,7 +206,7 @@ export default function ExecutiveOverview() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             
             {/* Cash Flow Forecast */}
-            <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
+            <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-soft">
               <h3 className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase mb-5 flex items-center gap-2">
                 <LineChart className="h-3.5 w-3.5 flex-shrink-0 text-teal-500" />
                 Cash Flow Forecast
@@ -235,7 +235,7 @@ export default function ExecutiveOverview() {
             </motion.div>
 
             {/* Revenue Breakdown */}
-            <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
+            <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-soft">
               <h3 className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase mb-3 flex items-center gap-2">
                 <PieChart className="h-3.5 w-3.5 flex-shrink-0 text-violet-500" />
                 Revenue Breakdown
@@ -260,7 +260,7 @@ export default function ExecutiveOverview() {
             </motion.div>
 
             {/* Sales Pipeline */}
-            <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
+            <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-soft">
               <h3 className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase mb-5">Sales Pipeline to Cash</h3>
               <div className="flex gap-6 mb-5 h-44">
                 <div className="w-1/2 h-full">
@@ -280,7 +280,7 @@ export default function ExecutiveOverview() {
             </motion.div>
 
             {/* Marketing ROI */}
-            <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
+            <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-soft">
               <h3 className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase mb-3">Marketing ROI (True ROI)</h3>
               <div className="flex h-44 mb-3">
                 <div className="w-1/2 h-full relative">
@@ -303,7 +303,7 @@ export default function ExecutiveOverview() {
             </motion.div>
 
             {/* Top Services by Margin */}
-            <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
+            <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-soft">
               <h3 className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase mb-5">Top Services by Profit Margin</h3>
               <div className="h-44 mb-5">
                 <ResponsiveContainer width="100%" height="100%">
@@ -325,7 +325,7 @@ export default function ExecutiveOverview() {
             </motion.div>
 
             {/* AR Aging Summary */}
-            <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
+            <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-soft">
               <h3 className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase mb-3">AR Aging Summary</h3>
               <div className="flex items-center h-[190px] mb-3">
                 <div className="w-1/2 h-full">
@@ -354,7 +354,7 @@ export default function ExecutiveOverview() {
             </motion.div>
 
             {/* Futurecast */}
-            <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
+            <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-soft">
               <h3 className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase mb-5">Futurecast (Expected Scenario)</h3>
               <div className="h-36 mb-5">
                 <TrendLine 
@@ -380,7 +380,7 @@ export default function ExecutiveOverview() {
             </motion.div>
 
             {/* Market & Economy Impact */}
-            <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
+            <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-soft">
               <h3 className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase mb-5">Market & Economy Impact</h3>
               <div className="flex flex-col gap-3 mb-5 flex-1">
                 {marketImpact.map((item, i) => (
@@ -405,7 +405,7 @@ export default function ExecutiveOverview() {
         <div className="xl:col-span-1 flex flex-col gap-4">
           
           {/* Alerts Panel */}
-          <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-lg shadow-black/20">
+          <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-soft">
             <div className="flex justify-between items-center mb-5">
               <h3 className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase flex items-center gap-2">
                 <Bell className="h-3.5 w-3.5 flex-shrink-0 text-rose-500" />
@@ -490,7 +490,7 @@ export default function ExecutiveOverview() {
           </motion.div>
 
           {/* Quick Reports */}
-          <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-5 flex flex-col shadow-lg shadow-black/20">
+          <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-5 flex flex-col shadow-soft">
              <div className="flex justify-between items-center mb-4">
               <h3 className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase flex items-center gap-2">
                 <FileBarChart className="h-3.5 w-3.5 flex-shrink-0 text-indigo-500" />

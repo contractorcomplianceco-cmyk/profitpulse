@@ -252,7 +252,7 @@ export default function GoalsOkrs() {
             <motion.div
               key={obj.id}
               variants={itemVariants}
-              className="surface-gradient border border-border rounded-xl shadow-lg shadow-black/20 hover:border-primary/40 hover:shadow-primary/10 transition-all duration-300 relative overflow-hidden accent-topline"
+              className="surface-gradient border border-border rounded-xl shadow-soft hover:border-primary/40 hover:shadow-primary/10 transition-all duration-300 relative overflow-hidden accent-topline"
             >
               <div className="absolute -top-16 -right-16 w-40 h-40 bg-primary/[0.04] rounded-full blur-3xl pointer-events-none" />
               <div className="p-6 relative">

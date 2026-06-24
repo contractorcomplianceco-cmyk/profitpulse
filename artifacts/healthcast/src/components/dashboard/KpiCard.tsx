@@ -45,7 +45,7 @@ export function KpiCard({
   const trendData = trend?.map((val, i) => ({ value: val, index: i })) || [];
 
   return (
-    <Card className={cn("h-full overflow-hidden surface-gradient border-border shadow-lg shadow-black/20 hover:border-primary/50 hover:shadow-primary/10 hover:-translate-y-0.5 transition-all duration-300 group relative accent-topline", className)}>
+    <Card className={cn("h-full overflow-hidden surface-gradient border-border shadow-soft hover:border-primary/50 hover:shadow-primary/10 hover:-translate-y-0.5 transition-all duration-300 group relative accent-topline", className)}>
       <div className="absolute -top-10 -right-10 w-28 h-28 bg-primary/5 rounded-full blur-2xl pointer-events-none group-hover:bg-primary/10 transition-colors"></div>
       <CardContent className="p-6 h-full relative">
         <div className="flex justify-between items-start">

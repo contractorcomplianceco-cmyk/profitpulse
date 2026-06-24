@@ -138,7 +138,7 @@ export default function CashCalendar() {
 
         <motion.div variants={itemVariants} className="flex flex-col gap-6">
           <div className="grid grid-cols-1 gap-4">
-            <div className="surface-gradient border border-border rounded-xl p-5 shadow-lg shadow-black/20 relative overflow-hidden accent-topline">
+            <div className="surface-gradient border border-border rounded-xl p-5 shadow-soft relative overflow-hidden accent-topline">
               <div className="flex items-center gap-2 mb-3">
                 <div className="bg-success/10 p-2 rounded-lg border border-success/20 text-success">
                   <TrendingUp className="w-4 h-4" />
@@ -150,7 +150,7 @@ export default function CashCalendar() {
               <div className="text-[11px] font-medium text-muted-foreground mt-0.5">{biggestInflowDay.date} &bull; {biggestInflowDay.detail}</div>
             </div>
 
-            <div className="surface-gradient border border-border rounded-xl p-5 shadow-lg shadow-black/20 relative overflow-hidden accent-topline">
+            <div className="surface-gradient border border-border rounded-xl p-5 shadow-soft relative overflow-hidden accent-topline">
               <div className="flex items-center gap-2 mb-3">
                 <div className="bg-destructive/10 p-2 rounded-lg border border-destructive/20 text-destructive">
                   <TrendingDown className="w-4 h-4" />
@@ -183,7 +183,7 @@ export default function CashCalendar() {
             <motion.div
               key={t.type}
               variants={itemVariants}
-              className="surface-gradient border border-border rounded-xl p-4 shadow-lg shadow-black/20 hover:border-primary/40 transition-colors flex flex-col gap-2"
+              className="surface-gradient border border-border rounded-xl p-4 shadow-soft hover:border-primary/40 transition-colors flex flex-col gap-2"
             >
               <div className="flex items-center justify-between">
                 <div

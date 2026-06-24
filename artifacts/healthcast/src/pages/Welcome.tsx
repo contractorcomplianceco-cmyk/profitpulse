@@ -227,7 +227,7 @@ export default function Welcome() {
   return (
     <div className="flex flex-col gap-6 pb-12 w-full max-w-6xl mx-auto">
       {/* Hero Banner */}
-      <div className="bg-card border border-border rounded-xl p-8 surface-gradient shadow-lg shadow-black/20 flex flex-col md:flex-row gap-6 justify-between items-center relative overflow-hidden">
+      <div className="bg-card border border-border rounded-xl p-8 surface-gradient shadow-soft flex flex-col md:flex-row gap-6 justify-between items-center relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan via-primary to-primary opacity-70" />
         
         <div className="flex items-center gap-5 z-10">
@@ -284,7 +284,7 @@ export default function Welcome() {
         
         {/* Player Card (2/3 width on large screens) */}
         <div className="lg:col-span-2 flex flex-col gap-4">
-          <div className="bg-card border border-border rounded-xl overflow-hidden shadow-xl shadow-black/30 flex flex-col">
+          <div className="bg-card border border-border rounded-xl overflow-hidden shadow-soft-lg flex flex-col">
             {/* Header info */}
             <div className="px-6 py-4 border-b border-border/50 bg-secondary/20 flex justify-between items-center">
               <div>
@@ -424,7 +424,7 @@ export default function Welcome() {
 
         {/* Chapters / Steps List */}
         <div className="flex flex-col gap-4">
-          <div className="bg-card border border-border rounded-xl p-5 shadow-lg shadow-black/20 flex flex-col flex-1">
+          <div className="bg-card border border-border rounded-xl p-5 shadow-soft flex flex-col flex-1">
             <h3 className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase mb-4">
               {mode === "narrated" ? "Chapters" : "Steps"}
             </h3>
