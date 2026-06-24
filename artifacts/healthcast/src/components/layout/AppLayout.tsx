@@ -2,7 +2,9 @@ import { Database } from "lucide-react";
 import { TopHeader } from "./TopHeader";
 import { SidebarNav } from "./SidebarNav";
 import { DemoPromo } from "./DemoPromo";
+import { DemoRibbon } from "./DemoRibbon";
 import { brand } from "@/brand/brandConfig";
+import { isDemoMode } from "@/brand/demoMode";
 
 const CAPTURE_MODE = false;
 
@@ -17,11 +19,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       {/* Top Header */}
       <TopHeader />
 
-      {/* Walkthrough promo banner + first-visit popup */}
-      {!CAPTURE_MODE && <DemoPromo />}
+      {/* Standalone demo build: prospect ribbon + CTA */}
+      <DemoRibbon />
 
-      {/* Sample-data note (neutral, white-label) */}
-      {!CAPTURE_MODE && brand.showSampleDataNote && (
+      {/* Walkthrough promo banner + first-visit popup (not in demo build) */}
+      {!CAPTURE_MODE && !isDemoMode && <DemoPromo />}
+
+      {/* Sample-data note (neutral, white-label) — hidden in demo build (ribbon covers it) */}
+      {!CAPTURE_MODE && !isDemoMode && brand.showSampleDataNote && (
         <div className="relative z-10 flex items-center justify-center gap-2 px-4 py-1.5 border-b border-border bg-secondary/40 text-muted-foreground">
           <Database className="w-3.5 h-3.5 flex-shrink-0 text-primary" />
           <span className="text-[12px] font-medium tracking-wide text-center">

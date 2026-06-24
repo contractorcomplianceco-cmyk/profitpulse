@@ -16,6 +16,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { brand, productFullName } from "@/brand/brandConfig";
 
+// The interactive app/dashboard lives at the root path in both the live product
+// and the standalone demo build (the demo ribbon frames it as a demo).
+const APP_HREF = "/";
+
 const fadeUp = {
   hidden: { opacity: 0, y: 18 },
   show: (i: number) => ({
@@ -139,7 +143,7 @@ export default function Landing() {
               <PlayCircle className="w-4 h-4" /> Watch demo
             </Button>
           </Link>
-          <Link href="/">
+          <Link href={APP_HREF}>
             <Button size="sm" className="gap-1.5">
               Open app <ArrowRight className="w-4 h-4" />
             </Button>
@@ -187,7 +191,7 @@ export default function Landing() {
           custom={3}
           className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3"
         >
-          <Link href="/">
+          <Link href={APP_HREF}>
             <Button size="lg" className="gap-2 text-[15px] px-7 h-12">
               Explore the command center <ArrowRight className="w-4.5 h-4.5" />
             </Button>
@@ -328,7 +332,7 @@ export default function Landing() {
                   </li>
                 ))}
               </ul>
-              <Link href="/">
+              <Link href={APP_HREF}>
                 <Button
                   className="w-full gap-1.5"
                   variant={p.highlighted ? "default" : "outline"}
@@ -347,7 +351,7 @@ export default function Landing() {
           Stop guessing. Start running your business from the numbers.
         </h2>
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Link href="/">
+          <Link href={APP_HREF}>
             <Button size="lg" className="gap-2 text-[15px] px-8 h-12">
               Open {productFullName} <ArrowRight className="w-4.5 h-4.5" />
             </Button>
