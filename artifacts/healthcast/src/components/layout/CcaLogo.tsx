@@ -1,10 +1,14 @@
-import logoUrl from "@assets/cca-crest-inset_1781453529147.png";
+import { brand, productFullName } from "@/brand/brandConfig";
 
+/**
+ * Brand mark. Reads the logo + product name from the white-label brand config.
+ * (Component name kept as CcaLogo for import stability across the app.)
+ */
 export function CcaLogo({ className }: { className?: string }) {
   return (
     <img
-      src={logoUrl}
-      alt="CCA HealthCast OS"
+      src={brand.logoSrc}
+      alt={`${productFullName} — ${brand.companyName}`}
       className={`object-contain${className ? ` ${className}` : ""}`}
     />
   );

@@ -1,18 +1,18 @@
-import { ShieldAlert } from "lucide-react";
+import { Database } from "lucide-react";
 import { TopHeader } from "./TopHeader";
 import { SidebarNav } from "./SidebarNav";
 import { DemoPromo } from "./DemoPromo";
+import { brand } from "@/brand/brandConfig";
 
 const CAPTURE_MODE = false;
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col h-screen bg-background text-foreground overflow-hidden font-sans relative selection:bg-primary/30">
-      {/* Layered ambient backdrop for depth */}
-      <div className="absolute inset-0 pointer-events-none bg-grid opacity-[0.4] z-0"></div>
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/15 via-background/0 to-background z-0"></div>
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-cyan/10 via-background/0 to-background/0 z-0"></div>
-      <div className="absolute -top-24 left-1/3 w-[480px] h-[480px] rounded-full bg-primary/10 blur-[120px] pointer-events-none z-0"></div>
+      {/* Subtle light ambient backdrop */}
+      <div className="absolute inset-0 pointer-events-none bg-grid opacity-[0.5] z-0"></div>
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/[0.06] via-background/0 to-background/0 z-0"></div>
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-cyan/[0.05] via-background/0 to-background/0 z-0"></div>
 
       {/* Top Header */}
       <TopHeader />
@@ -20,12 +20,12 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       {/* Walkthrough promo banner + first-visit popup */}
       {!CAPTURE_MODE && <DemoPromo />}
 
-      {/* Internal demo disclosure banner */}
-      {!CAPTURE_MODE && (
-        <div className="relative z-10 flex items-center justify-center gap-2 px-4 py-2 border-b border-amber-500/40 bg-amber-50 text-amber-900">
-          <ShieldAlert className="w-3.5 h-3.5 flex-shrink-0 text-amber-600" />
-          <span className="text-[12px] font-semibold tracking-wide text-center">
-            Internal demo — sample financial data only. Not connected to live systems.
+      {/* Sample-data note (neutral, white-label) */}
+      {!CAPTURE_MODE && brand.showSampleDataNote && (
+        <div className="relative z-10 flex items-center justify-center gap-2 px-4 py-1.5 border-b border-border bg-secondary/40 text-muted-foreground">
+          <Database className="w-3.5 h-3.5 flex-shrink-0 text-primary" />
+          <span className="text-[12px] font-medium tracking-wide text-center">
+            {brand.sampleDataNote}
           </span>
         </div>
       )}

@@ -55,13 +55,13 @@ export function DemoPromo() {
   return (
     <>
       {bannerVisible && (
-        <div className="relative z-20 flex items-center justify-center gap-3 px-10 py-2.5 bg-gradient-to-r from-[#071827] via-[#0c2740] to-[#071827] border-b border-primary/30 text-white shadow-sm">
-          <PlayCircle className="w-4 h-4 text-cyan flex-shrink-0" />
+        <div className="relative z-20 flex items-center justify-center gap-3 px-10 py-2.5 bg-gradient-to-r from-accent/60 via-accent to-accent/60 border-b border-primary/25 text-foreground">
+          <PlayCircle className="w-4 h-4 text-primary flex-shrink-0" />
           <span className="text-[12.5px] font-semibold tracking-wide text-center">
             New — take the 90-second HealthCast walkthrough and see the full command center in action.
           </span>
           <Link href="/demo/">
-            <div className="ml-1 inline-flex items-center gap-1.5 rounded-md bg-primary/20 hover:bg-primary/30 border border-primary/40 px-2.5 py-1 text-[12px] font-bold text-white transition-colors cursor-pointer">
+            <div className="ml-1 inline-flex items-center gap-1.5 rounded-md bg-primary/15 hover:bg-primary/25 border border-primary/30 px-2.5 py-1 text-[12px] font-bold text-primary transition-colors cursor-pointer">
               Watch now
               <ArrowRight className="w-3.5 h-3.5" />
             </div>
@@ -69,7 +69,7 @@ export function DemoPromo() {
           <button
             onClick={dismissBanner}
             aria-label="Dismiss walkthrough banner"
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors p-1"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1"
           >
             <X className="w-3.5 h-3.5" />
           </button>

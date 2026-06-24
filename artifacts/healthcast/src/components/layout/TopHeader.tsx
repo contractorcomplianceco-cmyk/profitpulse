@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { CcaLogo } from "./CcaLogo";
+import { brand } from "@/brand/brandConfig";
 import { 
   BookOpen, 
   Users, 
@@ -28,16 +29,16 @@ const INTEGRATIONS = [
 
 export function TopHeader() {
   return (
-    <header className="h-[72px] flex-shrink-0 border-b border-border surface-gradient-accent flex items-center justify-between px-6 z-30 relative shadow-lg shadow-black/30 accent-topline">
+    <header className="h-[72px] flex-shrink-0 border-b border-border surface-gradient-accent flex items-center justify-between px-6 z-30 relative accent-topline">
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent pointer-events-none"></div>
       {/* Left: Brand */}
-      <div className="flex items-center gap-4">
-        <CcaLogo className="w-10 h-10 flex-shrink-0 drop-shadow-[0_0_12px_hsl(var(--primary)/0.5)]" />
+      <div className="flex items-center gap-3">
+        <CcaLogo className="w-11 h-11 flex-shrink-0" />
         <div className="flex flex-col">
-          <span className="font-extrabold text-[16px] tracking-tight leading-none">
-            <span className="text-white">HealthCast</span><span className="text-cyan">OS</span>
+          <span className="font-extrabold text-[17px] tracking-tight leading-none">
+            <span className="text-brand-navy">{brand.productName}</span><span className="text-brand-teal">{brand.productSuffix}</span>
           </span>
-          <span className="text-[10px] text-primary font-bold uppercase tracking-widest leading-relaxed mt-0.5">Financial Health, Growth Intelligence &amp; Futurecast Command Center</span>
+          <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-[0.14em] leading-relaxed mt-1">{brand.tagline}</span>
         </div>
       </div>
 
@@ -82,12 +83,12 @@ export function TopHeader() {
         
         <div className="flex items-center gap-3 cursor-pointer hover:bg-secondary/40 p-2 rounded-xl transition-colors border border-transparent">
           <div className="flex flex-col items-end text-right hidden sm:flex">
-            <span className="text-[13px] font-bold leading-none tracking-wide text-foreground">Rose / Owner</span>
-            <span className="text-[11px] font-semibold text-primary uppercase tracking-widest mt-1">CEO</span>
+            <span className="text-[13px] font-bold leading-none tracking-wide text-foreground">{brand.owner.name}</span>
+            <span className="text-[11px] font-semibold text-primary uppercase tracking-widest mt-1">{brand.owner.role}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-lg bg-gradient-primary border border-primary-foreground/20 flex items-center justify-center text-primary-foreground font-bold shadow-lg shadow-primary/30 text-lg">
-              R
+              {brand.owner.initials}
             </div>
             <ChevronDown className="w-4 h-4 text-muted-foreground" />
           </div>

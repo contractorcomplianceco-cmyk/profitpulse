@@ -87,8 +87,8 @@ export function SidebarNav() {
   const [location] = useLocation();
 
   return (
-    <aside className="w-[260px] flex-shrink-0 border-r border-border surface-gradient flex flex-col relative z-20 shadow-xl shadow-black/30">
-      <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-primary/30 to-transparent pointer-events-none"></div>
+    <aside className="w-[260px] flex-shrink-0 border-r border-border surface-gradient flex flex-col relative z-20 shadow-[0_8px_24px_-18px_hsl(217_60%_20%_/_0.35)]">
+      <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-primary/20 to-transparent pointer-events-none"></div>
       <div className="flex-1 overflow-y-auto py-6 custom-scrollbar">
         {NAV_SECTIONS.map((section, sectionIdx) => (
           <div key={section.title} className={cn(sectionIdx > 0 && "mt-6")}>
@@ -106,8 +106,8 @@ export function SidebarNav() {
                     className={cn(
                       "group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 cursor-pointer text-[13px] font-semibold relative overflow-hidden",
                       isActive
-                        ? "bg-gradient-primary text-primary-foreground shadow-lg shadow-primary/30 border border-primary/40"
-                        : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground border border-transparent hover:border-primary/20 hover:translate-x-0.5"
+                        ? "bg-gradient-primary text-primary-foreground shadow-md shadow-primary/25 border border-primary/30"
+                        : "text-muted-foreground hover:bg-accent/70 hover:text-foreground border border-transparent hover:border-primary/15 hover:translate-x-0.5"
                     )}
                   >
                     {isActive && (
