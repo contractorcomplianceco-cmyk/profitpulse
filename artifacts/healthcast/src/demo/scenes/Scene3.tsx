@@ -16,9 +16,9 @@ const NAV = [
 ];
 
 const MONTAGE = [
-  { label: 'Cash Flow', image: 'cashflow', url: 'app.profitpulse.com  ·  Cash Flow' },
-  { label: 'Futurecast', image: 'futurecast', url: 'app.profitpulse.com  ·  Futurecast' },
-  { label: 'Alerts', image: 'alerts', url: 'app.profitpulse.com  ·  Alerts Engine' },
+  { label: 'Cash Flow', image: 'cashflow', url: 'app.ccaprofitpulse.com  ·  Cash Flow' },
+  { label: 'Futurecast', image: 'futurecast', url: 'app.ccaprofitpulse.com  ·  Futurecast' },
+  { label: 'Alerts', image: 'alerts', url: 'app.ccaprofitpulse.com  ·  Alerts Engine' },
 ];
 
 export function Scene3() {

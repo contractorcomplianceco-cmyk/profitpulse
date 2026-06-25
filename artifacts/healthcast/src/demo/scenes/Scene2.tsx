@@ -46,7 +46,7 @@ export function Scene2() {
       >
         <ScreenFrame
           image="dashboard"
-          url="app.profitpulse.com  ·  Executive Overview"
+          url="app.ccaprofitpulse.com  ·  Executive Overview"
           durationSec={12.5}
         />
       </motion.div>

@@ -69,7 +69,7 @@ export function Scene4() {
       >
         <ScreenFrame
           image="scenario"
-          url="app.profitpulse.com  ·  Scenario Builder"
+          url="app.ccaprofitpulse.com  ·  Scenario Builder"
           durationSec={11.5}
         />
       </motion.div>

@@ -19,6 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useBrand, useProductFullName } from "@/brand/BrandProvider";
 import { BRAND_PRESETS } from "@/brand/brandConfig";
 import { resolveAsset } from "@/lib/asset";
+import { isDemoMode } from "@/brand/demoMode";
 
 function Field({
   label,
@@ -114,6 +115,11 @@ export default function WhiteLabelSettings() {
 
   return (
     <div className="max-w-[1100px] mx-auto px-1 py-1">
+      {isDemoMode && (
+        <div className="mb-4 rounded-lg border border-primary/25 bg-accent/50 px-4 py-2.5 text-[12.5px] text-foreground">
+          <span className="font-bold text-primary">Demo sandbox.</span> Try the white-label theming live — changes preview instantly and reset when you reload. Nothing is saved.
+        </div>
+      )}
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-7">
         <div className="flex items-start gap-3">

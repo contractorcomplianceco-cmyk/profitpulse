@@ -23,9 +23,9 @@ interface Rect { top: number; left: number; width: number; height: number; }
 function shouldAutostart(): boolean {
   if (typeof window === "undefined") return false;
   const params = new URLSearchParams(window.location.search);
-  if (params.get("tour") === "1") return true;
-  // In the standalone demo build, offer the guided tour on first load.
-  return isDemoMode;
+  // Only auto-start via explicit ?tour=1. In the demo build the tour is launched
+  // by the funnel (after the lead-capture gate), NOT automatically on load.
+  return params.get("tour") === "1";
 }
 
 export function GuidedTour() {
@@ -167,22 +167,18 @@ export function GuidedTour() {
 
               {isFinale && (
                 <div className="flex flex-col sm:flex-row gap-2 mt-4">
-                  <a
-                    href={demoConfig.ctaHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    onClick={() => { close(); navigate("/buy"); }}
                     className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-gradient-primary text-primary-foreground text-[13px] font-bold py-2.5 hover:opacity-90 transition-opacity"
                   >
-                    <Rocket className="w-4 h-4" /> Start free trial
-                  </a>
-                  <a
-                    href={demoConfig.secondaryHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    <Rocket className="w-4 h-4" /> Buy now
+                  </button>
+                  <button
+                    onClick={() => { close(); navigate("/signup"); }}
                     className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg border border-border text-foreground text-[13px] font-semibold py-2.5 hover:bg-secondary/50 transition-colors"
                   >
-                    <CalendarCheck className="w-4 h-4" /> Book a walkthrough
-                  </a>
+                    <CalendarCheck className="w-4 h-4" /> Sign up free
+                  </button>
                 </div>
               )}
 

@@ -1,6 +1,9 @@
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { startGuidedTour } from "@/demo/GuidedTour";
+import { isDemoMode } from "@/brand/demoMode";
+import { X, Rocket } from "lucide-react";
 import {
   ArrowRight,
   Check,
@@ -122,9 +125,22 @@ export default function Landing() {
   const { brand } = useBrand();
   const productFullName = useProductFullName();
   const [, navigate] = useLocation();
+  const [startPopup, setStartPopup] = useState(false);
 
-  // Take the prospect into the live app and auto-launch the guided tour.
+  // In the demo build, greet visitors with a "Start the demo" popup on load.
+  useEffect(() => {
+    if (!isDemoMode) return;
+    const t = setTimeout(() => setStartPopup(true), 1100);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Primary demo entry. In the demo build, route through the lead-capture gate;
+  // in the live product, launch the guided tour directly.
   const startInteractiveTour = () => {
+    if (isDemoMode) {
+      navigate("/request-demo");
+      return;
+    }
     navigate("/");
     setTimeout(() => startGuidedTour(), 400);
   };
@@ -202,14 +218,14 @@ export default function Landing() {
           custom={3}
           className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3"
         >
+          <Button size="lg" onClick={startInteractiveTour} className="gap-2 text-[15px] px-7 h-12">
+            <Sparkles className="w-4.5 h-4.5" /> Try the live demo
+          </Button>
           <Link href="/demo/">
-            <Button size="lg" className="gap-2 text-[15px] px-7 h-12">
-              <PlayCircle className="w-4.5 h-4.5" /> Watch the demo
+            <Button size="lg" variant="outline" className="gap-2 text-[15px] px-7 h-12">
+              <PlayCircle className="w-4.5 h-4.5" /> Watch the video
             </Button>
           </Link>
-          <Button size="lg" variant="outline" onClick={startInteractiveTour} className="gap-2 text-[15px] px-7 h-12">
-            <Sparkles className="w-4.5 h-4.5" /> Take the interactive tour
-          </Button>
         </motion.div>
 
         {/* Dashboard preview */}
@@ -360,14 +376,14 @@ export default function Landing() {
           Stop guessing. Start running your business from the numbers.
         </h2>
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Button size="lg" onClick={startInteractiveTour} className="gap-2 text-[15px] px-8 h-12">
+            <Sparkles className="w-4.5 h-4.5" /> Try the live demo
+          </Button>
           <Link href="/demo/">
-            <Button size="lg" className="gap-2 text-[15px] px-8 h-12">
-              <PlayCircle className="w-4.5 h-4.5" /> Watch the demo
+            <Button size="lg" variant="outline" className="gap-2 text-[15px] px-8 h-12">
+              <PlayCircle className="w-4.5 h-4.5" /> Watch the video
             </Button>
           </Link>
-          <Button size="lg" variant="outline" onClick={startInteractiveTour} className="gap-2 text-[15px] px-8 h-12">
-            <Sparkles className="w-4.5 h-4.5" /> Take the interactive tour
-          </Button>
         </div>
       </section>
 
@@ -386,6 +402,52 @@ export default function Landing() {
           </p>
         </div>
       </footer>
+
+      {/* Demo build: "Start the demo" popup on load */}
+      <AnimatePresence>
+        {startPopup && (
+          <motion.div
+            className="fixed inset-0 z-[9998] flex items-center justify-center p-5 bg-[#06122a]/70 backdrop-blur-[2px]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setStartPopup(false)}
+          >
+            <motion.div
+              className="w-full max-w-[440px] rounded-2xl bg-card border border-border shadow-2xl overflow-hidden"
+              initial={{ opacity: 0, y: 16, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 8, scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 260, damping: 24 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="bg-gradient-primary px-6 py-4 flex items-center justify-between">
+                <div className="flex items-center gap-2 text-primary-foreground">
+                  <Rocket className="w-4 h-4" />
+                  <span className="text-[12px] font-bold uppercase tracking-wide">Live interactive demo</span>
+                </div>
+                <button onClick={() => setStartPopup(false)} aria-label="Close" className="text-primary-foreground/80 hover:text-primary-foreground">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="p-6">
+                <h3 className="text-[19px] font-extrabold tracking-tight text-brand-navy">See {productFullName} in action</h3>
+                <p className="text-[13.5px] text-muted-foreground mt-2 leading-relaxed">
+                  Step inside the live command center with realistic sample data and a guided walkthrough. Takes about two minutes.
+                </p>
+                <div className="flex flex-col gap-2.5 mt-5">
+                  <Button size="lg" className="w-full gap-2" onClick={() => { setStartPopup(false); navigate("/request-demo"); }}>
+                    <Sparkles className="w-4.5 h-4.5" /> Start the demo
+                  </Button>
+                  <button onClick={() => setStartPopup(false)} className="text-[12.5px] font-semibold text-muted-foreground hover:text-foreground transition-colors">
+                    Keep exploring the site
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

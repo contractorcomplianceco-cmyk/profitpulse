@@ -7,6 +7,10 @@ import NotFound from "@/pages/not-found";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { BrandProvider } from "@/brand/BrandProvider";
 import { GuidedTour } from "@/demo/GuidedTour";
+import { DemoFunnelProvider, useDemoFunnel } from "@/demo/DemoFunnel";
+import { isDemoMode } from "@/brand/demoMode";
+import { useEffect } from "react";
+import { useLocation } from "wouter";
 import ExecutiveOverview from "@/pages/ExecutiveOverview";
 import CashFlow from "@/pages/CashFlow";
 import RevenueIntelligence from "@/pages/RevenueIntelligence";
@@ -32,6 +36,9 @@ import ComplianceRisk from "@/pages/ComplianceRisk";
 import Welcome from "@/pages/Welcome";
 import Landing from "@/pages/Landing";
 import WhiteLabelSettings from "@/pages/WhiteLabelSettings";
+import RequestDemo from "@/pages/RequestDemo";
+import BuyNow from "@/pages/BuyNow";
+import SignUp from "@/pages/SignUp";
 import DemoWalkthrough from "@/demo/DemoWalkthrough";
 
 const queryClient = new QueryClient();
@@ -70,25 +77,55 @@ function Router() {
   );
 }
 
+/**
+ * Demo build only: enforce the sales funnel. If a prospect hasn't requested a
+ * walkthrough yet, any attempt to reach the app is redirected to the marketing
+ * landing page (where the "Start the demo" popup invites them to the lead form).
+ * Once the lead is captured, the live guided sandbox is unlocked.
+ */
+function DemoGate({ children }: { children: React.ReactNode }) {
+  const { unlocked } = useDemoFunnel();
+  const [location, navigate] = useLocation();
+
+  const PUBLIC = ["/landing", "/landing/", "/request-demo", "/buy", "/signup", "/demo", "/demo/"];
+  const isPublic = PUBLIC.includes(location);
+
+  useEffect(() => {
+    if (isDemoMode && !unlocked && !isPublic) {
+      navigate("/landing");
+    }
+  }, [unlocked, isPublic, location, navigate]);
+
+  if (isDemoMode && !unlocked && !isPublic) return null;
+  return <>{children}</>;
+}
+
 function App() {
   return (
     <BrandProvider>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <WouterRouter hook={useHashLocation}>
-            <Switch>
-              <Route path="/demo" component={DemoWalkthrough} />
-              <Route path="/demo/" component={DemoWalkthrough} />
-              <Route path="/landing" component={Landing} />
-              <Route path="/landing/" component={Landing} />
-              <Route component={Router} />
-            </Switch>
-          </WouterRouter>
-          {/* Guided interactive product tour overlay (driven by ?tour=1 or demo mode) */}
-          <GuidedTour />
-          <Toaster />
-        </TooltipProvider>
-      </QueryClientProvider>
+      <DemoFunnelProvider>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <WouterRouter hook={useHashLocation}>
+              <DemoGate>
+                <Switch>
+                  <Route path="/demo" component={DemoWalkthrough} />
+                  <Route path="/demo/" component={DemoWalkthrough} />
+                  <Route path="/landing" component={Landing} />
+                  <Route path="/landing/" component={Landing} />
+                  <Route path="/request-demo" component={RequestDemo} />
+                  <Route path="/buy" component={BuyNow} />
+                  <Route path="/signup" component={SignUp} />
+                  <Route component={Router} />
+                </Switch>
+              </DemoGate>
+            </WouterRouter>
+            {/* Guided interactive product tour overlay (driven by ?tour=1 or demo mode) */}
+            <GuidedTour />
+            <Toaster />
+          </TooltipProvider>
+        </QueryClientProvider>
+      </DemoFunnelProvider>
     </BrandProvider>
   );
 }

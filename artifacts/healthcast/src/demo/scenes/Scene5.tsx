@@ -69,7 +69,7 @@ export function Scene5() {
       >
         <ScreenFrame
           image="integrations"
-          url="app.profitpulse.com  ·  Data Integrations"
+          url="app.ccaprofitpulse.com  ·  Data Integrations"
           durationSec={9}
         />
       </motion.div>

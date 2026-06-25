@@ -79,8 +79,8 @@ export const brand: BrandConfig = {
   showSampleDataNote: true,
   sampleDataNote:
     "Sample data shown — connect your accounting, CRM, and ad platforms to go live.",
-  website: "profitpulse.com",
-  supportEmail: "hello@profitpulse.com",
+  website: "ccaprofitpulse.com",
+  supportEmail: "hello@ccaprofitpulse.com",
   theme: {
     navy: "#001E4D",
     teal: "#0FA3A3",
