@@ -29,7 +29,7 @@ export function Scene2() {
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       >
         <h2 className="text-3xl md:text-5xl font-display font-bold text-white tracking-tight">
-          The whole organization, <span className="text-[#2BD4A8]">in focus</span>
+          The whole organization, <span className="text-[#49BFF2]">in focus</span>
         </h2>
         <p className="text-[#94a3b8] text-base md:text-lg font-body mt-3">
           Cash, revenue, staffing, and risk — live, in one place.

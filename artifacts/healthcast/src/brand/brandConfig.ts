@@ -82,9 +82,9 @@ export const brand: BrandConfig = {
   website: "ccaprofitpulse.com",
   supportEmail: "hello@ccaprofitpulse.com",
   theme: {
-    navy: "#001E4D",
-    teal: "#0FA3A3",
-    green: "#22C55E",
+    navy: "#0A2A57",  /* Profit Ink */
+    teal: "#17A8B8",  /* Pulse Teal */
+    green: "#3FB257", /* Growth Green */
   },
 };
 
@@ -96,7 +96,7 @@ export interface BrandPreset {
 }
 
 export const BRAND_PRESETS: BrandPreset[] = [
-  { id: "profitpulse", label: "ProfitPulse (default)", theme: { navy: "#001E4D", teal: "#0FA3A3", green: "#22C55E" } },
+  { id: "profitpulse", label: "ProfitPulse (default)", theme: { navy: "#0A2A57", teal: "#17A8B8", green: "#3FB257" } },
   { id: "slate-blue", label: "Slate Blue", theme: { navy: "#0B1F3A", teal: "#2563EB", green: "#16A34A" } },
   { id: "forest", label: "Forest", theme: { navy: "#14331F", teal: "#0E9F6E", green: "#65A30D" } },
   { id: "graphite-amber", label: "Graphite & Amber", theme: { navy: "#1F2430", teal: "#D97706", green: "#16A34A" } },

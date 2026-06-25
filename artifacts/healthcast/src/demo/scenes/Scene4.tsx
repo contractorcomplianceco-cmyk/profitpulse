@@ -32,7 +32,7 @@ export function Scene4() {
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       >
         <h2 className="text-3xl md:text-5xl font-display font-bold text-white tracking-tight">
-          Model the decision <span className="text-[#2BD4A8]">before</span> you make it
+          Model the decision <span className="text-[#49BFF2]">before</span> you make it
         </h2>
         <p className="text-[#94a3b8] text-base md:text-lg font-body mt-3">
           Move a lever — watch the future recalculate instantly.

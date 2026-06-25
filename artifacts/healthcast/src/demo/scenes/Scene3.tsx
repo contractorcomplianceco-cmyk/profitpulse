@@ -46,7 +46,7 @@ export function Scene3() {
       <div className="w-full max-w-6xl flex gap-10 items-center">
         {/* Nav list */}
         <div className="w-1/4 flex flex-col gap-2.5 shrink-0">
-          <div className="text-xs uppercase tracking-widest text-[#2BD4A8]/70 font-body mb-2">
+          <div className="text-xs uppercase tracking-widest text-[#49BFF2]/70 font-body mb-2">
             One click away
           </div>
           {NAV.map((label) => {
@@ -55,7 +55,7 @@ export function Scene3() {
               <div key={label} className="flex items-center gap-3">
                 <div
                   className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                    isActive ? 'bg-[#2BD4A8] shadow-[0_0_10px_rgba(43,212,168,0.9)] scale-150' : 'bg-white/20'
+                    isActive ? 'bg-[#49BFF2] shadow-[0_0_10px_rgba(73,191,242,0.9)] scale-150' : 'bg-white/20'
                   }`}
                 />
                 <span

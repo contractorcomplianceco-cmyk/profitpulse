@@ -90,10 +90,10 @@
   --elevate-1: rgba(10, 30, 65, .035);
   --elevate-2: rgba(10, 30, 65, .07);
 
-  /* Brand anchors (used by .text-brand-navy etc.) */
-  --brand-navy: 217 100% 15%;   /* #001E4D */
-  --brand-navy-2: 222 100% 12%; /* deep navy */
-  --brand-teal: 184 82% 33%;    /* logo teal */
+  /* Brand anchors — official ProfitPulse OS palette */
+  --brand-navy: 215 79% 19%;    /* Profit Ink #0A2A57 */
+  --brand-navy-2: 211 89% 22%;  /* gradient start #06366B */
+  --brand-teal: 186 78% 41%;    /* Pulse Teal #17A8B8 */
 
   /* CONTENT (light) — canvas: soft cool white */
   --background: 210 33% 98%;
@@ -102,7 +102,7 @@
   /* Borders and UI elements — light slate */
   --border: 214 28% 89%;
   --input: 214 28% 89%;
-  --ring: 184 82% 38%;
+  --ring: 186 78% 41%;
 
   /* Cards / popovers — white */
   --card: 0 0% 100%;
@@ -113,8 +113,8 @@
   --popover-foreground: 222 45% 16%;
   --popover-border: 214 22% 86%;
 
-  /* Primary Action — logo teal, deepened for contrast on white */
-  --primary: 184 82% 33%;
+  /* Primary Action — Pulse Teal */
+  --primary: 186 78% 38%;
   --primary-foreground: 0 0% 100%;
 
   /* Secondary — light cool grey */
@@ -141,19 +141,19 @@
   --warning: 35 90% 42%;
   --warning-foreground: 0 0% 100%;
 
-  /* Charts — tuned to the brand palette on white surfaces */
-  --chart-1: 184 82% 33%; /* teal */
-  --chart-2: 152 64% 38%; /* growth green */
-  --chart-3: 210 90% 38%; /* navy-blue */
+  /* Charts — official ProfitPulse palette */
+  --chart-1: 186 78% 41%; /* Pulse Teal */
+  --chart-2: 133 48% 47%; /* Growth Green */
+  --chart-3: 203 77% 48%; /* Signal Blue */
   --chart-4: 35 90% 46%;  /* amber */
   --chart-5: 348 78% 50%; /* crimson */
 
   /* Accent spectrum */
-  --electric: 184 76% 36%;
-  --cyan: 192 84% 40%;
+  --electric: 198 87% 55%; /* Sky Cyan-ish */
+  --cyan: 198 87% 62%;     /* Sky Cyan #49BFF2 */
 
-  /* Brand gradients — teal → growth-green (the rising bars in the logo) */
-  --gradient-primary: linear-gradient(135deg, hsl(184 82% 33%), hsl(168 72% 38%));
+  /* Brand gradient — official Pulse gradient (130deg #06366B -> #0E8FB0 -> teal/green) */
+  --gradient-primary: linear-gradient(130deg, hsl(211 89% 22%), hsl(192 85% 37%) 55%, hsl(133 48% 47%));
   --gradient-accent: linear-gradient(135deg, hsl(180 70% 40%), hsl(190 88% 40%));
   --gradient-success: linear-gradient(135deg, hsl(152 70% 33%), hsl(170 72% 36%));
   --gradient-warning: linear-gradient(135deg, hsl(35 90% 44%), hsl(15 84% 50%));
@@ -171,11 +171,11 @@
   --sidebar: 0 0% 100%;
   --sidebar-foreground: 217 35% 32%;
   --sidebar-border: 214 28% 90%;
-  --sidebar-primary: 184 82% 33%;
+  --sidebar-primary: 186 78% 38%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 184 60% 95%;
-  --sidebar-accent-foreground: 184 80% 24%;
-  --sidebar-ring: 184 82% 38%;
+  --sidebar-accent: 186 55% 94%;
+  --sidebar-accent-foreground: 186 78% 26%;
+  --sidebar-ring: 186 78% 41%;
 
   --app-font-sans: 'Inter', sans-serif;
   --app-font-serif: Georgia, serif;
@@ -220,7 +220,7 @@ aside {
   --secondary-foreground: 217 40% 24%;
   --border: 214 28% 90%;
   --input: 214 28% 90%;
-  --primary: 184 82% 33%;
+  --primary: 186 78% 41%;
   --cyan: 192 84% 40%;
   /* light chrome surfaces */
   --gradient-surface: linear-gradient(160deg, hsl(0 0% 100%), hsl(210 30% 99%) 70%, hsl(192 36% 99%));
@@ -229,13 +229,13 @@ aside {
 
 /* Thin teal accent + soft drop shadow beneath the top header. */
 header.surface-gradient-accent {
-  border-bottom-color: hsl(184 70% 40% / 0.22);
-  box-shadow: 0 1px 0 0 hsl(184 75% 40% / 0.12), 0 8px 24px -16px hsl(217 60% 20% / 0.30);
+  border-bottom-color: hsl(186 74% 42% / 0.22);
+  box-shadow: 0 1px 0 0 hsl(186 78% 41% / 0.12), 0 8px 24px -16px hsl(217 60% 20% / 0.30);
 }
 
 /* Soft teal lift on the active sidebar nav item. */
 aside .bg-gradient-primary {
-  box-shadow: 0 0 0 1px hsl(184 75% 40% / 0.30), 0 6px 18px -8px hsl(184 80% 38% / 0.40);
+  box-shadow: 0 0 0 1px hsl(186 78% 41% / 0.30), 0 6px 18px -8px hsl(186 78% 40% / 0.40);
 }
 
 .dark {

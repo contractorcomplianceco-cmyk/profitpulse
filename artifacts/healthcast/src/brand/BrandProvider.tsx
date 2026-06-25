@@ -95,10 +95,10 @@ export function applyThemeVars(theme: BrandTheme, root: HTMLElement = document.d
   root.style.setProperty("--sidebar-accent-foreground", hsl(teal.h, clamp(teal.s), clamp(teal.l - 9)));
   root.style.setProperty("--sidebar-ring", hsl(teal.h, teal.s, clamp(teal.l + 5)));
 
-  // Gradients (teal → green)
+  // Gradient — official Pulse gradient feel: deep navy → teal → green.
   root.style.setProperty(
     "--gradient-primary",
-    `linear-gradient(135deg, hsl(${hsl(teal.h, teal.s, teal.l)}), hsl(${hsl(green.h, clamp(green.s - 6), clamp(green.l + 4))}))`,
+    `linear-gradient(130deg, hsl(${hsl(navy.h, clamp(navy.s + 6), clamp(navy.l + 4))}), hsl(${hsl(teal.h, teal.s, teal.l)}) 55%, hsl(${hsl(green.h, clamp(green.s - 4), clamp(green.l + 3))}))`,
   );
 }
 

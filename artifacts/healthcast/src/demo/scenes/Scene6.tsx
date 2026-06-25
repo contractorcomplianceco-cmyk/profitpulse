@@ -23,7 +23,7 @@ export function Scene6() {
     >
       {/* Background Flare */}
       <motion.div
-        className="absolute bottom-0 w-full h-[50vh] bg-gradient-to-t from-[#0FA3A3]/20 to-transparent"
+        className="absolute bottom-0 w-full h-[50vh] bg-gradient-to-t from-[#17A8B8]/20 to-transparent"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 2 }}

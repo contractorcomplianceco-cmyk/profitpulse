@@ -1,14 +1,14 @@
 .hc-demo {
-  --color-primary: #001E4D;
-  --color-secondary: #0FA3A3;
-  --color-accent: #2BD4A8;
+  --color-primary: #0A2A57;   /* Profit Ink */
+  --color-secondary: #17A8B8; /* Pulse Teal */
+  --color-accent: #49BFF2;    /* Sky Cyan */
   --color-bg-light: #f8fafc;
-  --color-bg-dark: #04122e;
-  --color-bg-muted: #0d2148;
+  --color-bg-dark: #06366B;   /* gradient start */
+  --color-bg-muted: #0d2e5e;
   --color-text-primary: #f8fafc;
   --color-text-secondary: #9fb3c8;
   --color-text-muted: #6b7f99;
-  --color-success: #22C55E;
+  --color-success: #3FB257;   /* Growth Green */
   --color-warning: #f59e0b;
   --color-error: #fb7185;
   font-family: 'DM Sans', sans-serif;
