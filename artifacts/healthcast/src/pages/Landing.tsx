@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useBrand, useProductFullName } from "@/brand/BrandProvider";
+import { useDemoFunnel } from "@/demo/DemoFunnel";
 import { asset, resolveAsset } from "@/lib/asset";
 
 // The interactive app/dashboard lives at the root path in both the live product
@@ -126,8 +127,16 @@ const PLANS = [
 export default function Landing() {
   const { brand } = useBrand();
   const productFullName = useProductFullName();
+  const { submitLead } = useDemoFunnel();
   const [, navigate] = useLocation();
   const [startPopup, setStartPopup] = useState(false);
+
+  // Bypass the lead gate and go straight into the live dashboard.
+  const skipToDashboard = () => {
+    submitLead({ name: "Guest", email: "", company: "", phone: "" });
+    setStartPopup(false);
+    navigate("/");
+  };
 
   // In the demo build, pop up the video walkthrough on load.
   useEffect(() => {
@@ -172,11 +181,9 @@ export default function Landing() {
               <PlayCircle className="w-4 h-4" /> Watch demo
             </Button>
           </Link>
-          <Link href={APP_HREF}>
-            <Button size="sm" className="gap-1.5">
-              Open app <ArrowRight className="w-4 h-4" />
-            </Button>
-          </Link>
+          <Button size="sm" className="gap-1.5" onClick={skipToDashboard}>
+            Open app <ArrowRight className="w-4 h-4" />
+          </Button>
         </div>
       </header>
 
@@ -445,8 +452,8 @@ export default function Landing() {
                   Want to click around yourself? Jump into the live demo with sample data.
                 </p>
                 <div className="flex items-center gap-2.5 w-full sm:w-auto">
-                  <button onClick={() => setStartPopup(false)} className="text-[12.5px] font-semibold text-muted-foreground hover:text-foreground transition-colors px-2">
-                    Keep browsing
+                  <button onClick={skipToDashboard} className="text-[12.5px] font-semibold text-muted-foreground hover:text-foreground transition-colors px-2">
+                    Skip to dashboard
                   </button>
                   <Button className="gap-2 flex-1 sm:flex-none" onClick={() => { setStartPopup(false); navigate("/request-demo"); }}>
                     <Sparkles className="w-4 h-4" /> Try the live demo
