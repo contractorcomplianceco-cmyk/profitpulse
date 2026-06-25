@@ -83,20 +83,37 @@ function Router() {
  * landing page (where the "Start the demo" popup invites them to the lead form).
  * Once the lead is captured, the live guided sandbox is unlocked.
  */
+// Internal bypass: open the app with `?skip=1` (or `#skip`) to go straight into
+// the dashboard, skipping the prospect lead-gate. For the team/owner to review
+// the portal. Prospects without the flag still get the full gated funnel.
+function hasSkipFlag(): boolean {
+  if (typeof window === "undefined") return false;
+  const url = window.location.href;
+  return /[?&#]skip(=1|=true)?(\b|&|$)/i.test(url) || window.location.hash.includes("skip");
+}
+
 function DemoGate({ children }: { children: React.ReactNode }) {
-  const { unlocked } = useDemoFunnel();
+  const { unlocked, submitLead } = useDemoFunnel();
   const [location, navigate] = useLocation();
+
+  // One-time: if the skip flag is present, unlock immediately.
+  useEffect(() => {
+    if (isDemoMode && hasSkipFlag() && !unlocked) {
+      submitLead({ name: "Team Preview", email: "team@ccaprofitpulse.com", company: "CCA", phone: "" });
+    }
+  }, [unlocked, submitLead]);
 
   const PUBLIC = ["/landing", "/landing/", "/request-demo", "/buy", "/signup", "/demo", "/demo/"];
   const isPublic = PUBLIC.includes(location);
+  const bypass = unlocked || hasSkipFlag();
 
   useEffect(() => {
-    if (isDemoMode && !unlocked && !isPublic) {
+    if (isDemoMode && !bypass && !isPublic) {
       navigate("/landing");
     }
-  }, [unlocked, isPublic, location, navigate]);
+  }, [bypass, isPublic, location, navigate]);
 
-  if (isDemoMode && !unlocked && !isPublic) return null;
+  if (isDemoMode && !bypass && !isPublic) return null;
   return <>{children}</>;
 }
 
