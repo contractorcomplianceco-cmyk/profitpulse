@@ -201,14 +201,14 @@ export default function Landing() {
           custom={3}
           className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3"
         >
-          <Button size="lg" onClick={startInteractiveTour} className="gap-2 text-[15px] px-7 h-12">
-            <Sparkles className="w-4.5 h-4.5" /> Take the interactive tour
-          </Button>
           <Link href="/demo/">
-            <Button size="lg" variant="outline" className="gap-2 text-[15px] px-7 h-12">
-              <PlayCircle className="w-4.5 h-4.5" /> Watch the 90-second demo
+            <Button size="lg" className="gap-2 text-[15px] px-7 h-12">
+              <PlayCircle className="w-4.5 h-4.5" /> Watch the demo
             </Button>
           </Link>
+          <Button size="lg" variant="outline" onClick={startInteractiveTour} className="gap-2 text-[15px] px-7 h-12">
+            <Sparkles className="w-4.5 h-4.5" /> Take the interactive tour
+          </Button>
         </motion.div>
 
         {/* Dashboard preview */}
@@ -359,14 +359,14 @@ export default function Landing() {
           Stop guessing. Start running your business from the numbers.
         </h2>
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Button size="lg" onClick={startInteractiveTour} className="gap-2 text-[15px] px-8 h-12">
-            <Sparkles className="w-4.5 h-4.5" /> Take the interactive tour
-          </Button>
-          <Link href={APP_HREF}>
-            <Button size="lg" variant="outline" className="gap-2 text-[15px] px-8 h-12">
-              Open {productFullName} <ArrowRight className="w-4.5 h-4.5" />
+          <Link href="/demo/">
+            <Button size="lg" className="gap-2 text-[15px] px-8 h-12">
+              <PlayCircle className="w-4.5 h-4.5" /> Watch the demo
             </Button>
           </Link>
+          <Button size="lg" variant="outline" onClick={startInteractiveTour} className="gap-2 text-[15px] px-8 h-12">
+            <Sparkles className="w-4.5 h-4.5" /> Take the interactive tour
+          </Button>
         </div>
       </section>
 
