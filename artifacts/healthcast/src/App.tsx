@@ -4,6 +4,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { BrandProvider } from "@/brand/BrandProvider";
+import { GuidedTour } from "@/demo/GuidedTour";
 import ExecutiveOverview from "@/pages/ExecutiveOverview";
 import CashFlow from "@/pages/CashFlow";
 import RevenueIntelligence from "@/pages/RevenueIntelligence";
@@ -28,6 +30,7 @@ import CashCalendar from "@/pages/CashCalendar";
 import ComplianceRisk from "@/pages/ComplianceRisk";
 import Welcome from "@/pages/Welcome";
 import Landing from "@/pages/Landing";
+import WhiteLabelSettings from "@/pages/WhiteLabelSettings";
 import DemoWalkthrough from "@/demo/DemoWalkthrough";
 
 const queryClient = new QueryClient();
@@ -59,6 +62,7 @@ function Router() {
         <Route path="/goals" component={GoalsOkrs} />
         <Route path="/cash-calendar" component={CashCalendar} />
         <Route path="/compliance" component={ComplianceRisk} />
+        <Route path="/settings" component={WhiteLabelSettings} />
         <Route component={NotFound} />
       </Switch>
     </AppLayout>
@@ -67,20 +71,24 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <Switch>
-            <Route path="/demo" component={DemoWalkthrough} />
-            <Route path="/demo/" component={DemoWalkthrough} />
-            <Route path="/landing" component={Landing} />
-            <Route path="/landing/" component={Landing} />
-            <Route component={Router} />
-          </Switch>
-        </WouterRouter>
-        <Toaster />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <BrandProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+            <Switch>
+              <Route path="/demo" component={DemoWalkthrough} />
+              <Route path="/demo/" component={DemoWalkthrough} />
+              <Route path="/landing" component={Landing} />
+              <Route path="/landing/" component={Landing} />
+              <Route component={Router} />
+            </Switch>
+          </WouterRouter>
+          {/* Guided interactive product tour overlay (driven by ?tour=1 or demo mode) */}
+          <GuidedTour />
+          <Toaster />
+        </TooltipProvider>
+      </QueryClientProvider>
+    </BrandProvider>
   );
 }
 

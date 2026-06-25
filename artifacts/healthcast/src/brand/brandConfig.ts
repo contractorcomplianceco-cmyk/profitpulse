@@ -16,6 +16,19 @@ export interface BrandOwner {
   initials: string;
 }
 
+/**
+ * Brand theme colors as hex strings (what the white-label Settings screen edits).
+ * These are converted to the app's HSL CSS variables at runtime by BrandProvider.
+ */
+export interface BrandTheme {
+  /** Deep brand color for headings + the first half of the wordmark. */
+  navy: string;
+  /** Accent color: primary actions, the wordmark suffix, active nav. */
+  teal: string;
+  /** Positive / growth color. */
+  green: string;
+}
+
 export interface BrandConfig {
   /** Product brand, e.g. "HealthCast" */
   productName: string;
@@ -42,6 +55,8 @@ export interface BrandConfig {
   /** Marketing site / contact */
   website: string;
   supportEmail: string;
+  /** Editable brand color palette (drives live theming). */
+  theme: BrandTheme;
 }
 
 export const brand: BrandConfig = {
@@ -66,7 +81,28 @@ export const brand: BrandConfig = {
     "Sample data shown — connect your accounting, CRM, and ad platforms to go live.",
   website: "ccahealthcast.com",
   supportEmail: "hello@ccahealthcast.com",
+  theme: {
+    navy: "#001E4D",
+    teal: "#0FA3A3",
+    green: "#22C55E",
+  },
 };
+
+/** Built-in palette presets offered in the white-label Settings screen. */
+export interface BrandPreset {
+  id: string;
+  label: string;
+  theme: BrandTheme;
+}
+
+export const BRAND_PRESETS: BrandPreset[] = [
+  { id: "healthcast", label: "HealthCast (default)", theme: { navy: "#001E4D", teal: "#0FA3A3", green: "#22C55E" } },
+  { id: "slate-blue", label: "Slate Blue", theme: { navy: "#0B1F3A", teal: "#2563EB", green: "#16A34A" } },
+  { id: "forest", label: "Forest", theme: { navy: "#14331F", teal: "#0E9F6E", green: "#65A30D" } },
+  { id: "graphite-amber", label: "Graphite & Amber", theme: { navy: "#1F2430", teal: "#D97706", green: "#16A34A" } },
+  { id: "crimson", label: "Crimson", theme: { navy: "#2B0B12", teal: "#E11D48", green: "#16A34A" } },
+  { id: "royal-purple", label: "Royal Purple", theme: { navy: "#1E1043", teal: "#7C3AED", green: "#10B981" } },
+];
 
 /** Convenience: full product name, e.g. "HealthCast OS". */
 export const productFullName = `${brand.productName}${brand.productSuffix ? " " + brand.productSuffix : ""}`;

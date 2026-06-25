@@ -24,7 +24,8 @@ import {
   ShieldCheck,
   Compass,
   PlayCircle,
-  Megaphone
+  Megaphone,
+  Palette
 } from "lucide-react";
 import { HealthScoreCard } from "./HealthScoreCard";
 
@@ -37,6 +38,7 @@ const NAV_SECTIONS = [
       { href: "/copilot", label: "AI CFO Copilot", icon: Sparkles },
       { href: "/demo/", label: "Watch Demo", icon: PlayCircle },
       { href: "/landing", label: "Marketing Site", icon: Megaphone },
+      { href: "/settings", label: "White-Label Settings", icon: Palette },
     ],
   },
   {

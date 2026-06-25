@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { PlayCircle, ArrowRight, X } from "lucide-react";
+import { PlayCircle, ArrowRight, X, Sparkles } from "lucide-react";
+import { startGuidedTour } from "@/demo/GuidedTour";
 import {
   Dialog,
   DialogContent,
@@ -8,6 +9,14 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { isDemoMode } from "@/brand/demoMode";
+
+// The guided tour replaces this first-visit popup when it auto-starts.
+function tourWillAutostart(): boolean {
+  if (typeof window === "undefined") return false;
+  if (new URLSearchParams(window.location.search).get("tour") === "1") return true;
+  return isDemoMode;
+}
 
 const POPUP_KEY = "hc_demo_popup_seen";
 const BANNER_KEY = "hc_demo_banner_dismissed";
@@ -35,7 +44,8 @@ export function DemoPromo() {
 
   useEffect(() => {
     if (!safeGet(BANNER_KEY)) setBannerVisible(true);
-    if (!safeGet(POPUP_KEY)) {
+    // Don't show the first-visit popup if the guided tour is about to take over.
+    if (!safeGet(POPUP_KEY) && !tourWillAutostart()) {
       const t = setTimeout(() => setPopupOpen(true), 600);
       return () => clearTimeout(t);
     }
@@ -95,20 +105,33 @@ export function DemoPromo() {
               staffing, risk, and live scenario modeling, all in one place.
             </DialogDescription>
           </div>
-          <div className="flex gap-3 px-6 py-5 bg-background">
-            <Button variant="outline" className="flex-1" onClick={dismissPopup}>
-              Maybe later
-            </Button>
+          <div className="flex flex-col gap-2.5 px-6 py-5 bg-background">
             <Button
-              className="flex-1 gap-1.5"
+              className="w-full gap-1.5"
               onClick={() => {
                 dismissPopup();
-                navigate("/demo/");
+                startGuidedTour();
               }}
             >
-              Watch the walkthrough
-              <ArrowRight className="w-4 h-4" />
+              <Sparkles className="w-4 h-4" />
+              Take the interactive tour
             </Button>
+            <div className="flex gap-3">
+              <Button variant="outline" className="flex-1" onClick={dismissPopup}>
+                Maybe later
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1 gap-1.5"
+                onClick={() => {
+                  dismissPopup();
+                  navigate("/demo/");
+                }}
+              >
+                <PlayCircle className="w-4 h-4" />
+                Watch the video
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

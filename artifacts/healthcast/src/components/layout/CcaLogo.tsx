@@ -1,14 +1,16 @@
-import { brand, productFullName } from "@/brand/brandConfig";
+import { useBrand, useProductFullName } from "@/brand/BrandProvider";
 
 /**
- * Brand mark. Reads the logo + product name from the white-label brand config.
- * (Component name kept as CcaLogo for import stability across the app.)
+ * Brand mark. Reads the active (live, white-labelable) logo + product name from
+ * the brand context. (Component name kept as CcaLogo for import stability.)
  */
 export function CcaLogo({ className }: { className?: string }) {
+  const { brand } = useBrand();
+  const fullName = useProductFullName();
   return (
     <img
       src={brand.logoSrc}
-      alt={`${productFullName} — ${brand.companyName}`}
+      alt={`${fullName} — ${brand.companyName}`}
       className={`object-contain${className ? ` ${className}` : ""}`}
     />
   );

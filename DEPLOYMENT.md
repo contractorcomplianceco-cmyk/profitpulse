@@ -43,10 +43,30 @@ setup: route all paths to `/index.html`).
 
 ## Routes of note
 - `/`            Executive Overview (interactive dashboard)
+- `/?tour=1`     Launches the guided interactive product tour automatically
+- `/settings`    White-label Settings (live logo / name / color theming)
 - `/welcome`     Guided narrated onboarding tour
-- `/demo`        6-scene animated walkthrough
+- `/demo`        6-scene animated walkthrough (video-style)
 - `/landing`     Marketing / sales landing page (hero, features, pricing, CTAs)
 - 18 domain pages: /cash-flow, /scenario-builder, /futurecast, /integrations, …
+
+## Interactive product demo (the convincing one)
+A guided, clickable tour runs OVER the real dashboard: it spotlights live
+elements, auto-navigates between pages, and narrates the value for a prospect,
+ending on a "Start free trial / Book a walkthrough" CTA.
+- Tour script: `src/demo/tourSteps.ts` (edit copy/steps here)
+- Tour engine: `src/demo/GuidedTour.tsx`
+- Spotlight anchors: elements tagged with `data-tour="..."`
+- Launch it from: the landing "Take the interactive tour" button, the in-app
+  demo popup, `startGuidedTour()`, `?tour=1`, or automatically in the demo build.
+The older video-style walkthrough still lives at `/demo`.
+
+## White-label Settings (`/settings`)
+Live, in-app re-skinning — change product name, company, tagline, owner, logo
+(upload), and the color palette (with presets), and the whole app recolors
+instantly via CSS variables. Runtime state lives in `src/brand/BrandProvider.tsx`
+(in-memory; the sandbox blocks localStorage). To bake a customer's defaults
+permanently, set them in `src/brand/brandConfig.ts`.
 
 ## White-labeling (sellable to other contractors)
 All customer-facing identity is in **`src/brand/brandConfig.ts`**:

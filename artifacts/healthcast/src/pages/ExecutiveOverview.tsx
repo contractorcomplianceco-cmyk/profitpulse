@@ -103,7 +103,7 @@ export default function ExecutiveOverview() {
       className="flex flex-col gap-4 pb-12 w-full"
     >
       {/* A) TOP KPI ROW */}
-      <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-6 gap-3">
+      <div data-tour="kpi-strip" className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-6 gap-3">
         {topKpis.map((kpi, i) => {
           const KpiIcon = kpiIcons[i];
           const accent = kpiAccents[i % kpiAccents.length];
@@ -405,7 +405,7 @@ export default function ExecutiveOverview() {
         <div className="xl:col-span-1 flex flex-col gap-4">
           
           {/* Alerts Panel */}
-          <motion.div variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-soft">
+          <motion.div data-tour="alerts" variants={itemVariants} className="bg-card border border-border rounded-xl p-6 flex flex-col shadow-soft">
             <div className="flex justify-between items-center mb-5">
               <h3 className="text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase flex items-center gap-2">
                 <Bell className="h-3.5 w-3.5 flex-shrink-0 text-rose-500" />

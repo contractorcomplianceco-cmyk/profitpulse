@@ -48,7 +48,7 @@ export default function CashFlow() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <motion.div variants={itemVariants} className="lg:col-span-2">
+        <motion.div data-tour="cashflow-chart" variants={itemVariants} className="lg:col-span-2">
           <ChartCard title="90-Day Cash Projection" description="Expected balance based on scheduled AP/AR">
             <div className="h-[300px] w-full mt-4">
               <ResponsiveContainer width="100%" height="100%">

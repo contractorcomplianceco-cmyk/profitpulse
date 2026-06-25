@@ -1,6 +1,6 @@
 import { Sparkles, ArrowRight, CalendarCheck } from "lucide-react";
 import { isDemoMode, demoConfig } from "@/brand/demoMode";
-import { productFullName } from "@/brand/brandConfig";
+import { useProductFullName } from "@/brand/BrandProvider";
 
 /**
  * Persistent prospect-facing ribbon shown only in the standalone demo build
@@ -8,6 +8,7 @@ import { productFullName } from "@/brand/brandConfig";
  * the "this is a demo + here's how to buy" framing obvious.
  */
 export function DemoRibbon() {
+  const productFullName = useProductFullName();
   if (!isDemoMode) return null;
 
   return (

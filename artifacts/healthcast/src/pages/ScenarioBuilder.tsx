@@ -65,7 +65,7 @@ export default function ScenarioBuilder() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Controls - Left Side */}
-        <motion.div variants={itemVariants} className="lg:col-span-4 space-y-6">
+        <motion.div data-tour="scenario-levers" variants={itemVariants} className="lg:col-span-4 space-y-6">
           <Card className="bg-card/50 backdrop-blur-xl border-border/50">
             <CardHeader className="pb-3 border-b border-border/50">
               <CardTitle className="text-lg font-semibold">Growth Levers</CardTitle>

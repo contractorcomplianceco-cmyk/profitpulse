@@ -3,12 +3,13 @@ import { TopHeader } from "./TopHeader";
 import { SidebarNav } from "./SidebarNav";
 import { DemoPromo } from "./DemoPromo";
 import { DemoRibbon } from "./DemoRibbon";
-import { brand } from "@/brand/brandConfig";
+import { useBrand } from "@/brand/BrandProvider";
 import { isDemoMode } from "@/brand/demoMode";
 
 const CAPTURE_MODE = false;
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
+  const { brand } = useBrand();
   return (
     <div className="flex flex-col h-screen bg-background text-foreground overflow-hidden font-sans relative selection:bg-primary/30">
       {/* Subtle light ambient backdrop */}

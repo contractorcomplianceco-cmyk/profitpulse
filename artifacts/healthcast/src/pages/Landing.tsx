@@ -1,5 +1,6 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
+import { startGuidedTour } from "@/demo/GuidedTour";
 import {
   ArrowRight,
   Check,
@@ -14,7 +15,7 @@ import {
   Building2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { brand, productFullName } from "@/brand/brandConfig";
+import { useBrand, useProductFullName } from "@/brand/BrandProvider";
 
 // The interactive app/dashboard lives at the root path in both the live product
 // and the standalone demo build (the demo ribbon frames it as a demo).
@@ -117,6 +118,15 @@ const PLANS = [
 ];
 
 export default function Landing() {
+  const { brand } = useBrand();
+  const productFullName = useProductFullName();
+  const [, navigate] = useLocation();
+
+  // Take the prospect into the live app and auto-launch the guided tour.
+  const startInteractiveTour = () => {
+    navigate("/");
+    setTimeout(() => startGuidedTour(), 400);
+  };
   return (
     <div className="min-h-screen bg-background text-foreground font-sans antialiased relative overflow-x-hidden">
       {/* Ambient backdrop */}
@@ -191,11 +201,9 @@ export default function Landing() {
           custom={3}
           className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3"
         >
-          <Link href={APP_HREF}>
-            <Button size="lg" className="gap-2 text-[15px] px-7 h-12">
-              Explore the command center <ArrowRight className="w-4.5 h-4.5" />
-            </Button>
-          </Link>
+          <Button size="lg" onClick={startInteractiveTour} className="gap-2 text-[15px] px-7 h-12">
+            <Sparkles className="w-4.5 h-4.5" /> Take the interactive tour
+          </Button>
           <Link href="/demo/">
             <Button size="lg" variant="outline" className="gap-2 text-[15px] px-7 h-12">
               <PlayCircle className="w-4.5 h-4.5" /> Watch the 90-second demo
@@ -351,14 +359,12 @@ export default function Landing() {
           Stop guessing. Start running your business from the numbers.
         </h2>
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Button size="lg" onClick={startInteractiveTour} className="gap-2 text-[15px] px-8 h-12">
+            <Sparkles className="w-4.5 h-4.5" /> Take the interactive tour
+          </Button>
           <Link href={APP_HREF}>
-            <Button size="lg" className="gap-2 text-[15px] px-8 h-12">
-              Open {productFullName} <ArrowRight className="w-4.5 h-4.5" />
-            </Button>
-          </Link>
-          <Link href="/demo/">
             <Button size="lg" variant="outline" className="gap-2 text-[15px] px-8 h-12">
-              <PlayCircle className="w-4.5 h-4.5" /> Watch the demo
+              Open {productFullName} <ArrowRight className="w-4.5 h-4.5" />
             </Button>
           </Link>
         </div>

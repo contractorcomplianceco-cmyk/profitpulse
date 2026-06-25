@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { CcaLogo } from "./CcaLogo";
-import { brand } from "@/brand/brandConfig";
+import { useBrand } from "@/brand/BrandProvider";
 import { 
   BookOpen, 
   Users, 
@@ -28,6 +28,7 @@ const INTEGRATIONS = [
 ];
 
 export function TopHeader() {
+  const { brand } = useBrand();
   return (
     <header className="h-[72px] flex-shrink-0 border-b border-border surface-gradient-accent flex items-center justify-between px-6 z-30 relative accent-topline">
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent pointer-events-none"></div>
