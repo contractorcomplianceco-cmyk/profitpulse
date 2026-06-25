@@ -1,4 +1,5 @@
 import { useBrand, useProductFullName } from "@/brand/BrandProvider";
+import { resolveAsset } from "@/lib/asset";
 
 /**
  * Brand mark. Reads the active (live, white-labelable) logo + product name from
@@ -9,7 +10,7 @@ export function CcaLogo({ className }: { className?: string }) {
   const fullName = useProductFullName();
   return (
     <img
-      src={brand.logoSrc}
+      src={resolveAsset(brand.logoSrc)}
       alt={`${fullName} — ${brand.companyName}`}
       className={`object-contain${className ? ` ${className}` : ""}`}
     />

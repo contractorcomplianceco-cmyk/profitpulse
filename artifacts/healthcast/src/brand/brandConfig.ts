@@ -68,9 +68,9 @@ export const brand: BrandConfig = {
   valueLine:
     "The financial command center built for contractors — cash, profit, pipeline, and risk in one live view.",
   /** Compact shield mark (transparent PNG) for chrome + favicons. */
-  logoSrc: "/brand/profitpulse-shield.png",
+  logoSrc: "brand/profitpulse-shield.png",
   /** Full horizontal lockup (shield + wordmark) for landing / login. */
-  lockupSrc: "/brand/profitpulse-lockup.png",
+  lockupSrc: "brand/profitpulse-lockup.png",
   owner: {
     name: "Rose",
     role: "Owner / CEO",

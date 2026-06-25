@@ -18,6 +18,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { useBrand, useProductFullName } from "@/brand/BrandProvider";
 import { BRAND_PRESETS } from "@/brand/brandConfig";
+import { resolveAsset } from "@/lib/asset";
 
 function Field({
   label,
@@ -167,7 +168,7 @@ export default function WhiteLabelSettings() {
             </h2>
             <div className="flex items-center gap-5">
               <div className="w-20 h-20 rounded-xl border border-border bg-secondary/40 flex items-center justify-center shrink-0 overflow-hidden">
-                <img src={brand.logoSrc} alt="Current logo" className="w-16 h-16 object-contain" />
+                <img src={resolveAsset(brand.logoSrc)} alt="Current logo" className="w-16 h-16 object-contain" />
               </div>
               <div className="flex-1">
                 <input
@@ -272,7 +273,7 @@ export default function WhiteLabelSettings() {
             {/* Mini header */}
             <div className="rounded-lg border border-border overflow-hidden">
               <div className="flex items-center gap-2.5 px-3 py-2.5 bg-card border-b border-border">
-                <img src={brand.logoSrc} alt="logo" className="w-8 h-8 object-contain" />
+                <img src={resolveAsset(brand.logoSrc)} alt="logo" className="w-8 h-8 object-contain" />
                 <div className="leading-tight">
                   <div className="font-extrabold text-[14px]">
                     <span className="text-brand-navy">{brand.productName}</span>

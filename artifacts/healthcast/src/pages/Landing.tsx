@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useBrand, useProductFullName } from "@/brand/BrandProvider";
+import { asset, resolveAsset } from "@/lib/asset";
 
 // The interactive app/dashboard lives at the root path in both the live product
 // and the standalone demo build (the demo ribbon frames it as a demo).
@@ -136,7 +137,7 @@ export default function Landing() {
       {/* Nav */}
       <header className="relative z-10 max-w-[1200px] mx-auto flex items-center justify-between px-6 py-5">
         <div className="flex items-center gap-3">
-          <img src={brand.logoSrc} alt={productFullName} className="w-10 h-10 object-contain" />
+          <img src={resolveAsset(brand.logoSrc)} alt={productFullName} className="w-10 h-10 object-contain" />
           <span className="font-extrabold text-[18px] tracking-tight">
             <span className="text-brand-navy">{brand.productName}</span>
             <span className="text-brand-teal">{brand.productSuffix}</span>
@@ -221,7 +222,7 @@ export default function Landing() {
           <div className="absolute -inset-4 bg-gradient-to-tr from-primary/15 to-cyan/10 blur-3xl rounded-3xl pointer-events-none" />
           <div className="relative rounded-2xl border border-border shadow-soft-lg overflow-hidden bg-card">
             <img
-              src="/brand/redesign-mockup.jpg"
+              src={asset("brand/redesign-mockup.jpg")}
               alt={`${productFullName} executive dashboard`}
               className="w-full h-auto"
             />
@@ -374,7 +375,7 @@ export default function Landing() {
       <footer className="relative z-10 border-t border-border">
         <div className="max-w-[1200px] mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
-            <img src={brand.logoSrc} alt={productFullName} className="w-7 h-7 object-contain" />
+            <img src={resolveAsset(brand.logoSrc)} alt={productFullName} className="w-7 h-7 object-contain" />
             <span className="font-bold text-[14px]">
               <span className="text-brand-navy">{brand.productName}</span>
               <span className="text-brand-teal">{brand.productSuffix}</span>
