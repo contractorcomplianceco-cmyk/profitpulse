@@ -441,9 +441,9 @@ export default function Landing() {
                 </button>
               </div>
 
-              {/* Video walkthrough (16:9) */}
-              <div className="hc-demo relative w-full bg-[#06366B] flex-shrink-0 overflow-hidden" style={{ aspectRatio: "16 / 9" }}>
-                <DemoPlayer fill alwaysShowControls />
+              {/* Video walkthrough: 16:9 video with controls BELOW (never overlapping) */}
+              <div className="hc-demo w-full bg-[#06366B] flex-shrink-0 overflow-y-auto">
+                <DemoPlayer controlsBelow loop={false} alwaysShowControls />
               </div>
 
               {/* Footer CTA — flow into the live demo */}

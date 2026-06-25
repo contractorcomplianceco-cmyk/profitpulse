@@ -148,16 +148,29 @@ function ControlBar({
 export default function DemoPlayer({
   fill = false,
   alwaysShowControls = false,
+  loop = true,
+  controlsBelow = false,
+  onEnded,
 }: {
   /** Fill the parent container (h-full) instead of the viewport. */
   fill?: boolean;
   /** Keep the control bar permanently visible (e.g. in a popup). */
   alwaysShowControls?: boolean;
+  /** Loop back to scene 1 at the end (default true). */
+  loop?: boolean;
+  /** Render the control bar BELOW the video instead of overlaid on top of it. */
+  controlsBelow?: boolean;
+  /** Called when the walkthrough reaches the end (only when loop is false). */
+  onEnded?: () => void;
 } = {}) {
   const {
     sceneKeys, activeIndex, locked, mountKey, tick,
-    durations, activeDuration, onSceneChange, jumpTo, toggleLock,
+    durations: rotatedDurations, activeDuration, onSceneChange, jumpTo, toggleLock,
   } = useSceneControls(SCENE_DURATIONS);
+
+  // When not looping (popup), always play scenes in natural order 1→6 and stop,
+  // instead of the rotate-from-active order used for the looping full-screen player.
+  const durations = loop ? rotatedDurations : SCENE_DURATIONS;
 
   const [muted, setMuted] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -196,16 +209,59 @@ export default function DemoPlayer({
 
   const barVisible = alwaysShowControls || !collapsed || hovering || tapPinned;
 
+  const controlBar = (
+    <ControlBar
+      visible={barVisible}
+      collapsed={collapsed}
+      locked={locked}
+      muted={muted}
+      paused={paused}
+      sceneKeys={sceneKeys}
+      activeIndex={activeIndex}
+      activeDuration={activeDuration}
+      tick={tick}
+      onTogglePaused={() => setPaused(p => !p)}
+      onToggleLock={toggleLock}
+      onToggleMuted={() => setMuted(m => !m)}
+      onJumpTo={jumpTo}
+      onToggleCollapsed={handleToggleCollapsed}
+    />
+  );
+
+  // Layout B: controls rendered BELOW the video (popup) — never covers content.
+  // The video keeps a true 16:9 area; the control bar adds its own height below.
+  if (controlsBelow) {
+    return (
+      <div className="flex flex-col w-full">
+        <div className="relative w-full" style={{ aspectRatio: '16 / 9' }}>
+          <VideoTemplate
+            key={mountKey}
+            durations={durations}
+            loop={loop}
+            muted={muted}
+            isPaused={paused}
+            fill
+            onSceneChange={onSceneChange}
+            onVideoEnd={onEnded}
+          />
+        </div>
+        <div className="flex-shrink-0">{controlBar}</div>
+      </div>
+    );
+  }
+
+  // Layout A: overlaid control bar (full-screen /demo page).
   return (
     <div className={`relative w-full ${fill ? 'h-full' : 'h-screen'}`}>
       <VideoTemplate
         key={mountKey}
         durations={durations}
-        loop
+        loop={loop}
         muted={muted}
         isPaused={paused}
         fill={fill}
         onSceneChange={onSceneChange}
+        onVideoEnd={onEnded}
       />
       <div
         ref={sensorRef}
@@ -216,22 +272,7 @@ export default function DemoPlayer({
         onPointerDown={handlePointerDown}
       >
         <div className="flex-1 w-full" aria-hidden="true" />
-        <ControlBar
-          visible={barVisible}
-          collapsed={collapsed}
-          locked={locked}
-          muted={muted}
-          paused={paused}
-          sceneKeys={sceneKeys}
-          activeIndex={activeIndex}
-          activeDuration={activeDuration}
-          tick={tick}
-          onTogglePaused={() => setPaused(p => !p)}
-          onToggleLock={toggleLock}
-          onToggleMuted={() => setMuted(m => !m)}
-          onJumpTo={jumpTo}
-          onToggleCollapsed={handleToggleCollapsed}
-        />
+        {controlBar}
       </div>
     </div>
   );

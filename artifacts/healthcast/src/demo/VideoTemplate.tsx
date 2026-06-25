@@ -36,6 +36,7 @@ export default function VideoTemplate({
   isPaused = false,
   fill = false,
   onSceneChange,
+  onVideoEnd,
 }: {
   durations?: Record<string, number>;
   loop?: boolean;
@@ -44,8 +45,9 @@ export default function VideoTemplate({
   /** Fill the parent container (h-full) instead of the viewport (h-screen). */
   fill?: boolean;
   onSceneChange?: (sceneKey: string) => void;
+  onVideoEnd?: () => void;
 } = {}) {
-  const { currentSceneKey } = useVideoPlayer({ durations, loop, isPaused });
+  const { currentSceneKey } = useVideoPlayer({ durations, loop, isPaused, onVideoEnd });
 
   useEffect(() => {
     onSceneChange?.(currentSceneKey);
