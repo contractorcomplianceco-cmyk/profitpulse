@@ -108,7 +108,7 @@ export default function WhiteLabelSettings() {
   const handleReset = () => {
     reset();
     setActivePreset("");
-    toast({ title: "Reset to defaults", description: "Branding restored to the HealthCast defaults." });
+    toast({ title: "Reset to defaults", description: "Branding restored to the ProfitPulse defaults." });
   };
 
   return (

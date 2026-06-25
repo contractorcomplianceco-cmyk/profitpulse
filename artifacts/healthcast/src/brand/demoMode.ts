@@ -2,7 +2,7 @@
 // Demo mode — drives the standalone, sellable demo deployable.
 // ────────────────────────────────────────────────────────────────────────────
 // Build the SAME app with VITE_DEMO_MODE=1 to produce the public, interactive
-// product demo (the bundle your team hosts on demo.ccahealthcast.com). In demo
+// product demo (the bundle your team hosts on demo.profitpulse.com). In demo
 // mode the app:
 //   • auto-launches the guided tour on first load
 //   • shows a persistent "Interactive demo" ribbon + a prospect CTA
@@ -18,8 +18,8 @@ export const demoConfig = {
   ribbonText: "Interactive demo — click through every screen with sample data.",
   /** Primary prospect call-to-action. */
   ctaLabel: "Get started",
-  ctaHref: "https://ccahealthcast.com",
+  ctaHref: "https://profitpulse.com",
   /** Secondary CTA. */
   secondaryLabel: "Book a walkthrough",
-  secondaryHref: "https://ccahealthcast.com",
+  secondaryHref: "https://profitpulse.com",
 };

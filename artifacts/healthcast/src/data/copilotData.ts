@@ -31,7 +31,7 @@ export interface RecentQuestion {
 }
 
 export const copilotMeta = {
-  model: "HealthCast Financial Intelligence v4",
+  model: "ProfitPulse Financial Intelligence v4",
   scope: "Live ledger, AR/AP, payroll, pipeline, and market feeds",
   lastSync: "2 minutes ago",
   questionsAnswered: 1284,

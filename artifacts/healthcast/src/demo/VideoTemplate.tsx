@@ -9,12 +9,12 @@ import { Scene5 } from './scenes/Scene5';
 import { Scene6 } from './scenes/Scene6';
 
 export const SCENE_DURATIONS = {
-  intro: 8000,
-  dashboard: 12500,
-  navigation: 12500,
-  action: 11500,
-  connected: 9000,
-  outro: 6000
+  intro: 9800,
+  dashboard: 15400,
+  navigation: 12800,
+  action: 13200,
+  connected: 8800,
+  outro: 9200
 };
 
 const SCENE_COMPONENTS: Record<string, React.ComponentType> = {
@@ -26,8 +26,8 @@ const SCENE_COMPONENTS: Record<string, React.ComponentType> = {
   outro: Scene6,
 };
 
-const MUSIC_BASE_VOLUME = 0.16;
-const MUSIC_DUCKED_VOLUME = 0.05;
+const MUSIC_BASE_VOLUME = 0.24;
+const MUSIC_DUCKED_VOLUME = 0.08;
 
 export default function VideoTemplate({
   durations = SCENE_DURATIONS,

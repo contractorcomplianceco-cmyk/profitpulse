@@ -235,7 +235,7 @@ export default function Welcome() {
             <Compass className="w-8 h-8 text-primary" />
           </div>
           <div>
-            <h2 className="text-3xl font-black text-foreground tracking-tight mb-1">Welcome to CCA HealthCast OS</h2>
+            <h2 className="text-3xl font-black text-foreground tracking-tight mb-1">Welcome to CCA ProfitPulse OS</h2>
             <p className="text-muted-foreground text-sm font-medium">Get oriented with a narrated tour, a self-paced guide, or our detailed documentation.</p>
           </div>
         </div>
@@ -321,7 +321,7 @@ export default function Welcome() {
                     </div>
                     <h3 className="text-3xl font-black text-foreground mb-2">You're all set.</h3>
                     <p className="text-muted-foreground max-w-md mb-8">
-                      You've completed the orientation. You're ready to explore CCA HealthCast OS.
+                      You've completed the orientation. You're ready to explore CCA ProfitPulse OS.
                     </p>
                     <div className="flex gap-4">
                       <Button onClick={handleRestart} variant="outline" className="font-bold">

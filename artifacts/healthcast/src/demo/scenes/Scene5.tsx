@@ -32,10 +32,10 @@ export function Scene5() {
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       >
         <h2 className="text-3xl md:text-5xl font-display font-bold text-white tracking-tight">
-          One connected <span className="text-[#7dd3fc]">source of truth</span>
+          One connected <span className="text-[#2BD4A8]">source of truth</span>
         </h2>
         <p className="text-[#94a3b8] text-base md:text-lg font-body mt-3">
-          Plug in your systems — HealthCast does the rest.
+          Plug in your systems — ProfitPulse does the rest.
         </p>
       </motion.div>
 
@@ -69,7 +69,7 @@ export function Scene5() {
       >
         <ScreenFrame
           image="integrations"
-          url="app.healthcast.io  ·  Data Integrations"
+          url="app.profitpulse.com  ·  Data Integrations"
           durationSec={9}
         />
       </motion.div>

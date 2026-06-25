@@ -25,7 +25,7 @@ export const TOUR_STEPS: TourStep[] = [
     placement: "center",
     title: "Welcome to your command center",
     body:
-      "This is HealthCast OS — the single screen where a contractor sees the whole business: cash, profit, pipeline, and risk. Let's take 60 seconds to walk through how an owner uses it every morning.",
+      "This is ProfitPulse OS — the single screen where a contractor sees the whole business: cash, profit, pipeline, and risk. Let's take 60 seconds to walk through how an owner uses it every morning.",
   },
   {
     route: "/",
@@ -41,7 +41,7 @@ export const TOUR_STEPS: TourStep[] = [
     placement: "right",
     title: "One score for the whole business",
     body:
-      "HealthCast rolls dozens of signals into a single Financial Health Score, so you instantly know if you're trending up or sliding — and by how much.",
+      "ProfitPulse rolls dozens of signals into a single Financial Health Score, so you instantly know if you're trending up or sliding — and by how much.",
   },
   {
     route: "/",

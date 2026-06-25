@@ -1,5 +1,5 @@
 // ────────────────────────────────────────────────────────────────────────────
-// HealthCast OS — White-label brand configuration
+// ProfitPulse OS — White-label brand configuration
 // ────────────────────────────────────────────────────────────────────────────
 // This is the single source of truth for the customer-facing identity of the
 // product. To re-brand the entire app for a different contractor business,
@@ -30,7 +30,7 @@ export interface BrandTheme {
 }
 
 export interface BrandConfig {
-  /** Product brand, e.g. "HealthCast" */
+  /** Product brand, e.g. "ProfitPulse" */
   productName: string;
   /** Product suffix rendered in the accent color, e.g. "OS" */
   productSuffix: string;
@@ -60,7 +60,7 @@ export interface BrandConfig {
 }
 
 export const brand: BrandConfig = {
-  productName: "HealthCast",
+  productName: "ProfitPulse",
   productSuffix: "OS",
   companyName: "Contractor Compliance Authority",
   companyShort: "CCA",
@@ -68,9 +68,9 @@ export const brand: BrandConfig = {
   valueLine:
     "The financial command center built for contractors — cash, profit, pipeline, and risk in one live view.",
   /** Compact shield mark (transparent PNG) for chrome + favicons. */
-  logoSrc: "/brand/healthcast-shield.png",
+  logoSrc: "/brand/profitpulse-shield.png",
   /** Full horizontal lockup (shield + wordmark) for landing / login. */
-  lockupSrc: "/brand/healthcast-lockup.png",
+  lockupSrc: "/brand/profitpulse-lockup.png",
   owner: {
     name: "Rose",
     role: "Owner / CEO",
@@ -79,8 +79,8 @@ export const brand: BrandConfig = {
   showSampleDataNote: true,
   sampleDataNote:
     "Sample data shown — connect your accounting, CRM, and ad platforms to go live.",
-  website: "ccahealthcast.com",
-  supportEmail: "hello@ccahealthcast.com",
+  website: "profitpulse.com",
+  supportEmail: "hello@profitpulse.com",
   theme: {
     navy: "#001E4D",
     teal: "#0FA3A3",
@@ -96,7 +96,7 @@ export interface BrandPreset {
 }
 
 export const BRAND_PRESETS: BrandPreset[] = [
-  { id: "healthcast", label: "HealthCast (default)", theme: { navy: "#001E4D", teal: "#0FA3A3", green: "#22C55E" } },
+  { id: "profitpulse", label: "ProfitPulse (default)", theme: { navy: "#001E4D", teal: "#0FA3A3", green: "#22C55E" } },
   { id: "slate-blue", label: "Slate Blue", theme: { navy: "#0B1F3A", teal: "#2563EB", green: "#16A34A" } },
   { id: "forest", label: "Forest", theme: { navy: "#14331F", teal: "#0E9F6E", green: "#65A30D" } },
   { id: "graphite-amber", label: "Graphite & Amber", theme: { navy: "#1F2430", teal: "#D97706", green: "#16A34A" } },
@@ -104,5 +104,5 @@ export const BRAND_PRESETS: BrandPreset[] = [
   { id: "royal-purple", label: "Royal Purple", theme: { navy: "#1E1043", teal: "#7C3AED", green: "#10B981" } },
 ];
 
-/** Convenience: full product name, e.g. "HealthCast OS". */
+/** Convenience: full product name, e.g. "ProfitPulse OS". */
 export const productFullName = `${brand.productName}${brand.productSuffix ? " " + brand.productSuffix : ""}`;

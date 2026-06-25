@@ -10,7 +10,7 @@ export default function DemoWalkthrough() {
       <Link href="/">
         <div className="absolute top-5 left-5 z-[60] flex items-center gap-2 px-3.5 py-2 rounded-lg bg-black/40 hover:bg-black/60 text-white/80 hover:text-white text-sm font-medium backdrop-blur-sm transition-colors cursor-pointer">
           <ArrowLeft className="w-4 h-4" />
-          Back to HealthCast
+          Back to ProfitPulse
         </div>
       </Link>
     </div>

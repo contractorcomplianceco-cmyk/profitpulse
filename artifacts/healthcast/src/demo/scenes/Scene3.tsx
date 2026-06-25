@@ -16,9 +16,9 @@ const NAV = [
 ];
 
 const MONTAGE = [
-  { label: 'Cash Flow', image: 'cashflow', url: 'app.healthcast.io  ·  Cash Flow' },
-  { label: 'Futurecast', image: 'futurecast', url: 'app.healthcast.io  ·  Futurecast' },
-  { label: 'Alerts', image: 'alerts', url: 'app.healthcast.io  ·  Alerts Engine' },
+  { label: 'Cash Flow', image: 'cashflow', url: 'app.profitpulse.com  ·  Cash Flow' },
+  { label: 'Futurecast', image: 'futurecast', url: 'app.profitpulse.com  ·  Futurecast' },
+  { label: 'Alerts', image: 'alerts', url: 'app.profitpulse.com  ·  Alerts Engine' },
 ];
 
 export function Scene3() {
@@ -46,7 +46,7 @@ export function Scene3() {
       <div className="w-full max-w-6xl flex gap-10 items-center">
         {/* Nav list */}
         <div className="w-1/4 flex flex-col gap-2.5 shrink-0">
-          <div className="text-xs uppercase tracking-widest text-[#7dd3fc]/70 font-body mb-2">
+          <div className="text-xs uppercase tracking-widest text-[#2BD4A8]/70 font-body mb-2">
             One click away
           </div>
           {NAV.map((label) => {
@@ -55,7 +55,7 @@ export function Scene3() {
               <div key={label} className="flex items-center gap-3">
                 <div
                   className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                    isActive ? 'bg-[#7dd3fc] shadow-[0_0_10px_rgba(125,211,252,0.9)] scale-150' : 'bg-white/20'
+                    isActive ? 'bg-[#2BD4A8] shadow-[0_0_10px_rgba(43,212,168,0.9)] scale-150' : 'bg-white/20'
                   }`}
                 />
                 <span

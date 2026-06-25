@@ -30,17 +30,12 @@ export function Scene1() {
           animate={phase >= 1 ? { scale: 1, rotate: 0, opacity: 1 } : { scale: 0, rotate: -45, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 300, damping: 20 }}
         >
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-[#2563eb] to-[#7dd3fc] opacity-80" />
-          <div className="absolute inset-1 rounded-xl bg-[#071827] flex items-center justify-center">
-            <svg viewBox="0 0 24 24" fill="none" className="w-10 h-10 text-white" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-            </svg>
-          </div>
+          <img src={`${import.meta.env.BASE_URL}brand/profitpulse-shield.png`} alt="ProfitPulse" className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(34,197,94,0.35)]" />
         </motion.div>
 
         {/* Wordmark */}
         <h1 className="text-6xl md:text-[6vw] font-display font-bold text-white tracking-tight leading-none mb-6">
-          {'HealthCast'.split('').map((char, i) => (
+          {'ProfitPulse'.split('').map((char, i) => (
             <motion.span
               key={i}
               className="inline-block"
@@ -60,7 +55,7 @@ export function Scene1() {
           animate={phase >= 3 ? { opacity: 1, y: 0, filter: 'blur(0px)' } : { opacity: 0, y: 20, filter: 'blur(5px)' }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
-          Where operations meet financial intelligence
+          The financial command center built for contractors
         </motion.div>
       </div>
 

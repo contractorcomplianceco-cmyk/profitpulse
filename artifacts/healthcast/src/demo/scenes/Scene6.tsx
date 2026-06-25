@@ -23,7 +23,7 @@ export function Scene6() {
     >
       {/* Background Flare */}
       <motion.div
-        className="absolute bottom-0 w-full h-[50vh] bg-gradient-to-t from-[#2563eb]/20 to-transparent"
+        className="absolute bottom-0 w-full h-[50vh] bg-gradient-to-t from-[#0FA3A3]/20 to-transparent"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 2 }}
@@ -33,7 +33,7 @@ export function Scene6() {
         
         {/* Final CTA Text */}
         <div className="flex flex-col gap-2 mb-16 overflow-hidden">
-          {['See everything.', 'Decide faster.', 'Lead with confidence.'].map((text, i) => (
+          {['Know your numbers.', 'Move faster.', 'Grow your profit.'].map((text, i) => (
             <motion.h2
               key={i}
               className="text-4xl md:text-5xl font-display font-bold text-white"
@@ -53,14 +53,8 @@ export function Scene6() {
           animate={phase >= 2 ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
           transition={{ duration: 0.8 }}
         >
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-[#2563eb] to-[#7dd3fc] p-0.5">
-            <div className="w-full h-full bg-[#071827] rounded-[10px] flex items-center justify-center">
-              <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6 text-white" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-              </svg>
-            </div>
-          </div>
-          <span className="text-3xl font-display font-bold text-white tracking-tight">HealthCast</span>
+          <img src={`${import.meta.env.BASE_URL}brand/profitpulse-shield.png`} alt="ProfitPulse" className="w-14 h-14 object-contain" />
+          <span className="text-3xl font-display font-bold text-white tracking-tight">ProfitPulse</span>
         </motion.div>
 
         {/* Fake CTA button visual (non-interactive) */}
@@ -70,7 +64,7 @@ export function Scene6() {
           animate={phase >= 3 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.5 }}
         >
-          Request Demo
+          Start your free trial
         </motion.div>
 
       </div>
