@@ -435,8 +435,8 @@ export default function Landing() {
               </div>
 
               {/* Video walkthrough (16:9) */}
-              <div className="hc-demo relative w-full bg-[#06366B] flex-shrink-0" style={{ aspectRatio: "16 / 9" }}>
-                <DemoPlayer />
+              <div className="hc-demo relative w-full bg-[#06366B] flex-shrink-0 overflow-hidden" style={{ aspectRatio: "16 / 9" }}>
+                <DemoPlayer fill alwaysShowControls />
               </div>
 
               {/* Footer CTA — flow into the live demo */}

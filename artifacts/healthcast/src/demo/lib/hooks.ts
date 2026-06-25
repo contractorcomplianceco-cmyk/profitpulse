@@ -17,6 +17,8 @@ export interface UseVideoPlayerOptions {
   durations: SceneDurations;
   onVideoEnd?: () => void;
   loop?: boolean;
+  /** When true, scene advancement is frozen (play/pause). */
+  isPaused?: boolean;
 }
 
 export interface UseVideoPlayerReturn {
@@ -27,7 +29,7 @@ export interface UseVideoPlayerReturn {
 }
 
 export function useVideoPlayer(options: UseVideoPlayerOptions): UseVideoPlayerReturn {
-  const { durations, onVideoEnd, loop = true } = options;
+  const { durations, onVideoEnd, loop = true, isPaused = false } = options;
 
   // Captured once on mount -- durations must be a static object
   const sceneKeys = useRef(Object.keys(durations)).current;
@@ -45,6 +47,7 @@ export function useVideoPlayer(options: UseVideoPlayerOptions): UseVideoPlayerRe
   // Scene advancement -- loops independently of recording
   useEffect(() => {
     if (hasEnded && !loop) return;
+    if (isPaused) return; // freeze on pause
 
     const currentDuration = durationsArray[currentScene];
 
@@ -65,7 +68,7 @@ export function useVideoPlayer(options: UseVideoPlayerOptions): UseVideoPlayerRe
     }, currentDuration);
 
     return () => clearTimeout(timer);
-  }, [currentScene, totalScenes, durationsArray, hasEnded, loop, onVideoEnd]);
+  }, [currentScene, totalScenes, durationsArray, hasEnded, loop, onVideoEnd, isPaused]);
 
   return {
     currentScene,

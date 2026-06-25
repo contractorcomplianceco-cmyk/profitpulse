@@ -33,14 +33,19 @@ export default function VideoTemplate({
   durations = SCENE_DURATIONS,
   loop = true,
   muted = false,
+  isPaused = false,
+  fill = false,
   onSceneChange,
 }: {
   durations?: Record<string, number>;
   loop?: boolean;
   muted?: boolean;
+  isPaused?: boolean;
+  /** Fill the parent container (h-full) instead of the viewport (h-screen). */
+  fill?: boolean;
   onSceneChange?: (sceneKey: string) => void;
 } = {}) {
-  const { currentSceneKey } = useVideoPlayer({ durations, loop });
+  const { currentSceneKey } = useVideoPlayer({ durations, loop, isPaused });
 
   useEffect(() => {
     onSceneChange?.(currentSceneKey);
@@ -59,6 +64,19 @@ export default function VideoTemplate({
     music.volume = MUSIC_BASE_VOLUME;
     music.play().catch(() => {});
   }, []);
+
+  // Play/pause the audio with the player.
+  useEffect(() => {
+    const music = musicRef.current;
+    const narration = narrationRef.current;
+    if (isPaused) {
+      music?.pause();
+      narration?.pause();
+    } else {
+      if (music) music.play().catch(() => {});
+      if (narration && !muted && narration.src) narration.play().catch(() => {});
+    }
+  }, [isPaused, muted]);
 
   // Per-scene narration: restart from the top on each scene, duck the music
   // while it plays, then restore the music bed when it finishes. Narration only
@@ -101,7 +119,7 @@ export default function VideoTemplate({
 
   return (
     <div
-      className="w-full h-screen overflow-hidden relative"
+      className={`w-full ${fill ? 'h-full' : 'h-screen'} overflow-hidden relative`}
       style={{ backgroundColor: 'var(--color-bg-dark)' }}
     >
       {/* Persistent background layer */}

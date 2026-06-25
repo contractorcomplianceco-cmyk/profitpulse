@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Repeat, Volume2, VolumeX, ChevronUp, ChevronDown } from 'lucide-react';
+import { Repeat, Volume2, VolumeX, ChevronUp, ChevronDown, Play, Pause } from 'lucide-react';
 import VideoTemplate, { SCENE_DURATIONS } from './VideoTemplate';
 import { useSceneControls } from './useSceneControls';
 
@@ -10,10 +10,12 @@ interface ControlBarProps {
   collapsed: boolean;
   locked: boolean;
   muted: boolean;
+  paused: boolean;
   sceneKeys: string[];
   activeIndex: number;
   activeDuration: number;
   tick: number;
+  onTogglePaused: () => void;
   onToggleLock: () => void;
   onToggleMuted: () => void;
   onJumpTo: (index: number) => void;
@@ -67,18 +69,27 @@ function ProgressSegments({
 }
 
 function ControlBar({
-  visible, collapsed, locked, muted, sceneKeys, activeIndex, activeDuration, tick,
-  onToggleLock, onToggleMuted, onJumpTo, onToggleCollapsed,
+  visible, collapsed, locked, muted, paused, sceneKeys, activeIndex, activeDuration, tick,
+  onTogglePaused, onToggleLock, onToggleMuted, onJumpTo, onToggleCollapsed,
 }: ControlBarProps) {
   return (
     <div
-      className={`flex items-center gap-3 bg-black/50 backdrop-blur-sm px-5 py-4 transition-all duration-200 ease-out ${
+      className={`flex items-center gap-3 bg-black/55 backdrop-blur-sm px-5 py-4 transition-all duration-200 ease-out ${
         visible
           ? 'translate-y-0 opacity-100 pointer-events-auto'
           : 'translate-y-full opacity-0 pointer-events-none'
       }`}
       aria-hidden={!visible}
     >
+      <button
+        onClick={onTogglePaused}
+        className="w-14 h-14 flex items-center justify-center transition-colors rounded-lg shrink-0 text-white bg-white/15 hover:bg-white/25"
+        title={paused ? 'Play' : 'Pause'}
+        aria-label={paused ? 'Play' : 'Pause'}
+      >
+        {paused ? <Play className="w-8 h-8" /> : <Pause className="w-8 h-8" />}
+      </button>
+
       <button
         onClick={onToggleLock}
         className={`w-14 h-14 flex items-center justify-center transition-colors rounded-lg shrink-0 ${
@@ -134,13 +145,22 @@ function ControlBar({
   );
 }
 
-export default function DemoPlayer() {
+export default function DemoPlayer({
+  fill = false,
+  alwaysShowControls = false,
+}: {
+  /** Fill the parent container (h-full) instead of the viewport. */
+  fill?: boolean;
+  /** Keep the control bar permanently visible (e.g. in a popup). */
+  alwaysShowControls?: boolean;
+} = {}) {
   const {
     sceneKeys, activeIndex, locked, mountKey, tick,
     durations, activeDuration, onSceneChange, jumpTo, toggleLock,
   } = useSceneControls(SCENE_DURATIONS);
 
-  const [muted, setMuted] = useState(true);
+  const [muted, setMuted] = useState(false);
+  const [paused, setPaused] = useState(false);
   const sensorRef = useRef<HTMLDivElement | null>(null);
   const [collapsed, setCollapsed] = useState(false);
   const [hovering, setHovering] = useState(false);
@@ -174,15 +194,17 @@ export default function DemoPlayer() {
     return () => document.removeEventListener('pointerdown', onDocPointerDown);
   }, [collapsed, tapPinned]);
 
-  const barVisible = !collapsed || hovering || tapPinned;
+  const barVisible = alwaysShowControls || !collapsed || hovering || tapPinned;
 
   return (
-    <div className="relative w-full h-screen">
+    <div className={`relative w-full ${fill ? 'h-full' : 'h-screen'}`}>
       <VideoTemplate
         key={mountKey}
         durations={durations}
         loop
         muted={muted}
+        isPaused={paused}
+        fill={fill}
         onSceneChange={onSceneChange}
       />
       <div
@@ -199,10 +221,12 @@ export default function DemoPlayer() {
           collapsed={collapsed}
           locked={locked}
           muted={muted}
+          paused={paused}
           sceneKeys={sceneKeys}
           activeIndex={activeIndex}
           activeDuration={activeDuration}
           tick={tick}
+          onTogglePaused={() => setPaused(p => !p)}
           onToggleLock={toggleLock}
           onToggleMuted={() => setMuted(m => !m)}
           onJumpTo={jumpTo}
