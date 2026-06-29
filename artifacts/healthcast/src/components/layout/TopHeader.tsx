@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { CcaLogo } from "./CcaLogo";
 import { useBrand } from "@/brand/BrandProvider";
+import { demoConfig } from "@/brand/demoMode";
 import { 
   BookOpen, 
   Users, 
@@ -71,7 +72,7 @@ export function TopHeader() {
         <Link href="/demo/">
           <div className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-primary/15 border border-primary/30 text-primary hover:bg-primary/25 hover:border-primary/50 transition-all cursor-pointer shadow-[0_0_12px_-4px_hsl(var(--primary)/0.7)]">
             <PlayCircle className="w-4 h-4" />
-            <span className="text-[13px] font-bold tracking-wide hidden sm:inline">Watch Demo</span>
+            <span className="text-[13px] font-bold tracking-wide hidden sm:inline">{demoConfig.enterDemoLabel}</span>
           </div>
         </Link>
 

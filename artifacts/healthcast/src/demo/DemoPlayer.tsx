@@ -245,11 +245,8 @@ export default function DemoPlayer({
     probeDemoAudioDetailed().then((availability) => {
       if (cancelled) return;
       setAudioAvailability(availability);
-      if (availability.status === 'available') {
-        setMuted(false);
-      } else {
-        setMuted(true);
-      }
+      // Video-first preview stays muted until the viewer opts in (no unmuted autoplay).
+      setMuted(true);
     });
     return () => {
       cancelled = true;
@@ -270,6 +267,18 @@ export default function DemoPlayer({
   const barVisible = alwaysShowControls || !collapsed || hovering || tapPinned;
 
   const audioUnavailable = audioAvailability.status === 'unavailable';
+
+  const handleUnmute = useCallback(() => {
+    if (!audioUnavailable) setMuted(false);
+  }, [audioUnavailable]);
+
+  const audioBadge = (
+    <AudioStatusBadge
+      availability={audioAvailability}
+      muted={muted}
+      onUnmute={audioUnavailable ? undefined : handleUnmute}
+    />
+  );
 
   const controlBar = (
     <ControlBar
@@ -301,7 +310,7 @@ export default function DemoPlayer({
     return (
       <div className="flex flex-col w-full">
         <div className="relative w-full" style={{ aspectRatio: '16 / 9' }}>
-          <AudioStatusBadge availability={audioAvailability} />
+          {audioBadge}
           <VideoTemplate
             key={mountKey}
             durations={durations}
@@ -321,7 +330,7 @@ export default function DemoPlayer({
   // Layout A: overlaid control bar (full-screen /demo page).
   return (
     <div className={`relative w-full ${fill ? 'h-full' : 'h-screen'}`}>
-      <AudioStatusBadge availability={audioAvailability} />
+      {audioBadge}
       <VideoTemplate
         key={mountKey}
         durations={durations}

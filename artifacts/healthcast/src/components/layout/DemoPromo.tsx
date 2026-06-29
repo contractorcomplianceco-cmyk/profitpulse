@@ -10,7 +10,7 @@ import {
   DialogHeader,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { isDemoMode } from "@/brand/demoMode";
+import { isDemoMode, demoConfig } from "@/brand/demoMode";
 import {
   dismissPopup,
   isPopupDismissed,
@@ -100,11 +100,11 @@ export function DemoPromo() {
         <div className="relative z-20 flex items-center justify-center gap-3 px-10 py-2.5 bg-gradient-to-r from-accent/60 via-accent to-accent/60 border-b border-primary/25 text-foreground">
           <PlayCircle className="w-4 h-4 text-primary flex-shrink-0" />
           <span className="text-[12.5px] font-semibold tracking-wide text-center">
-            New — take the 90-second ProfitPulse walkthrough and see the full command center in action.
+            New — 90-second ProfitPulse video walkthrough. No login required.
           </span>
           <Link href="/demo/">
             <div className="ml-1 inline-flex items-center gap-1.5 rounded-md bg-primary/15 hover:bg-primary/25 border border-primary/30 px-2.5 py-1 text-[12px] font-bold text-primary transition-colors cursor-pointer">
-              Watch now
+              {demoConfig.enterDemoLabel}
               <ArrowRight className="w-3.5 h-3.5" />
             </div>
           </Link>
@@ -125,32 +125,31 @@ export function DemoPromo() {
               <PlayCircle className="w-6 h-6 text-cyan" />
             </div>
             <DialogTitle className="text-2xl font-bold text-white">
-              See ProfitPulse in action
+              ProfitPulse product demo
             </DialogTitle>
             <DialogDescription className="text-white/70 mt-2 text-sm leading-relaxed">
-              Take a quick guided walkthrough of the command center — cash, revenue,
-              staffing, risk, and live scenario modeling, all in one place.
+              Watch the video walkthrough first — cash, revenue, staffing, risk, and
+              scenario modeling in under two minutes.
             </DialogDescription>
           </div>
           <div className="flex flex-col gap-2.5 px-6 py-5 bg-background">
-            <Button className="w-full gap-1.5" onClick={handleTour}>
-              <Sparkles className="w-4 h-4" />
-              Take the interactive tour
+            <Button
+              className="w-full gap-1.5"
+              onClick={() => {
+                handleDismissPopup();
+                navigate("/demo/");
+              }}
+            >
+              <PlayCircle className="w-4 h-4" />
+              {demoConfig.enterDemoLabel}
             </Button>
             <div className="flex gap-3">
               <Button variant="outline" className="flex-1" onClick={handleMaybeLater}>
                 Maybe later
               </Button>
-              <Button
-                variant="outline"
-                className="flex-1 gap-1.5"
-                onClick={() => {
-                  handleDismissPopup();
-                  navigate("/demo/");
-                }}
-              >
-                <PlayCircle className="w-4 h-4" />
-                Watch the video
+              <Button variant="outline" className="flex-1 gap-1.5" onClick={handleTour}>
+                <Sparkles className="w-4 h-4" />
+                Interactive tour
               </Button>
             </div>
           </div>

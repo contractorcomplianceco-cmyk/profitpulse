@@ -16,10 +16,12 @@ export const isDemoMode: boolean =
 export const demoConfig = {
   /** Headline shown in the demo ribbon. */
   ribbonText: "Interactive demo — click through every screen with sample data.",
-  /** Primary prospect call-to-action. */
+  /** Video walkthrough entry (public /demo). */
+  enterDemoLabel: "Enter Demo",
+  /** Primary prospect call-to-action (conversion / contact). */
   ctaLabel: "Get started",
   ctaHref: "https://ccaprofitpulse.com",
-  /** Secondary CTA. */
-  secondaryLabel: "Book a walkthrough",
+  /** Secondary contact CTA — not the video walkthrough. */
+  secondaryLabel: "Contact us",
   secondaryHref: "https://ccaprofitpulse.com",
-};
+} as const;

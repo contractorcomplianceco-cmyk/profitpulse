@@ -36,6 +36,7 @@ import { useBilling } from "@/context/BillingProvider";
 import { roleLabel } from "@/auth/permissions";
 import { TenantSwitcher } from "@/components/auth/TenantSwitcher";
 import { PlanBadge } from "@/components/billing/PlanBadge";
+import { demoConfig } from "@/brand/demoMode";
 import { LogOut, User, UserPlus, ScrollText, CreditCard } from "lucide-react";
 
 const NAV_SECTIONS = [
@@ -45,7 +46,7 @@ const NAV_SECTIONS = [
       { href: "/welcome", label: "Welcome", icon: Compass },
       { href: "/", label: "Executive Overview", icon: LayoutDashboard },
       { href: "/copilot", label: "AI CFO Copilot", icon: Sparkles },
-      { href: "/demo/", label: "Watch Demo", icon: PlayCircle },
+      { href: "/demo/", label: demoConfig.enterDemoLabel, icon: PlayCircle },
       { href: "/landing", label: "Marketing Site", icon: Megaphone },
       { href: "/settings", label: "White-Label Settings", icon: Palette },
       { href: "/team", label: "Team & Invites", icon: UserPlus, adminOnly: true },

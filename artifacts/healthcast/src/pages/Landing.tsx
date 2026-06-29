@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { startGuidedTour } from "@/demo/GuidedTour";
-import { isDemoMode } from "@/brand/demoMode";
+import { isDemoMode, demoConfig } from "@/brand/demoMode";
 import { X, Rocket } from "lucide-react";
 import DemoPlayer from "@/demo/DemoPlayer";
 import "@/demo/demo.css";
@@ -145,9 +145,11 @@ export default function Landing() {
     return () => clearTimeout(t);
   }, []);
 
-  // Primary demo entry. In the demo build, route through the lead-capture gate;
-  // in the live product, launch the guided tour directly.
-  const startInteractiveTour = () => {
+  // Video-first client demo at /demo (public, no login).
+  const enterVideoDemo = () => navigate("/demo/");
+
+  // Interactive sandbox with sample data (lead gate in demo build).
+  const startInteractiveSandbox = () => {
     if (isDemoMode) {
       navigate("/request-demo");
       return;
@@ -177,11 +179,11 @@ export default function Landing() {
         </nav>
         <div className="flex items-center gap-3">
           <Link href="/demo/">
-            <Button variant="outline" size="sm" className="gap-1.5">
-              <PlayCircle className="w-4 h-4" /> Watch demo
+            <Button size="sm" className="gap-1.5">
+              <PlayCircle className="w-4 h-4" /> {demoConfig.enterDemoLabel}
             </Button>
           </Link>
-          <Button size="sm" className="gap-1.5" onClick={skipToDashboard}>
+          <Button size="sm" variant="outline" className="gap-1.5" onClick={skipToDashboard}>
             Open app <ArrowRight className="w-4 h-4" />
           </Button>
         </div>
@@ -227,14 +229,14 @@ export default function Landing() {
           custom={3}
           className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3"
         >
-          <Button size="lg" onClick={startInteractiveTour} className="gap-2 text-[15px] px-7 h-12">
-            <Sparkles className="w-4.5 h-4.5" /> Try the live demo
-          </Button>
           <Link href="/demo/">
-            <Button size="lg" variant="outline" className="gap-2 text-[15px] px-7 h-12">
-              <PlayCircle className="w-4.5 h-4.5" /> Watch the video
+            <Button size="lg" className="gap-2 text-[15px] px-7 h-12">
+              <PlayCircle className="w-4.5 h-4.5" /> {demoConfig.enterDemoLabel}
             </Button>
           </Link>
+          <Button size="lg" variant="outline" onClick={startInteractiveSandbox} className="gap-2 text-[15px] px-7 h-12">
+            <Sparkles className="w-4.5 h-4.5" /> Try interactive sandbox
+          </Button>
         </motion.div>
 
         {/* Dashboard preview */}
@@ -385,14 +387,14 @@ export default function Landing() {
           Stop guessing. Start running your business from the numbers.
         </h2>
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Button size="lg" onClick={startInteractiveTour} className="gap-2 text-[15px] px-8 h-12">
-            <Sparkles className="w-4.5 h-4.5" /> Try the live demo
-          </Button>
           <Link href="/demo/">
-            <Button size="lg" variant="outline" className="gap-2 text-[15px] px-8 h-12">
-              <PlayCircle className="w-4.5 h-4.5" /> Watch the video
+            <Button size="lg" className="gap-2 text-[15px] px-8 h-12">
+              <PlayCircle className="w-4.5 h-4.5" /> {demoConfig.enterDemoLabel}
             </Button>
           </Link>
+          <Button size="lg" variant="outline" onClick={startInteractiveSandbox} className="gap-2 text-[15px] px-8 h-12">
+            <Sparkles className="w-4.5 h-4.5" /> Try interactive sandbox
+          </Button>
         </div>
       </section>
 
@@ -455,8 +457,8 @@ export default function Landing() {
                   <button onClick={skipToDashboard} className="text-[12.5px] font-semibold text-muted-foreground hover:text-foreground transition-colors px-2">
                     Skip to dashboard
                   </button>
-                  <Button className="gap-2 flex-1 sm:flex-none" onClick={() => { setStartPopup(false); navigate("/request-demo"); }}>
-                    <Sparkles className="w-4 h-4" /> Try the live demo
+                  <Button className="gap-2 flex-1 sm:flex-none" onClick={() => { setStartPopup(false); enterVideoDemo(); }}>
+                    <PlayCircle className="w-4 h-4" /> {demoConfig.enterDemoLabel}
                   </Button>
                 </div>
               </div>
