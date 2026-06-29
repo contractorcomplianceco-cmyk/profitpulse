@@ -19,13 +19,13 @@ Rose and Command Center can open the Profit Pulse walkthrough **without login**.
 ## Command Center link
 
 ```
-https://<profitpulse-host>/#/demo
+https://demo.ccaprofitpulse.com/demo
 ```
 
-Or path entry (redirects automatically):
+Hash route (equivalent):
 
 ```
-https://<profitpulse-host>/demo
+https://demo.ccaprofitpulse.com/#/demo
 ```
 
-No nginx or DNS changes required for local/staging preview on port 3010.
+Local preview (no TLS): `http://127.0.0.1:3010/demo` or `http://127.0.0.1:3010/#/demo`

@@ -214,7 +214,7 @@ Separate 7-section narrated flow using `public/onboarding/*.mp3` — also not th
 **Command Center link target (when ready):**
 
 ```
-https://profitpulse.yourdomain.com/#/demo
+https://demo.ccaprofitpulse.com/demo
 ```
 
 (or current staging IP with Host header / hash path)
