@@ -1,0 +1,6 @@
+Optional single-track narration fallback for the Rose demo.
+
+Expected filename: narration.mp3 (replace this note with the MP3)
+Runtime URL: /demo/narration.mp3
+
+Per-scene files in narration/ are preferred. See docs/ROSE-NARRATION-SCRIPT.md.

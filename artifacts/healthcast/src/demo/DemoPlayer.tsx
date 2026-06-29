@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Repeat, Volume2, VolumeX, ChevronUp, ChevronDown, Play, Pause, RotateCcw } from 'lucide-react';
 import VideoTemplate, { SCENE_DURATIONS } from './VideoTemplate';
 import { useSceneControls } from './useSceneControls';
+import { probeDemoAudio, type DemoAudioStatus } from './audioPaths';
+import { AudioStatusBadge } from './components/AudioStatusBadge';
 
 const PROGRESS_TICK_MS = 60;
 
@@ -184,6 +186,7 @@ export default function DemoPlayer({
 
   const [muted, setMuted] = useState(false);
   const [paused, setPaused] = useState(false);
+  const [audioStatus, setAudioStatus] = useState<DemoAudioStatus>('loading');
   const sensorRef = useRef<HTMLDivElement | null>(null);
   const [collapsed, setCollapsed] = useState(false);
   const [hovering, setHovering] = useState(false);
@@ -204,6 +207,16 @@ export default function DemoPlayer({
       if (!c) { setHovering(false); setTapPinned(false); }
       return !c;
     });
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    probeDemoAudio().then((status) => {
+      if (!cancelled) setAudioStatus(status);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -248,6 +261,7 @@ export default function DemoPlayer({
     return (
       <div className="flex flex-col w-full">
         <div className="relative w-full" style={{ aspectRatio: '16 / 9' }}>
+          <AudioStatusBadge status={audioStatus} />
           <VideoTemplate
             key={mountKey}
             durations={durations}
@@ -267,6 +281,7 @@ export default function DemoPlayer({
   // Layout A: overlaid control bar (full-screen /demo page).
   return (
     <div className={`relative w-full ${fill ? 'h-full' : 'h-screen'}`}>
+      <AudioStatusBadge status={audioStatus} />
       <VideoTemplate
         key={mountKey}
         durations={durations}
