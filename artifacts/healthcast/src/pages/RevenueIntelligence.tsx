@@ -10,6 +10,9 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tool
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { revenueKpis, revenueTrendData, revenueByService, revenueByState } from "@/data/revenueData";
+import { useProfitPulse, createEmptyAccount } from "@/context/ProfitPulseProvider";
+import { EntityCrudTable } from "@/components/profit-pulse/EntityCrudTable";
+import type { Account } from "@/lib/profit-pulse/types";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -29,6 +32,8 @@ const itemVariants = {
 const COLORS = ['hsl(var(--primary))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))', 'hsl(var(--chart-5))'];
 
 export default function RevenueIntelligence() {
+  const { state, metrics, upsertAccount, deleteAccount } = useProfitPulse();
+
   return (
     <motion.div 
       variants={containerVariants}
@@ -46,9 +51,9 @@ export default function RevenueIntelligence() {
         <motion.div variants={itemVariants}>
           <KpiCard 
             label="Total Revenue" 
-            value={formatCompactCurrency(revenueKpis.totalRevenue.value)}
-            priorValue={revenueKpis.totalRevenue.priorValue}
-            trend={revenueKpis.totalRevenue.trend}
+            value={formatCompactCurrency(metrics.monthlyRevenue)}
+            priorValue={metrics.priorMonthlyRevenue}
+            trend={metrics.revenueTrend}
           />
         </motion.div>
         <motion.div variants={itemVariants}>
@@ -209,6 +214,39 @@ export default function RevenueIntelligence() {
           </ChartCard>
         </motion.div>
       </div>
+
+      <EntityCrudTable<Account>
+        title="Accounts / Clients"
+        description="Manage client accounts tied to revenue and facilities."
+        records={state.accounts}
+        columns={[
+          { key: "name", label: "Account" },
+          { key: "state", label: "State" },
+          { key: "segment", label: "Segment" },
+          { key: "status", label: "Status" },
+          { key: "monthlyContractValue", label: "MRR", format: (v) => formatCompactCurrency(Number(v)) },
+        ]}
+        fields={[
+          { key: "name", label: "Name", required: true },
+          { key: "contactName", label: "Contact" },
+          { key: "email", label: "Email" },
+          { key: "phone", label: "Phone" },
+          { key: "state", label: "State" },
+          { key: "segment", label: "Segment" },
+          { key: "monthlyContractValue", label: "Monthly Contract Value", type: "number" },
+          { key: "status", label: "Status", type: "select", options: [
+            { value: "active", label: "Active" },
+            { value: "at-risk", label: "At Risk" },
+            { value: "churned", label: "Churned" },
+          ]},
+          { key: "notes", label: "Notes", type: "textarea" },
+        ]}
+        onSave={upsertAccount}
+        onDelete={deleteAccount}
+        createRecord={createEmptyAccount}
+        validate={(a) => (!a.name.trim() ? "Account name is required." : null)}
+        emptyMessage="No accounts yet."
+      />
 
     </motion.div>
   );

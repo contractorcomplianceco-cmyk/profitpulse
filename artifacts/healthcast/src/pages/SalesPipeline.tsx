@@ -11,6 +11,9 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tool
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { pipelineKpis, pipelineStages, salespersonPerformance, staleDeals } from "@/data/pipelineData";
+import { useProfitPulse, createEmptyOpportunity } from "@/context/ProfitPulseProvider";
+import { EntityCrudTable } from "@/components/profit-pulse/EntityCrudTable";
+import type { Opportunity } from "@/lib/profit-pulse/types";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -28,6 +31,10 @@ const itemVariants = {
 };
 
 export default function SalesPipeline() {
+  const { state, upsertOpportunity, deleteOpportunity } = useProfitPulse();
+  const weighted = state.opportunities.reduce((s, o) => s + o.value * (o.probability / 100), 0);
+  const total = state.opportunities.reduce((s, o) => s + o.value, 0);
+
   return (
     <motion.div 
       variants={containerVariants}
@@ -45,9 +52,9 @@ export default function SalesPipeline() {
         <motion.div variants={itemVariants}>
           <KpiCard 
             label="Weighted Pipeline" 
-            value={formatCompactCurrency(pipelineKpis.weightedPipeline.value)}
-            priorValue={pipelineKpis.weightedPipeline.priorValue}
-            trend={pipelineKpis.weightedPipeline.trend}
+            value={formatCompactCurrency(weighted)}
+            priorValue={weighted * 0.9}
+            trend={[weighted * 0.85, weighted * 0.9, weighted * 0.95, weighted]}
           />
         </motion.div>
         <motion.div variants={itemVariants}>
@@ -180,6 +187,39 @@ export default function SalesPipeline() {
           </ChartCard>
         </motion.div>
       </div>
+
+      <EntityCrudTable<Opportunity>
+        title="Opportunities"
+        description="Pipeline opportunities — edits persist locally."
+        records={state.opportunities}
+        columns={[
+          { key: "title", label: "Opportunity" },
+          { key: "stage", label: "Stage" },
+          { key: "value", label: "Value", format: (v) => formatCompactCurrency(Number(v)) },
+          { key: "probability", label: "Prob %", format: (v) => `${v}%` },
+          { key: "expectedCloseDate", label: "Close Date" },
+        ]}
+        fields={[
+          { key: "title", label: "Title", required: true },
+          { key: "accountId", label: "Account ID", required: true },
+          { key: "stage", label: "Stage", type: "select", options: [
+            { value: "lead", label: "Lead" }, { value: "qualified", label: "Qualified" },
+            { value: "proposal", label: "Proposal" }, { value: "negotiation", label: "Negotiation" },
+            { value: "won", label: "Won" }, { value: "lost", label: "Lost" },
+          ]},
+          { key: "value", label: "Value", type: "number", required: true },
+          { key: "probability", label: "Probability %", type: "number" },
+          { key: "expectedCloseDate", label: "Expected Close", type: "date" },
+          { key: "lastFollowUpDate", label: "Last Follow-up", type: "date" },
+          { key: "owner", label: "Owner" },
+          { key: "notes", label: "Notes", type: "textarea" },
+        ]}
+        onSave={upsertOpportunity}
+        onDelete={deleteOpportunity}
+        createRecord={() => createEmptyOpportunity(state.accounts[0]?.id)}
+        validate={(o) => (!o.title.trim() || o.value <= 0 ? "Title and value required." : null)}
+        emptyMessage="No opportunities in pipeline."
+      />
 
     </motion.div>
   );

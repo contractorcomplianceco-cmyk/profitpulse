@@ -25,6 +25,8 @@ import {
   lowBalanceThreshold,
   type CashEventType,
 } from "@/data/cashCalendarData";
+import { useProfitPulse } from "@/context/ProfitPulseProvider";
+import { calendarEvents } from "@/lib/profit-pulse/calculations";
 import {
   ArrowUpRight,
   ArrowDownRight,
@@ -79,6 +81,8 @@ function bucketLabel(dayOffset: number): string {
 }
 
 export default function CashCalendar() {
+  const { state, metrics } = useProfitPulse();
+  const liveEvents = calendarEvents(state);
   const buckets = ["Days 1 - 30", "Days 31 - 60", "Days 61 - 90"];
 
   return (
@@ -277,10 +281,30 @@ export default function CashCalendar() {
       </motion.div>
 
       <motion.div variants={itemVariants}>
+        <ChartCard title="Live AR/AP Calendar (from your data)" description="Upcoming inflows and outflows in the next 45 days">
+          <div className="space-y-2 mt-4">
+            {liveEvents.length === 0 ? (
+              <p className="text-sm text-muted-foreground p-4">No upcoming calendar events from invoices or payables.</p>
+            ) : liveEvents.map((ev) => (
+              <div key={ev.id} className="flex justify-between items-center p-3 rounded-lg border border-border/50 bg-secondary/20">
+                <div>
+                  <div className="font-semibold text-sm">{ev.label}</div>
+                  <div className="text-xs text-muted-foreground">{ev.date}</div>
+                </div>
+                <div className={cn("font-bold", ev.type === "inflow" ? "text-success" : "text-destructive")}>
+                  {ev.type === "inflow" ? "+" : "-"}{formatCompactCurrency(ev.amount)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </ChartCard>
+      </motion.div>
+
+      <motion.div variants={itemVariants}>
         <RecommendedAction
-          title="Smooth the Day 15 outflow cluster"
-          description="Tax estimate, lease, and an upcoming payroll concentrate near the lowest projected balance. Pull forward two confirmed collections or arrange a short-term sweep to hold a comfortable buffer."
-          actionText="Build Mitigation Plan"
+          title="Cash buffer check"
+          description={`Forecasted 30-day cash ${formatCompactCurrency(metrics.forecastedCash30d)} — review AP due dates against AR collections.`}
+          actionText="Open Cash Flow"
         />
       </motion.div>
     </motion.div>

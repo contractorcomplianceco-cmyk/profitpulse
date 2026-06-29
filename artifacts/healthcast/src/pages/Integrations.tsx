@@ -6,6 +6,11 @@ import { InsightCard } from "@/components/dashboard/InsightCard";
 import { RiskWarning } from "@/components/dashboard/RiskWarning";
 import { AlertBadge } from "@/components/dashboard/AlertBadge";
 import { integrations, integrationStats } from "@/data/integrationsData";
+import { useProfitPulse } from "@/context/ProfitPulseProvider";
+import { CSV_SAMPLE } from "@/lib/profit-pulse/csv-import";
+import { Textarea } from "@/components/ui/textarea";
+import { useRef, useState } from "react";
+import { Download, Upload, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
@@ -24,6 +29,45 @@ const itemVariants = {
 
 export default function Integrations() {
   const { toast } = useToast();
+  const { exportJson, importJson, importCsv, resetDemoData } = useProfitPulse();
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [csvText, setCsvText] = useState("");
+  const [csvErrors, setCsvErrors] = useState<string[]>([]);
+
+  const handleExport = () => {
+    const blob = new Blob([exportJson()], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "profit-pulse-export.json";
+    a.click();
+    URL.revokeObjectURL(url);
+    toast({ title: "Export complete", description: "JSON downloaded to your device." });
+  };
+
+  const handleImportFile = (file: File | undefined) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        importJson(String(reader.result));
+        toast({ title: "Import successful", description: "Data loaded from JSON file." });
+      } catch (e) {
+        toast({ title: "Import failed", description: e instanceof Error ? e.message : "Invalid file", variant: "destructive" });
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const handleCsvImport = () => {
+    const result = importCsv(csvText);
+    setCsvErrors(result.errors.map((e: { row: number; message: string }) => `Row ${e.row}: ${e.message}`));
+    if (result.imported > 0) {
+      toast({ title: "CSV imported", description: `${result.revenueAdded} revenue, ${result.expensesAdded} expense rows added.` });
+    } else if (result.errors.length) {
+      toast({ title: "Import had errors", description: "See validation messages below.", variant: "destructive" });
+    }
+  };
 
   const handleConnect = (name: string, status: string) => {
     if (status === 'syncing') {
@@ -54,6 +98,37 @@ export default function Integrations() {
 
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="show" className="space-y-6 pb-12">
+      <PageHeader 
+        title="Import Center & Integrations" 
+        description="Export/import local data, CSV revenue & expenses, and manage integration connections."
+        actions={<Button variant="outline" onClick={resetDemoData}><RotateCcw className="w-4 h-4 mr-2" /> Reset Demo Data</Button>}
+      />
+
+      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="bg-card/50 border-border/50">
+          <CardHeader><CardTitle className="text-base">JSON Export / Import</CardTitle></CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-sm text-muted-foreground">Full backup of all Profit Pulse records stored in this browser.</p>
+            <div className="flex gap-2">
+              <Button onClick={handleExport} className="gap-2"><Download className="w-4 h-4" /> Export JSON</Button>
+              <Button variant="outline" onClick={() => fileRef.current?.click()} className="gap-2"><Upload className="w-4 h-4" /> Import JSON</Button>
+              <input ref={fileRef} type="file" accept=".json,application/json" className="hidden" onChange={(e) => handleImportFile(e.target.files?.[0])} />
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="bg-card/50 border-border/50">
+          <CardHeader><CardTitle className="text-base">CSV Import (Revenue & Expenses)</CardTitle></CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-xs text-muted-foreground font-mono whitespace-pre-wrap bg-secondary/30 p-2 rounded border">{CSV_SAMPLE}</p>
+            <Textarea value={csvText} onChange={(e) => setCsvText(e.target.value)} placeholder="Paste CSV here..." rows={5} />
+            <Button onClick={handleCsvImport} disabled={!csvText.trim()}>Import CSV</Button>
+            {csvErrors.length > 0 && (
+              <ul className="text-xs text-destructive space-y-1">{csvErrors.map((e, i) => <li key={i}>{e}</li>)}</ul>
+            )}
+          </CardContent>
+        </Card>
+      </motion.div>
+
       <PageHeader 
         title="Data Integrations" 
         description="Central nervous system connectivity. Manage API links to accounting, CRM, and marketing platforms."

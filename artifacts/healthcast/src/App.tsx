@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { BrandProvider } from "@/brand/BrandProvider";
+import { ProfitPulseProvider } from "@/context/ProfitPulseProvider";
 import { GuidedTour } from "@/demo/GuidedTour";
 import { DemoFunnelProvider, useDemoFunnel } from "@/demo/DemoFunnel";
 import { isDemoMode } from "@/brand/demoMode";
@@ -33,6 +34,7 @@ import CfoCopilot from "@/pages/CfoCopilot";
 import GoalsOkrs from "@/pages/GoalsOkrs";
 import CashCalendar from "@/pages/CashCalendar";
 import ComplianceRisk from "@/pages/ComplianceRisk";
+import FacilityIntelligence from "@/pages/FacilityIntelligence";
 import Welcome from "@/pages/Welcome";
 import Landing from "@/pages/Landing";
 import WhiteLabelSettings from "@/pages/WhiteLabelSettings";
@@ -70,6 +72,7 @@ function Router() {
         <Route path="/goals" component={GoalsOkrs} />
         <Route path="/cash-calendar" component={CashCalendar} />
         <Route path="/compliance" component={ComplianceRisk} />
+        <Route path="/facility-intelligence" component={FacilityIntelligence} />
         <Route path="/settings" component={WhiteLabelSettings} />
         <Route component={NotFound} />
       </Switch>
@@ -120,6 +123,7 @@ function DemoGate({ children }: { children: React.ReactNode }) {
 function App() {
   return (
     <BrandProvider>
+      <ProfitPulseProvider>
       <DemoFunnelProvider>
         <QueryClientProvider client={queryClient}>
           <TooltipProvider>
@@ -143,6 +147,7 @@ function App() {
           </TooltipProvider>
         </QueryClientProvider>
       </DemoFunnelProvider>
+      </ProfitPulseProvider>
     </BrandProvider>
   );
 }

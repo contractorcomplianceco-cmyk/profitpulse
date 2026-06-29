@@ -7,6 +7,10 @@ import { RiskWarning } from "@/components/dashboard/RiskWarning";
 import { RecommendedAction } from "@/components/dashboard/RecommendedAction";
 import { AlertBadge } from "@/components/dashboard/AlertBadge";
 import { arApKpis, arAging, clientsAtRisk, vendorBills } from "@/data/arApData";
+import { useProfitPulse, createEmptyInvoice, createEmptyPayable } from "@/context/ProfitPulseProvider";
+import { arAgingBuckets } from "@/lib/profit-pulse/calculations";
+import { EntityCrudTable } from "@/components/profit-pulse/EntityCrudTable";
+import type { Invoice, PayableBill } from "@/lib/profit-pulse/types";
 import { formatCompactCurrency, formatCurrency, formatPercent } from "@/lib/format";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recharts";
 import { Button } from "@/components/ui/button";
@@ -22,6 +26,9 @@ const itemVariants = {
 };
 
 export default function ArApCollections() {
+  const { state, metrics, upsertInvoice, deleteInvoice, upsertPayable, deletePayable } = useProfitPulse();
+  const liveArAging = arAgingBuckets(state);
+
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="show" className="space-y-6 pb-12">
       <PageHeader 
@@ -32,16 +39,16 @@ export default function ArApCollections() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <motion.div variants={itemVariants}>
-          <KpiCard label="Total AR" value={formatCompactCurrency(arApKpis.totalAr.value)} priorValue={arApKpis.totalAr.priorValue} trend={arApKpis.totalAr.trend} inverseTrend />
+          <KpiCard label="Total AR" value={formatCompactCurrency(metrics.arOutstanding)} priorValue={metrics.arOutstanding * 1.05} trend={metrics.cashTrend} inverseTrend />
         </motion.div>
         <motion.div variants={itemVariants}>
-          <KpiCard label="Overdue Amount" value={formatCompactCurrency(arApKpis.overdueAmount.value)} priorValue={arApKpis.overdueAmount.priorValue} trend={arApKpis.overdueAmount.trend} inverseTrend />
+          <KpiCard label="Overdue Amount" value={formatCompactCurrency(state.invoices.filter(i => i.status === "overdue").reduce((s,i) => s + i.amount - i.amountPaid, 0))} priorValue={70000} trend={metrics.cashTrend} inverseTrend />
         </motion.div>
         <motion.div variants={itemVariants}>
-          <KpiCard label="Collection Rate" value={formatPercent(arApKpis.collectionRate.value)} priorValue={arApKpis.collectionRate.priorValue} trend={arApKpis.collectionRate.trend} />
+          <KpiCard label="Revenue at Risk" value={formatCompactCurrency(metrics.revenueAtRisk)} priorValue={metrics.revenueAtRisk * 0.9} trend={metrics.revenueTrend} inverseTrend />
         </motion.div>
         <motion.div variants={itemVariants}>
-          <KpiCard label="Total AP" value={formatCompactCurrency(arApKpis.totalAp.value)} priorValue={arApKpis.totalAp.priorValue} trend={arApKpis.totalAp.trend} inverseTrend />
+          <KpiCard label="Total AP (30d)" value={formatCompactCurrency(metrics.apUpcoming)} priorValue={metrics.apUpcoming * 0.95} trend={metrics.cashTrend} inverseTrend />
         </motion.div>
       </div>
 
@@ -50,13 +57,13 @@ export default function ArApCollections() {
           <ChartCard title="A/R Aging" description="Outstanding balances by days overdue">
             <div className="h-[300px] w-full mt-4">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={arAging} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <BarChart data={liveArAging.map(b => ({ bucket: b.bucket, amount: b.amount }))} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
                   <XAxis dataKey="bucket" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
                   <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `$${val / 1000}k`} />
                   <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '8px' }} itemStyle={{ color: 'hsl(var(--foreground))' }} formatter={(val: number) => [formatCurrency(val), 'Amount']} />
                   <Bar dataKey="amount" radius={[4, 4, 0, 0]}>
-                    {arAging.map((entry, index) => {
+                    {liveArAging.map((entry, index) => {
                       let color = "hsl(var(--primary))";
                       if (entry.bucket === '61-90 Days') color = "hsl(var(--warning))";
                       if (entry.bucket === '90+ Days') color = "hsl(var(--destructive))";
@@ -87,16 +94,16 @@ export default function ArApCollections() {
             <span className="text-xs text-muted-foreground">{clientsAtRisk.length} Actionable</span>
           </div>
           <div className="space-y-3">
-            {clientsAtRisk.map(client => (
+            {state.invoices.filter(i => i.status === "overdue").map(client => (
               <div key={client.id} className="flex justify-between items-center p-3 bg-background/50 rounded-lg border border-border">
                 <div>
                   <div className="font-medium flex items-center gap-2">
-                    {client.name}
-                    {client.daysOverdue >= 90 ? <AlertBadge severity="critical" /> : <AlertBadge severity="warning" />}
+                    {state.accounts.find(a => a.id === client.accountId)?.name ?? client.invoiceNumber}
+                    <AlertBadge severity="critical" />
                   </div>
-                  <div className="text-xs text-muted-foreground mt-0.5">{client.status} &bull; {client.daysOverdue} Days Overdue</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">{client.status} &bull; Due {client.dueDate}</div>
                 </div>
-                <div className="font-semibold text-right text-destructive">{formatCurrency(client.amount)}</div>
+                <div className="font-semibold text-right text-destructive">{formatCurrency(client.amount - client.amountPaid)}</div>
               </div>
             ))}
           </div>
@@ -108,7 +115,7 @@ export default function ArApCollections() {
             <span className="text-xs text-muted-foreground">Next 14 Days</span>
           </div>
           <div className="space-y-3">
-            {vendorBills.map(bill => (
+            {state.payables.filter(p => p.status !== "paid").slice(0, 6).map(bill => (
               <div key={bill.id} className="flex justify-between items-center p-3 bg-background/50 rounded-lg border border-border">
                 <div>
                   <div className="font-medium">{bill.vendor}</div>
@@ -119,6 +126,63 @@ export default function ArApCollections() {
             ))}
           </div>
         </motion.div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6">
+        <EntityCrudTable<Invoice>
+          title="Invoices (AR)"
+          records={state.invoices}
+          columns={[
+            { key: "invoiceNumber", label: "Invoice #" },
+            { key: "dueDate", label: "Due" },
+            { key: "status", label: "Status" },
+            { key: "amount", label: "Amount", format: (v) => formatCurrency(Number(v)) },
+          ]}
+          fields={[
+            { key: "invoiceNumber", label: "Invoice #", required: true },
+            { key: "accountId", label: "Account ID", required: true },
+            { key: "issueDate", label: "Issue Date", type: "date" },
+            { key: "dueDate", label: "Due Date", type: "date", required: true },
+            { key: "amount", label: "Amount", type: "number", required: true },
+            { key: "amountPaid", label: "Paid", type: "number" },
+            { key: "status", label: "Status", type: "select", options: [
+              { value: "draft", label: "Draft" }, { value: "sent", label: "Sent" },
+              { value: "partial", label: "Partial" }, { value: "paid", label: "Paid" }, { value: "overdue", label: "Overdue" },
+            ]},
+            { key: "description", label: "Description", type: "textarea" },
+          ]}
+          onSave={upsertInvoice}
+          onDelete={deleteInvoice}
+          createRecord={() => createEmptyInvoice(state.accounts[0]?.id)}
+          validate={(r) => (!r.invoiceNumber.trim() || r.amount <= 0 ? "Invoice # and amount required." : null)}
+          emptyMessage="No invoices."
+        />
+        <EntityCrudTable<PayableBill>
+          title="Payables (AP)"
+          records={state.payables}
+          columns={[
+            { key: "vendor", label: "Vendor" },
+            { key: "dueDate", label: "Due" },
+            { key: "category", label: "Category" },
+            { key: "amount", label: "Amount", format: (v) => formatCurrency(Number(v)) },
+          ]}
+          fields={[
+            { key: "vendor", label: "Vendor", required: true },
+            { key: "dueDate", label: "Due Date", type: "date", required: true },
+            { key: "category", label: "Category", required: true },
+            { key: "amount", label: "Amount", type: "number", required: true },
+            { key: "status", label: "Status", type: "select", options: [
+              { value: "scheduled", label: "Scheduled" }, { value: "due", label: "Due" },
+              { value: "paid", label: "Paid" }, { value: "overdue", label: "Overdue" },
+            ]},
+            { key: "description", label: "Description", type: "textarea" },
+          ]}
+          onSave={upsertPayable}
+          onDelete={deletePayable}
+          createRecord={createEmptyPayable}
+          validate={(r) => (!r.vendor.trim() || r.amount <= 0 ? "Vendor and amount required." : null)}
+          emptyMessage="No payables."
+        />
       </div>
     </motion.div>
   );

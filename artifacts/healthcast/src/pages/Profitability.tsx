@@ -7,6 +7,8 @@ import { RiskWarning } from "@/components/dashboard/RiskWarning";
 import { RecommendedAction } from "@/components/dashboard/RecommendedAction";
 import { AlertBadge } from "@/components/dashboard/AlertBadge";
 import { profitabilityKpis, marginByServiceLine, marginBySource, costImpacts, lowMarginClients } from "@/data/profitabilityData";
+import { useProfitPulse } from "@/context/ProfitPulseProvider";
+import { LiveDataBanner } from "@/components/profit-pulse/LiveDataBanner";
 import { formatCompactCurrency, formatCurrency, formatPercent } from "@/lib/format";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recharts";
 import { Button } from "@/components/ui/button";
@@ -22,26 +24,30 @@ const itemVariants = {
 };
 
 export default function Profitability() {
+  const { state, metrics } = useProfitPulse();
+
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="show" className="space-y-6 pb-12">
       <PageHeader 
         title="Profitability" 
-        description="Margin analysis and cost impact" 
+        description="Margin and profit analysis from your revenue and expense records." 
         actions={<Button variant="outline" className="border-primary/50 text-primary hover:bg-primary/10">Drilldown</Button>}
       />
 
+      <LiveDataBanner detail={`Gross margin ${metrics.grossMarginPct.toFixed(1)}% from ${state.revenueRecords.length} revenue and ${state.expenseRecords.length} expense records`} />
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <motion.div variants={itemVariants}>
-          <KpiCard label="Gross Profit" value={formatCompactCurrency(profitabilityKpis.grossProfit.value)} priorValue={profitabilityKpis.grossProfit.priorValue} trend={profitabilityKpis.grossProfit.trend} />
+          <KpiCard label="Gross Profit" value={formatCompactCurrency(metrics.monthlyRevenue - metrics.monthlyExpenses)} priorValue={metrics.priorMonthlyRevenue - metrics.monthlyExpenses} trend={metrics.revenueTrend} />
         </motion.div>
         <motion.div variants={itemVariants}>
-          <KpiCard label="Net Profit" value={formatCompactCurrency(profitabilityKpis.netProfit.value)} priorValue={profitabilityKpis.netProfit.priorValue} trend={profitabilityKpis.netProfit.trend} />
+          <KpiCard label="Net Profit" value={formatCompactCurrency(metrics.netProfit)} priorValue={metrics.priorNetProfit} trend={metrics.revenueTrend} />
         </motion.div>
         <motion.div variants={itemVariants}>
-          <KpiCard label="Gross Margin" value={formatPercent(profitabilityKpis.grossMargin.value)} priorValue={profitabilityKpis.grossMargin.priorValue} trend={profitabilityKpis.grossMargin.trend} />
+          <KpiCard label="Gross Margin" value={formatPercent(metrics.grossMarginPct)} priorValue={metrics.grossMarginPct * 0.97} trend={metrics.revenueTrend} />
         </motion.div>
         <motion.div variants={itemVariants}>
-          <KpiCard label="Operating Margin" value={formatPercent(profitabilityKpis.operatingMargin.value)} priorValue={profitabilityKpis.operatingMargin.priorValue} trend={profitabilityKpis.operatingMargin.trend} />
+          <KpiCard label="Operating Margin" value={formatPercent(metrics.operatingMarginPct)} priorValue={metrics.operatingMarginPct * 0.97} trend={metrics.revenueTrend} />
         </motion.div>
       </div>
 

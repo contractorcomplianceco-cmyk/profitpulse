@@ -7,6 +7,11 @@ import { RiskWarning } from "@/components/dashboard/RiskWarning";
 import { RecommendedAction } from "@/components/dashboard/RecommendedAction";
 import { cashFlowKpis, cashProjection, upcomingBills, expectedPayments, pinchDates } from "@/data/cashFlowData";
 import { formatCompactCurrency, formatCurrency } from "@/lib/format";
+import { useProfitPulse, createEmptyRevenue, createEmptyExpense } from "@/context/ProfitPulseProvider";
+import { cashProjection90d } from "@/lib/profit-pulse/calculations";
+import { LiveDataBanner } from "@/components/profit-pulse/LiveDataBanner";
+import { EntityCrudTable, formatMoneyCell } from "@/components/profit-pulse/EntityCrudTable";
+import type { RevenueRecord, ExpenseRecord } from "@/lib/profit-pulse/types";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { Button } from "@/components/ui/button";
 
@@ -21,29 +26,38 @@ const itemVariants = {
 };
 
 export default function CashFlow() {
+  const { state, metrics, upsertRevenue, deleteRevenue, upsertExpense, deleteExpense } = useProfitPulse();
+  const projection = cashProjection90d(state).map((p) => ({ day: p.date, balance: p.balance }));
+  const livePayables = state.payables.filter((p) => p.status !== "paid").slice(0, 6);
+  const liveInvoices = state.invoices.filter((i) => i.status !== "paid").slice(0, 6);
+
+  const accountOptions = state.accounts.map((a) => ({ value: a.id, label: a.name }));
+
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="show" className="space-y-6 pb-12">
       <PageHeader 
         title="Cash Flow" 
-        description="Liquidity and runway management" 
+        description="Liquidity, runway, and cash movement from your revenue, expense, AR, and AP records." 
         actions={<Button variant="outline" className="border-primary/50 text-primary hover:bg-primary/10">Drilldown</Button>}
       />
 
+      <LiveDataBanner detail={`Runway ${metrics.runwayMonths.toFixed(1)} mo · Forecast 30d ${formatCompactCurrency(metrics.forecastedCash30d)}`} />
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <motion.div variants={itemVariants}>
-          <KpiCard label="Cash In (30d)" value={formatCompactCurrency(cashFlowKpis.cashIn.value)} priorValue={cashFlowKpis.cashIn.priorValue} trend={cashFlowKpis.cashIn.trend} />
+          <KpiCard label="Cash In (30d)" value={formatCompactCurrency(metrics.monthlyRevenue)} priorValue={metrics.priorMonthlyRevenue} trend={metrics.revenueTrend} />
         </motion.div>
         <motion.div variants={itemVariants}>
-          <KpiCard label="Cash Out (30d)" value={formatCompactCurrency(cashFlowKpis.cashOut.value)} priorValue={cashFlowKpis.cashOut.priorValue} trend={cashFlowKpis.cashOut.trend} inverseTrend />
+          <KpiCard label="Cash Out (30d)" value={formatCompactCurrency(metrics.monthlyExpenses)} priorValue={metrics.monthlyExpenses * 0.97} trend={metrics.cashTrend} inverseTrend />
         </motion.div>
         <motion.div variants={itemVariants}>
-          <KpiCard label="Runway" value={`${cashFlowKpis.runway.value} mos`} priorValue={cashFlowKpis.runway.priorValue} trend={cashFlowKpis.runway.trend} />
+          <KpiCard label="Runway" value={`${metrics.runwayMonths.toFixed(1)} mos`} priorValue={metrics.runwayMonths * 0.95} trend={metrics.cashTrend} />
         </motion.div>
         <motion.div variants={itemVariants}>
-          <KpiCard label="Payroll Coverage" value={`${cashFlowKpis.payrollCoverage.value}x`} priorValue={cashFlowKpis.payrollCoverage.priorValue} trend={cashFlowKpis.payrollCoverage.trend} />
+          <KpiCard label="Payroll Burden" value={formatCompactCurrency(metrics.payrollBurden)} priorValue={metrics.payrollBurden * 0.98} trend={metrics.cashTrend} inverseTrend />
         </motion.div>
         <motion.div variants={itemVariants}>
-          <KpiCard label="Safe to Spend" value={formatCompactCurrency(cashFlowKpis.safeToSpend.value)} priorValue={cashFlowKpis.safeToSpend.priorValue} trend={cashFlowKpis.safeToSpend.trend} />
+          <KpiCard label="Forecasted Cash (30d)" value={formatCompactCurrency(metrics.forecastedCash30d)} priorValue={metrics.cashOnHand} trend={metrics.cashTrend} />
         </motion.div>
       </div>
 
@@ -52,7 +66,7 @@ export default function CashFlow() {
           <ChartCard title="90-Day Cash Projection" description="Expected balance based on scheduled AP/AR">
             <div className="h-[300px] w-full mt-4">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={cashProjection} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <AreaChart data={projection.length ? projection : cashProjection} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
@@ -72,14 +86,14 @@ export default function CashFlow() {
 
         <motion.div variants={itemVariants} className="flex flex-col gap-6">
           <InsightCard title="Liquidity Insight">
-            Cash inflows have outpaced outflows by $400k over the last 30 days. Runway is extending favorably, providing an ideal window to consider planned Q4 capital expenditures without triggering debt facilities.
+            Cash on hand {formatCompactCurrency(metrics.cashOnHand)} with {metrics.runwayMonths.toFixed(1)} months runway. AP upcoming {formatCompactCurrency(metrics.apUpcoming)} in the next 30 days.
           </InsightCard>
           
-          {pinchDates.map(pinch => (
-            <RiskWarning key={pinch.date} title={`Cash Pinch: ${pinch.date}`} message={`${pinch.reason} leading to a temporary ${formatCurrency(Math.abs(pinch.impact))} dip.`} />
-          ))}
+          {metrics.forecastedCash30d < metrics.cashOnHand * 0.85 && (
+            <RiskWarning title="Cash Pinch Risk" message={`Forecasted 30-day cash ${formatCurrency(metrics.forecastedCash30d)} may pressure liquidity.`} />
+          )}
 
-          <RecommendedAction title="Sweep Excess Cash" description="Transfer $250k to high-yield sweep account to optimize return on idle cash." actionText="Initiate Transfer" />
+          <RecommendedAction title="Optimize Collections" description={`${formatCompactCurrency(metrics.arOutstanding)} in open AR — prioritize overdue invoices.`} actionText="View AR/AP" />
         </motion.div>
       </div>
 
@@ -87,14 +101,14 @@ export default function CashFlow() {
         <motion.div variants={itemVariants} className="bg-card/50 backdrop-blur-xl border border-border/50 rounded-xl p-5">
           <h3 className="text-lg font-semibold mb-4">Upcoming Bills</h3>
           <div className="space-y-3">
-            {upcomingBills.map(bill => (
+            {livePayables.map(bill => (
               <div key={bill.id} className="flex justify-between items-center p-3 bg-background/50 rounded-lg border border-border">
                 <div>
                   <div className="font-medium flex items-center gap-2">
                     {bill.vendor}
-                    {bill.critical && <span className="text-[10px] uppercase bg-destructive/10 text-destructive px-1.5 py-0.5 rounded font-bold">Critical</span>}
+                    {bill.status === "overdue" && <span className="text-[10px] uppercase bg-destructive/10 text-destructive px-1.5 py-0.5 rounded font-bold">Overdue</span>}
                   </div>
-                  <div className="text-xs text-muted-foreground mt-0.5">Due: {bill.date}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">Due: {bill.dueDate}</div>
                 </div>
                 <div className="font-semibold text-right">{formatCurrency(bill.amount)}</div>
               </div>
@@ -105,17 +119,68 @@ export default function CashFlow() {
         <motion.div variants={itemVariants} className="bg-card/50 backdrop-blur-xl border border-border/50 rounded-xl p-5">
           <h3 className="text-lg font-semibold mb-4">Expected Payments</h3>
           <div className="space-y-3">
-            {expectedPayments.map(payment => (
+            {liveInvoices.map(payment => (
               <div key={payment.id} className="flex justify-between items-center p-3 bg-background/50 rounded-lg border border-border">
                 <div>
-                  <div className="font-medium">{payment.client}</div>
-                  <div className="text-xs text-muted-foreground mt-0.5">Expected: {payment.date} &bull; Prob: {payment.probability}</div>
+                  <div className="font-medium">{state.accounts.find((a) => a.id === payment.accountId)?.name ?? payment.invoiceNumber}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">Due: {payment.dueDate} &bull; {payment.status}</div>
                 </div>
-                <div className="font-semibold text-right text-success">{formatCurrency(payment.amount)}</div>
+                <div className="font-semibold text-right text-success">{formatCurrency(payment.amount - payment.amountPaid)}</div>
               </div>
             ))}
           </div>
         </motion.div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6">
+        <EntityCrudTable<RevenueRecord>
+          title="Revenue Records"
+          records={state.revenueRecords}
+          searchKeys={["category", "description"]}
+          getRecordLabel={(r) => r.description}
+          columns={[
+            { key: "date", label: "Date" },
+            { key: "category", label: "Category" },
+            { key: "description", label: "Description" },
+            { key: "amount", label: "Amount", format: (v) => formatMoneyCell(v) },
+          ]}
+          fields={[
+            { key: "date", label: "Date", type: "date", required: true },
+            { key: "accountId", label: "Account", type: "select", required: true, options: accountOptions },
+            { key: "category", label: "Category", required: true, placeholder: "Compliance Retainer" },
+            { key: "description", label: "Description", required: true },
+            { key: "amount", label: "Amount", type: "currency", required: true },
+          ]}
+          onSave={upsertRevenue}
+          onDelete={deleteRevenue}
+          createRecord={() => createEmptyRevenue(state.accounts[0]?.id)}
+          validate={(r) => (!r.description.trim() || r.amount <= 0 ? "Description and positive amount required." : null)}
+          emptyMessage="No revenue records. Add your first inflow."
+        />
+        <EntityCrudTable<ExpenseRecord>
+          title="Expense Records"
+          records={state.expenseRecords}
+          searchKeys={["category", "description", "vendor"]}
+          getRecordLabel={(r) => r.description}
+          columns={[
+            { key: "date", label: "Date" },
+            { key: "category", label: "Category" },
+            { key: "vendor", label: "Vendor" },
+            { key: "amount", label: "Amount", format: (v) => formatMoneyCell(v) },
+          ]}
+          fields={[
+            { key: "date", label: "Date", type: "date", required: true },
+            { key: "category", label: "Category", required: true, placeholder: "Payroll" },
+            { key: "description", label: "Description", required: true },
+            { key: "vendor", label: "Vendor", placeholder: "Vendor name" },
+            { key: "amount", label: "Amount", type: "currency", required: true },
+          ]}
+          onSave={upsertExpense}
+          onDelete={deleteExpense}
+          createRecord={createEmptyExpense}
+          validate={(r) => (!r.description.trim() || r.amount <= 0 ? "Description and positive amount required." : null)}
+          emptyMessage="No expense records. Add your first outflow."
+        />
       </div>
     </motion.div>
   );

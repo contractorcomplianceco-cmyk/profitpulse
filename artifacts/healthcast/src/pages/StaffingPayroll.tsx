@@ -11,6 +11,9 @@ import {
   BarChart, Bar, Legend
 } from "recharts";
 import { staffingKpis, payrollTrend, departmentCosts, workloadStrain, prospectiveHires, capacityData } from "@/data/staffingData";
+import { useProfitPulse, createEmptyStaffing } from "@/context/ProfitPulseProvider";
+import { EntityCrudTable } from "@/components/profit-pulse/EntityCrudTable";
+import type { StaffingRecord } from "@/lib/profit-pulse/types";
 import { formatCompactCurrency, formatPercent, formatCurrency } from "@/lib/format";
 
 const containerVariants = {
@@ -24,6 +27,9 @@ const itemVariants = {
 };
 
 export default function StaffingPayroll() {
+  const { state, metrics, upsertStaffing, deleteStaffing } = useProfitPulse();
+  const payrollPct = metrics.monthlyRevenue > 0 ? (metrics.payrollBurden / metrics.monthlyRevenue) * 100 : 0;
+
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="show" className="space-y-6 pb-12">
       <PageHeader 
@@ -36,9 +42,9 @@ export default function StaffingPayroll() {
         <motion.div variants={itemVariants}>
           <KpiCard 
             label="Payroll % of Rev" 
-            value={formatPercent(staffingKpis.payrollToRevenue.value)}
-            priorValue={staffingKpis.payrollToRevenue.priorValue}
-            trend={staffingKpis.payrollToRevenue.trend}
+            value={formatPercent(payrollPct)}
+            priorValue={payrollPct * 1.02}
+            trend={[payrollPct * 1.05, payrollPct * 1.03, payrollPct * 1.01, payrollPct]}
             inverseTrend
           />
         </motion.div>
@@ -158,6 +164,34 @@ export default function StaffingPayroll() {
           </div>
         </motion.div>
       </div>
+
+      <EntityCrudTable<StaffingRecord>
+        title="Staffing Records"
+        records={state.staffing}
+        columns={[
+          { key: "name", label: "Name" },
+          { key: "role", label: "Role" },
+          { key: "department", label: "Dept" },
+          { key: "monthlyCost", label: "Monthly Cost", format: (v) => formatCurrency(Number(v)) },
+          { key: "status", label: "Status" },
+        ]}
+        fields={[
+          { key: "name", label: "Name", required: true },
+          { key: "role", label: "Role", required: true },
+          { key: "department", label: "Department" },
+          { key: "monthlyCost", label: "Monthly Cost", type: "number", required: true },
+          { key: "fte", label: "FTE", type: "number" },
+          { key: "startDate", label: "Start Date", type: "date" },
+          { key: "status", label: "Status", type: "select", options: [
+            { value: "active", label: "Active" }, { value: "planned", label: "Planned" }, { value: "terminated", label: "Terminated" },
+          ]},
+        ]}
+        onSave={upsertStaffing}
+        onDelete={deleteStaffing}
+        createRecord={createEmptyStaffing}
+        validate={(s) => (!s.name.trim() || s.monthlyCost < 0 ? "Name and valid cost required." : null)}
+        emptyMessage="No staffing records."
+      />
     </motion.div>
   );
 }

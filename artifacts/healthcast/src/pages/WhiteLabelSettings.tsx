@@ -20,6 +20,8 @@ import { useBrand, useProductFullName } from "@/brand/BrandProvider";
 import { BRAND_PRESETS } from "@/brand/brandConfig";
 import { resolveAsset } from "@/lib/asset";
 import { isDemoMode } from "@/brand/demoMode";
+import { useProfitPulse } from "@/context/ProfitPulseProvider";
+import { formatCompactCurrency } from "@/lib/format";
 
 function Field({
   label,
@@ -81,6 +83,7 @@ function ColorField({
 
 export default function WhiteLabelSettings() {
   const { brand, updateBrand, updateTheme, reset } = useBrand();
+  const { state, metrics, updateOrganization, resetDemoData, exportJson } = useProfitPulse();
   const productFullName = useProductFullName();
   const { toast } = useToast();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -292,7 +295,7 @@ export default function WhiteLabelSettings() {
               <div className="p-3 space-y-2.5 bg-background">
                 <div className="rounded-md border border-border bg-card p-2.5 accent-topline relative overflow-hidden">
                   <div className="text-[9px] uppercase tracking-wide text-muted-foreground">Monthly Revenue</div>
-                  <div className="text-lg font-extrabold text-foreground">$1,248,850</div>
+                  <div className="text-lg font-extrabold text-foreground">{formatCompactCurrency(metrics.monthlyRevenue)}</div>
                   <div className="text-[10px] font-bold" style={{ color: brand.theme.green }}>+18.6% vs last month</div>
                 </div>
                 <div className="flex gap-2">
@@ -323,6 +326,37 @@ export default function WhiteLabelSettings() {
           </div>
         </aside>
       </div>
+
+      <section className="mt-8 bg-card border border-border rounded-xl p-6 shadow-soft space-y-4">
+        <h2 className="text-sm font-extrabold uppercase tracking-wide text-muted-foreground">Organization Settings</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Field label="Organization name">
+            <Input value={state.organization.name} onChange={(e) => updateOrganization({ name: e.target.value })} />
+          </Field>
+          <Field label="Cash on hand">
+            <Input type="number" value={state.organization.cashOnHand} onChange={(e) => updateOrganization({ cashOnHand: Number(e.target.value) })} />
+          </Field>
+          <Field label="Margin threshold (%)">
+            <Input type="number" value={state.organization.marginThresholdPct} onChange={(e) => updateOrganization({ marginThresholdPct: Number(e.target.value) })} />
+          </Field>
+          <Field label="Runway threshold (months)">
+            <Input type="number" value={state.organization.runwayThresholdMonths} onChange={(e) => updateOrganization({ runwayThresholdMonths: Number(e.target.value) })} />
+          </Field>
+        </div>
+        <div className="flex flex-wrap gap-2 pt-2">
+          <Button variant="outline" onClick={() => {
+            const blob = new Blob([exportJson()], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "profit-pulse-export.json";
+            a.click();
+            URL.revokeObjectURL(url);
+            toast({ title: "Exported", description: "JSON downloaded." });
+          }}>Export Data</Button>
+          <Button variant="outline" onClick={() => { resetDemoData(); toast({ title: "Demo data restored" }); }}>Reset Demo Data</Button>
+        </div>
+      </section>
     </div>
   );
 }

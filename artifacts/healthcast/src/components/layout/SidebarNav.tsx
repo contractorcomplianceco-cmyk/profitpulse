@@ -22,12 +22,15 @@ import {
   Trophy,
   CalendarClock,
   ShieldCheck,
+  Building2,
+  Plug,
   Compass,
   PlayCircle,
   Megaphone,
   Palette
 } from "lucide-react";
 import { HealthScoreCard } from "./HealthScoreCard";
+import { isNavActive } from "@/lib/profit-pulse/nav";
 
 const NAV_SECTIONS = [
   {
@@ -72,17 +75,19 @@ const NAV_SECTIONS = [
       { href: "/historical-trends", label: "Historical Trends", icon: History },
       { href: "/market-economy", label: "Market & Economy", icon: Globe2 },
       { href: "/futurecast", label: "Futurecast", icon: FastForward },
-      { href: "/scenario-builder", label: "Scenario Builder", icon: SlidersHorizontal },
+      { href: "/scenario-builder", label: "Scenario Modeler", icon: SlidersHorizontal },
       { href: "/goals", label: "Goals & OKRs", icon: Trophy },
     ],
   },
   {
     title: "Governance",
     items: [
+      { href: "/facility-intelligence", label: "Facility Intelligence", icon: Building2 },
       { href: "/compliance", label: "Compliance & Risk", icon: ShieldCheck },
       { href: "/alerts", label: "Alerts", icon: BellRing },
       { href: "/daily-briefing", label: "Daily Briefing", icon: Newspaper },
       { href: "/reports", label: "Reports & Exports", icon: FileText },
+      { href: "/integrations", label: "Integrations", icon: Plug },
     ],
   },
 ];
@@ -102,7 +107,7 @@ export function SidebarNav() {
             <nav className="space-y-1 px-3">
               {section.items.map((item) => {
                 const isExternal = "external" in item && item.external;
-                const isActive = !isExternal && (location === item.href || (location.startsWith(item.href) && item.href !== "/"));
+                const isActive = !isExternal && isNavActive(location, item.href);
                 const Icon = item.icon;
 
                 const inner = (

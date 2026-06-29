@@ -1,145 +1,158 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { PageHeader } from "@/components/dashboard/PageHeader";
-import { KpiCard } from "@/components/dashboard/KpiCard";
 import { InsightCard } from "@/components/dashboard/InsightCard";
 import { RiskWarning } from "@/components/dashboard/RiskWarning";
-import { RecommendedAction } from "@/components/dashboard/RecommendedAction";
 import { ScenarioSlider } from "@/components/dashboard/ScenarioSlider";
-import { calculateScenario, ScenarioBaseline, ScenarioAdjustments } from "@/lib/calculations";
-import { formatCompactCurrency, formatPercent, formatMonths, formatNumber } from "@/lib/format";
+import { ScenarioComparePanel } from "@/components/profit-pulse/ScenarioComparePanel";
+import { LiveDataBanner } from "@/components/profit-pulse/LiveDataBanner";
+import { useProfitPulse } from "@/context/ProfitPulseProvider";
+import { computeScenarioProjection } from "@/lib/profit-pulse/calculations";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { updateChecklistItem } from "@/lib/profit-pulse/onboarding";
+import { useToast } from "@/hooks/use-toast";
 
 const containerVariants = {
   hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.05 } }
+  show: { opacity: 1, transition: { staggerChildren: 0.05 } },
 };
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
-};
-
-const BASELINE: ScenarioBaseline = {
-  revenue: 1250000,
-  cash: 2400000,
-  profit: 285000,
-  payroll: 420000,
-  ar: 420000,
-  marketingSpend: 85000,
+  show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } },
 };
 
 export default function ScenarioBuilder() {
-  const [adjustments, setAdjustments] = useState<ScenarioAdjustments>({
-    adSpendDelta: 0,
-    hireSalesperson: 0,
-    hireCompliance: 0,
-    hireBookkeeper: 0,
-    raisePricesPct: 0,
-    reduceExpensesPct: 0,
-    increaseCloseRatePct: 0,
-    reduceRefundRatePct: 0,
-    improveCollectionSpeedDays: 0,
-    addRetainerPlan: false,
-    launchNewChannel: false,
-    increaseReferralPayouts: false,
-    cutLowMarginService: false,
-  });
+  const { state, metrics, updateScenarioAssumptions, saveScenario } = useProfitPulse();
+  const { toast } = useToast();
+  const assumptions = state.scenarioAssumptions;
+  const [saveOpen, setSaveOpen] = useState(false);
+  const [scenarioName, setScenarioName] = useState("");
 
-  const updateAdj = (key: keyof ScenarioAdjustments, val: number | boolean) => {
-    setAdjustments(prev => ({ ...prev, [key]: val }));
+  const projection = useMemo(
+    () => computeScenarioProjection(state, assumptions),
+    [state, assumptions],
+  );
+
+  const setAssumption = (key: keyof typeof assumptions, val: number) => {
+    updateScenarioAssumptions({ [key]: val });
+    if (key === "revenueGrowthPct" || key === "facilityIntelligenceRevenue") {
+      updateChecklistItem("runScenario", true);
+    }
   };
 
-  const result = useMemo(() => calculateScenario(BASELINE, adjustments), [adjustments]);
+  const handleSave = () => {
+    saveScenario(scenarioName);
+    toast({
+      title: "Scenario saved",
+      description: `"${scenarioName.trim() || "Untitled"}" stored with current assumptions.`,
+    });
+    setSaveOpen(false);
+    setScenarioName("");
+  };
 
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="show" className="space-y-6 pb-12">
-      <PageHeader 
-        title="Scenario Builder" 
-        description="Live operational modeling. Adjust levers to see immediate impact on cash, profit, and risk."
-        actions={<Button variant="outline">Save Scenario</Button>}
+      <PageHeader
+        title="Scenario Modeler"
+        description="Model revenue, margin, runway, and cash impact against your current books — assumptions auto-save as you adjust."
+        actions={
+          <Button variant="outline" onClick={() => setSaveOpen(true)}>
+            Save scenario
+          </Button>
+        }
       />
 
+      <LiveDataBanner detail={`Baseline: ${metrics.monthlyRevenue.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 })} revenue · ${metrics.runwayMonths.toFixed(1)} mo runway`} />
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Controls - Left Side */}
         <motion.div data-tour="scenario-levers" variants={itemVariants} className="lg:col-span-4 space-y-6">
-          <Card className="bg-card/50 backdrop-blur-xl border-border/50">
+          <Card className="bg-card border-border shadow-soft">
             <CardHeader className="pb-3 border-b border-border/50">
-              <CardTitle className="text-lg font-semibold">Growth Levers</CardTitle>
+              <CardTitle className="text-base font-bold">Growth assumptions</CardTitle>
             </CardHeader>
             <CardContent className="pt-6 space-y-6">
-              <ScenarioSlider label="Ad Spend Delta ($)" value={adjustments.adSpendDelta} min={-50000} max={100000} step={1000} onChange={v => updateAdj('adSpendDelta', v)} formatValue={v => `$${v/1000}k`} />
-              <ScenarioSlider label="Hire Salesperson (Headcount)" value={adjustments.hireSalesperson} min={0} max={10} onChange={v => updateAdj('hireSalesperson', v)} />
-              <ScenarioSlider label="Hire Compliance (Headcount)" value={adjustments.hireCompliance} min={0} max={20} onChange={v => updateAdj('hireCompliance', v)} />
-              <ScenarioSlider label="Raise Prices (%)" value={adjustments.raisePricesPct} min={0} max={50} step={1} onChange={v => updateAdj('raisePricesPct', v)} formatValue={v => `${v}%`} />
+              <ScenarioSlider label="Revenue Growth (%)" value={assumptions.revenueGrowthPct} min={-10} max={30} step={1} onChange={(v) => setAssumption("revenueGrowthPct", v)} formatValue={(v) => `${v}%`} />
+              <ScenarioSlider label="Price Increase (%)" value={assumptions.priceIncreasePct} min={0} max={25} step={1} onChange={(v) => setAssumption("priceIncreasePct", v)} formatValue={(v) => `${v}%`} />
+              <ScenarioSlider label="Churn / Risk (%)" value={assumptions.churnRiskPct} min={0} max={20} step={1} onChange={(v) => setAssumption("churnRiskPct", v)} formatValue={(v) => `${v}%`} />
+              <ScenarioSlider label="Facility Intelligence Revenue ($)" value={assumptions.facilityIntelligenceRevenue} min={0} max={150000} step={5000} onChange={(v) => setAssumption("facilityIntelligenceRevenue", v)} formatValue={(v) => `$${v / 1000}k`} />
             </CardContent>
           </Card>
 
-          <Card className="bg-card/50 backdrop-blur-xl border-border/50">
+          <Card className="bg-card border-border shadow-soft">
             <CardHeader className="pb-3 border-b border-border/50">
-              <CardTitle className="text-lg font-semibold">Efficiency Levers</CardTitle>
+              <CardTitle className="text-base font-bold">Efficiency assumptions</CardTitle>
             </CardHeader>
             <CardContent className="pt-6 space-y-6">
-              <ScenarioSlider label="Reduce Expenses (%)" value={adjustments.reduceExpensesPct} min={0} max={30} step={1} onChange={v => updateAdj('reduceExpensesPct', v)} formatValue={v => `${v}%`} />
-              <ScenarioSlider label="Increase Close Rate (%)" value={adjustments.increaseCloseRatePct} min={0} max={20} step={1} onChange={v => updateAdj('increaseCloseRatePct', v)} formatValue={v => `${v}%`} />
-              <div className="pt-4 space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="retainer" className="cursor-pointer">Add Retainer Plan</Label>
-                  <Switch id="retainer" checked={adjustments.addRetainerPlan} onCheckedChange={v => updateAdj('addRetainerPlan', v)} />
-                </div>
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="cut" className="cursor-pointer">Cut Low-Margin Service</Label>
-                  <Switch id="cut" checked={adjustments.cutLowMarginService} onCheckedChange={v => updateAdj('cutLowMarginService', v)} />
-                </div>
-              </div>
+              <ScenarioSlider label="Expense Reduction (%)" value={assumptions.expenseReductionPct} min={0} max={30} step={1} onChange={(v) => setAssumption("expenseReductionPct", v)} formatValue={(v) => `${v}%`} />
+              <ScenarioSlider label="Staffing Change (%)" value={assumptions.staffingChangePct} min={-20} max={20} step={1} onChange={(v) => setAssumption("staffingChangePct", v)} formatValue={(v) => `${v}%`} />
+              <ScenarioSlider label="AR Collection Improvement (%)" value={assumptions.arCollectionImprovementPct} min={0} max={50} step={5} onChange={(v) => setAssumption("arCollectionImprovementPct", v)} formatValue={(v) => `${v}%`} />
             </CardContent>
           </Card>
         </motion.div>
 
-        {/* Results - Right Side */}
         <motion.div variants={itemVariants} className="lg:col-span-8 flex flex-col gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <KpiCard label="Projected Revenue" value={formatCompactCurrency(BASELINE.revenue + result.revenueImpact)} priorValue={BASELINE.revenue} />
-            <KpiCard label="Projected Cash" value={formatCompactCurrency(BASELINE.cash + result.cashImpact)} priorValue={BASELINE.cash} />
-            <KpiCard label="Projected Net Profit" value={formatCompactCurrency(BASELINE.profit + result.profitImpact)} priorValue={BASELINE.profit} />
-            <KpiCard label="Projected Runway" value={formatMonths((BASELINE.cash + result.cashImpact) / (BASELINE.payroll + result.payrollImpact))} priorValue={BASELINE.cash / BASELINE.payroll} />
-            <KpiCard label="Projected Payroll" value={formatCompactCurrency(BASELINE.payroll + result.payrollImpact)} priorValue={BASELINE.payroll} inverseTrend />
-            <KpiCard label="Risk Score" value={result.riskScore} priorValue={30} inverseTrend />
-          </div>
+          <ScenarioComparePanel
+            baseline={metrics}
+            projection={projection}
+            decision={projection.recommendedAction}
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-             <Card className="bg-card/50 backdrop-blur-xl border-border/50">
-                <CardContent className="p-5 flex flex-col justify-center h-full">
-                  <h4 className="text-sm font-medium text-muted-foreground mb-2">Algorithm Decision</h4>
-                  <div className={`text-2xl font-bold ${result.riskScore > 60 ? 'text-destructive' : 'text-success'}`}>
-                    {result.decisionString}
-                  </div>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Time to payoff: {result.timeToPayoffMonths === 99 ? 'Never' : formatMonths(result.timeToPayoffMonths)}
-                  </p>
-                </CardContent>
-             </Card>
-             <div className="flex flex-col gap-4">
-               <InsightCard title="Impact Analysis">
-                 Adding {adjustments.hireSalesperson} sales reps and ${formatNumber(adjustments.adSpendDelta)} to marketing generates an estimated {formatNumber(result.leadImpact)} new leads. Capacity expands by {result.capacityImpact} units.
-               </InsightCard>
-               {result.riskScore > 50 && (
-                 <RiskWarning title="High Execution Risk" message="This scenario pushes risk tolerance above recommended thresholds. Cash burn rate is critically high." />
-               )}
-             </div>
+            <InsightCard title="Assumption summary">
+              Revenue +{assumptions.revenueGrowthPct}%, prices +{assumptions.priceIncreasePct}%, expenses −{assumptions.expenseReductionPct}%, staffing {assumptions.staffingChangePct >= 0 ? "+" : ""}{assumptions.staffingChangePct}%, AR collection +{assumptions.arCollectionImprovementPct}%.
+            </InsightCard>
+            {projection.projectedRunwayMonths < state.organization.runwayThresholdMonths && (
+              <RiskWarning
+                title="Runway below threshold"
+                message={`Projected runway falls to ${projection.projectedRunwayMonths.toFixed(1)} months (target: ${state.organization.runwayThresholdMonths}).`}
+              />
+            )}
           </div>
-          
-          <RecommendedAction 
-            title="Deploy Scenario Sandbox" 
-            description="Save this scenario to your Futurecast modeling suite to track its real-world viability over the next 90 days."
-            actionText="Save Scenario to Futurecast"
-            onAction={() => {}}
-          />
+
+          {state.savedScenarios.length > 0 && (
+            <Card className="border-border shadow-soft">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base font-bold">Saved scenarios</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {state.savedScenarios.slice().reverse().map((s) => (
+                  <div key={s.id} className="flex justify-between items-center text-sm py-2 border-b border-border/50 last:border-0">
+                    <span className="font-semibold">{s.name}</span>
+                    <span className="text-muted-foreground text-xs">{new Date(s.savedAt).toLocaleDateString()}</span>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          )}
         </motion.div>
       </div>
+
+      <Dialog open={saveOpen} onOpenChange={setSaveOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Save scenario</DialogTitle>
+          </DialogHeader>
+          <Input
+            value={scenarioName}
+            onChange={(e) => setScenarioName(e.target.value)}
+            placeholder="Q3 growth plan"
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSaveOpen(false)}>Cancel</Button>
+            <Button onClick={handleSave}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 }
