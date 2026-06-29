@@ -8,22 +8,25 @@ export const EXPECTED_AUDIO = {
   perScene: (sceneKey: string) => `${BASE}demo/narration/${sceneKey}.mp3`,
 } as const;
 
-/** Primary music path per Rose demo spec. */
 export const MUSIC_PATHS = [
   EXPECTED_AUDIO.music,
   `${BASE}demo/audio/bg_music.mp3`,
 ] as const;
 
-/** Fallback narration for entire walkthrough if per-scene files are missing. */
 export const NARRATION_FALLBACK = EXPECTED_AUDIO.narrationFallback;
 
-/** Legacy per-scene filenames (HealthCast era) — used only as fallback. */
+/** Alternate filenames if Rose scene keys were renamed. */
+const NARRATION_ALIASES: Partial<Record<string, string[]>> = {
+  dashboard: ["insight"],
+  insight: ["alert"],
+};
+
 const LEGACY_NARRATION: Partial<Record<string, string>> = {
   opening: "intro",
   problem: "navigation",
-  insight: "dashboard",
+  dashboard: "dashboard",
   workflow: "action",
-  alert: "connected",
+  insight: "connected",
   outcome: "outro",
   closing: "outro",
 };
@@ -31,28 +34,28 @@ const LEGACY_NARRATION: Partial<Record<string, string>> = {
 export const SCENE_KEYS = [
   "opening",
   "problem",
-  "insight",
+  "dashboard",
   "workflow",
-  "alert",
+  "insight",
   "outcome",
   "closing",
 ] as const;
 
-/** Candidate narration URLs for a scene, in priority order. */
 export function narrationCandidates(sceneKey: string): string[] {
+  const aliases = NARRATION_ALIASES[sceneKey] ?? [];
   const candidates = [
     EXPECTED_AUDIO.perScene(sceneKey),
+    ...aliases.map((a) => EXPECTED_AUDIO.perScene(a)),
     LEGACY_NARRATION[sceneKey]
       ? `${BASE}demo/audio/narration/${LEGACY_NARRATION[sceneKey]}.mp3`
       : null,
     NARRATION_FALLBACK,
   ].filter((x): x is string => Boolean(x));
-  return candidates;
+  return [...new Set(candidates)];
 }
 
 export type DemoAudioStatus = "loading" | "available" | "unavailable";
 
-/** Load the first URL that exists (HEAD request). Returns null if all fail. */
 export async function resolveAudioUrl(candidates: readonly string[]): Promise<string | null> {
   for (const url of candidates) {
     try {
@@ -65,7 +68,6 @@ export async function resolveAudioUrl(candidates: readonly string[]): Promise<st
   return null;
 }
 
-/** Probe whether any demo audio is present (music or narration). */
 export async function probeDemoAudio(): Promise<DemoAudioStatus> {
   const music = await resolveAudioUrl(MUSIC_PATHS);
   if (music) return "available";

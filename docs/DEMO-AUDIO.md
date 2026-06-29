@@ -17,9 +17,9 @@ One file per scene (preferred for sync and music ducking):
 |-------|-----------|-------------|
 | 1 Command view | `narration/opening.mp3` | `/demo/narration/opening.mp3` |
 | 2 Profit leakage | `narration/problem.mp3` | `/demo/narration/problem.mp3` |
-| 3 Live insight | `narration/insight.mp3` | `/demo/narration/insight.mp3` |
+| 3 Live dashboard | `narration/dashboard.mp3` | `/demo/narration/dashboard.mp3` |
 | 4 Team workflow | `narration/workflow.mp3` | `/demo/narration/workflow.mp3` |
-| 5 Smart alert | `narration/alert.mp3` | `/demo/narration/alert.mp3` |
+| 5 Margin insight | `narration/insight.mp3` | `/demo/narration/insight.mp3` |
 | 6 Protected profit | `narration/outcome.mp3` | `/demo/narration/outcome.mp3` |
 | 7 Rose closing | `narration/closing.mp3` | `/demo/narration/closing.mp3` |
 

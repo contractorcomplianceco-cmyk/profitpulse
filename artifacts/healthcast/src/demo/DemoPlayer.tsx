@@ -4,6 +4,7 @@ import VideoTemplate, { SCENE_DURATIONS } from './VideoTemplate';
 import { useSceneControls } from './useSceneControls';
 import { probeDemoAudio, type DemoAudioStatus } from './audioPaths';
 import { AudioStatusBadge } from './components/AudioStatusBadge';
+import { sceneMetaFor } from './sceneMeta';
 
 const PROGRESS_TICK_MS = 60;
 
@@ -140,8 +141,11 @@ function ControlBar({
         onJumpTo={onJumpTo}
       />
 
-      <div className="text-xl text-white/60 font-mono tabular-nums shrink-0">
-        {activeIndex + 1}/{sceneKeys.length}
+      <div className="text-sm md:text-base text-white/60 font-mono tabular-nums shrink-0 text-right leading-tight">
+        <div>{activeIndex + 1}/{sceneKeys.length}</div>
+        <div className="text-[10px] text-white/40 font-body normal-case truncate max-w-[5rem]">
+          {sceneMetaFor(sceneKeys[activeIndex])?.label ?? ''}
+        </div>
       </div>
 
       <button

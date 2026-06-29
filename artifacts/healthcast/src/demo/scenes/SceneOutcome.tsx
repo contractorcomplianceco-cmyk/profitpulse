@@ -1,7 +1,13 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Shield, TrendingUp } from "lucide-react";
+import { Eye, Shield, Tag, TrendingUp } from "lucide-react";
 import { SceneShell } from "../components/SceneShell";
+
+const WINS = [
+  { icon: Tag, label: "Better pricing", detail: "Bids tied to real job margin", color: "#49BFF2" },
+  { icon: Shield, label: "Protected margin", detail: "Catch overruns early", color: "#3FB257" },
+  { icon: Eye, label: "Leadership visibility", detail: "One view for the whole team", color: "#a78bfa" },
+];
 
 export function SceneOutcome() {
   const [phase, setPhase] = useState(0);
@@ -9,7 +15,8 @@ export function SceneOutcome() {
   useEffect(() => {
     const t = [
       setTimeout(() => setPhase(1), 400),
-      setTimeout(() => setPhase(2), 1500),
+      setTimeout(() => setPhase(2), 1300),
+      setTimeout(() => setPhase(3), 2200),
     ];
     return () => t.forEach(clearTimeout);
   }, []);
@@ -17,46 +24,56 @@ export function SceneOutcome() {
   return (
     <SceneShell sceneKey="outcome">
       <div className="relative z-10 w-full max-w-2xl px-4 md:px-8 text-center">
-        <motion.div
-          className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-[#3FB257]/20 border border-[#3FB257]/30 mb-6"
-          initial={{ scale: 0, rotate: -20 }}
-          animate={phase >= 1 ? { scale: 1, rotate: 0 } : {}}
-          transition={{ type: "spring", stiffness: 200 }}
-        >
-          <Shield className="w-10 h-10 text-[#3FB257]" />
-        </motion.div>
-
         <motion.h2
-          className="text-2xl md:text-4xl font-display font-bold text-white mb-4"
-          initial={{ opacity: 0, y: 20 }}
+          className="text-xl sm:text-2xl md:text-4xl font-display font-bold text-white mb-5 md:mb-7"
+          initial={{ opacity: 0, y: 18 }}
           animate={phase >= 1 ? { opacity: 1, y: 0 } : {}}
         >
-          Better decisions. <span className="text-[#3FB257]">Protected profit.</span>
+          Outcomes that <span className="text-[#3FB257]">compound</span>
         </motion.h2>
 
+        <div className="grid sm:grid-cols-3 gap-3 mb-6 md:mb-8">
+          {WINS.map((w, i) => {
+            const Icon = w.icon;
+            return (
+              <motion.div
+                key={w.label}
+                className="rounded-xl border border-white/10 bg-white/[0.05] p-3 md:p-4 text-left"
+                initial={{ opacity: 0, y: 22 }}
+                animate={phase >= 2 ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: i * 0.12 }}
+              >
+                <Icon className="w-5 h-5 mb-2" style={{ color: w.color }} />
+                <p className="text-sm md:text-base font-display font-bold text-white">{w.label}</p>
+                <p className="text-[10px] md:text-xs text-white/45 font-body mt-1">{w.detail}</p>
+              </motion.div>
+            );
+          })}
+        </div>
+
         <motion.div
-          className="flex items-end justify-center gap-2 h-32 md:h-40 mb-6"
+          className="flex items-end justify-center gap-1.5 h-24 md:h-32 mb-4"
           initial={{ opacity: 0 }}
-          animate={phase >= 2 ? { opacity: 1 } : {}}
+          animate={phase >= 3 ? { opacity: 1 } : {}}
         >
-          {[40, 55, 48, 62, 58, 72, 78].map((h, i) => (
+          {[38, 44, 42, 50, 55, 62, 70].map((h, i) => (
             <motion.div
               key={i}
-              className="w-6 md:w-8 rounded-t-md bg-gradient-to-t from-[#17A8B8] to-[#3FB257]"
+              className="w-5 md:w-7 rounded-t bg-gradient-to-t from-[#17A8B8] to-[#3FB257]"
               initial={{ height: 0 }}
-              animate={phase >= 2 ? { height: `${h}%` } : {}}
-              transition={{ delay: i * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              animate={phase >= 3 ? { height: `${h}%` } : {}}
+              transition={{ delay: i * 0.07, duration: 0.45 }}
             />
           ))}
         </motion.div>
 
         <motion.div
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#3FB257]/10 border border-[#3FB257]/25"
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#3FB257]/10 border border-[#3FB257]/20"
           initial={{ opacity: 0 }}
-          animate={phase >= 2 ? { opacity: 1 } : {}}
+          animate={phase >= 3 ? { opacity: 1 } : {}}
         >
-          <TrendingUp className="w-4 h-4 text-[#3FB257]" />
-          <span className="text-sm font-mono text-[#3FB257]">Margin recovered to 14.8% · sample outcome</span>
+          <TrendingUp className="w-3.5 h-3.5 text-[#3FB257]" />
+          <span className="text-xs md:text-sm font-mono text-[#3FB257]">Sample margin trend · illustrative</span>
         </motion.div>
       </div>
     </SceneShell>

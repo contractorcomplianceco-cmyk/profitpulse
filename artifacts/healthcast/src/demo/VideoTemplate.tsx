@@ -5,9 +5,9 @@ import { SCENE_DURATIONS, sceneMetaFor } from "./sceneMeta";
 import { MUSIC_PATHS, narrationCandidates, resolveAudioUrl } from "./audioPaths";
 import { SceneOpening } from "./scenes/SceneOpening";
 import { SceneProblem } from "./scenes/SceneProblem";
-import { SceneInsight } from "./scenes/SceneInsight";
+import { SceneDashboard } from "./scenes/SceneDashboard";
 import { SceneWorkflow } from "./scenes/SceneWorkflow";
-import { SceneAlert } from "./scenes/SceneAlert";
+import { SceneInsight } from "./scenes/SceneInsight";
 import { SceneOutcome } from "./scenes/SceneOutcome";
 import { SceneClosing } from "./scenes/SceneClosing";
 
@@ -16,9 +16,9 @@ export { SCENE_DURATIONS };
 const SCENE_COMPONENTS: Record<string, React.ComponentType> = {
   opening: SceneOpening,
   problem: SceneProblem,
-  insight: SceneInsight,
+  dashboard: SceneDashboard,
   workflow: SceneWorkflow,
-  alert: SceneAlert,
+  insight: SceneInsight,
   outcome: SceneOutcome,
   closing: SceneClosing,
 };
@@ -185,8 +185,10 @@ export default function VideoTemplate({
 
       {/* Scene index pill (mobile-friendly label) */}
       {meta && (
-        <div className="absolute top-4 right-4 z-30 px-3 py-1 rounded-full bg-black/40 border border-white/10 text-[10px] md:text-xs font-mono text-white/70">
-          {meta.label}
+        <div className="absolute top-3 left-3 md:top-4 md:left-4 z-30 flex flex-col gap-1">
+          <div className="px-2.5 py-1 rounded-full bg-black/45 border border-white/10 text-[10px] md:text-xs font-mono text-white/70">
+            Scene {meta.index} · {meta.label}
+          </div>
         </div>
       )}
 

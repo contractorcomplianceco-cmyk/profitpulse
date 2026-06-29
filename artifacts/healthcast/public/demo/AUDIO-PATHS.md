@@ -9,9 +9,9 @@ public/demo/
   narration/
     opening.mp3
     problem.mp3
-    insight.mp3
+    dashboard.mp3
     workflow.mp3
-    alert.mp3
+    insight.mp3
     outcome.mp3
     closing.mp3
 ```
