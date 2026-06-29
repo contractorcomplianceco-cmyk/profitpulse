@@ -26,7 +26,7 @@ const itemVariants = {
 };
 
 export default function CashFlow() {
-  const { state, metrics, upsertRevenue, deleteRevenue, upsertExpense, deleteExpense } = useProfitPulse();
+  const { state, metrics, upsertRevenue, deleteRevenue, upsertExpense, deleteExpense, readOnly } = useProfitPulse();
   const projection = cashProjection90d(state).map((p) => ({ day: p.date, balance: p.balance }));
   const livePayables = state.payables.filter((p) => p.status !== "paid").slice(0, 6);
   const liveInvoices = state.invoices.filter((i) => i.status !== "paid").slice(0, 6);
@@ -154,6 +154,7 @@ export default function CashFlow() {
           onSave={upsertRevenue}
           onDelete={deleteRevenue}
           createRecord={() => createEmptyRevenue(state.accounts[0]?.id)}
+          readOnly={readOnly}
           validate={(r) => (!r.description.trim() || r.amount <= 0 ? "Description and positive amount required." : null)}
           emptyMessage="No revenue records. Add your first inflow."
         />
@@ -178,6 +179,7 @@ export default function CashFlow() {
           onSave={upsertExpense}
           onDelete={deleteExpense}
           createRecord={createEmptyExpense}
+          readOnly={readOnly}
           validate={(r) => (!r.description.trim() || r.amount <= 0 ? "Description and positive amount required." : null)}
           emptyMessage="No expense records. Add your first outflow."
         />

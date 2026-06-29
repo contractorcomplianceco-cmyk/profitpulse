@@ -27,7 +27,7 @@ const itemVariants = {
 };
 
 export default function StaffingPayroll() {
-  const { state, metrics, upsertStaffing, deleteStaffing } = useProfitPulse();
+  const { state, metrics, upsertStaffing, deleteStaffing, readOnly } = useProfitPulse();
   const payrollPct = metrics.monthlyRevenue > 0 ? (metrics.payrollBurden / metrics.monthlyRevenue) * 100 : 0;
 
   return (
@@ -189,6 +189,7 @@ export default function StaffingPayroll() {
         onSave={upsertStaffing}
         onDelete={deleteStaffing}
         createRecord={createEmptyStaffing}
+        readOnly={readOnly}
         validate={(s) => (!s.name.trim() || s.monthlyCost < 0 ? "Name and valid cost required." : null)}
         emptyMessage="No staffing records."
       />

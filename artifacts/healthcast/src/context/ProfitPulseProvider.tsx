@@ -37,6 +37,12 @@ import { generateAlerts } from "@/lib/profit-pulse/alerts";
 import { parseCsvImport } from "@/lib/profit-pulse/csv-import";
 import type { CsvImportResult } from "@/lib/profit-pulse/types";
 import { newId } from "@/lib/profit-pulse/id";
+import { useAuth } from "@/context/AuthProvider";
+import { useBilling } from "@/context/BillingProvider";
+import { canWrite as roleCanWrite } from "@/auth/permissions";
+import { appendAuditLog } from "@/auth/audit";
+import { useToast } from "@/hooks/use-toast";
+import type { UsageMetricKey } from "@/billing/types";
 
 type EntityCollection =
   | "accounts"
@@ -50,10 +56,19 @@ type EntityCollection =
   | "risks"
   | "tasks";
 
+const ENTITY_USAGE: Partial<Record<EntityCollection, UsageMetricKey>> = {
+  revenueRecords: "revenue_records",
+  expenseRecords: "expense_records",
+  facilities: "facility_records",
+  opportunities: "opportunity_records",
+};
+
 interface ProfitPulseContextValue {
   state: ProfitPulseState;
   metrics: DashboardMetrics;
   alerts: ComputedAlert[];
+  tenantId: string | null;
+  readOnly: boolean;
   resetDemoData: () => void;
   exportJson: () => string;
   importJson: (raw: string) => void;
@@ -101,11 +116,46 @@ function removeById<T extends { id: string }>(list: T[], id: string): T[] {
 }
 
 export function ProfitPulseProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<ProfitPulseState>(() => loadState());
+  const { session } = useAuth();
+  const { checkLimit, trackUsage, canAccess } = useBilling();
+  const { toast } = useToast();
+  const tenantId = session?.tenantId ?? null;
+  const readOnly = session ? !roleCanWrite(session.role) : true;
+
+  const audit = useCallback(
+    (
+      action: "entity.create" | "entity.update" | "entity.delete" | "data.import" | "data.export" | "data.reset",
+      entityType: string,
+      summary: string,
+      entityId?: string,
+    ) => {
+      if (!session || !tenantId) return;
+      appendAuditLog({
+        tenantId,
+        userId: session.sub,
+        userEmail: session.email,
+        action,
+        entityType,
+        entityId,
+        summary,
+      });
+    },
+    [session, tenantId],
+  );
+
+  const [state, setState] = useState<ProfitPulseState>(() =>
+    tenantId ? loadState(tenantId) : createSeedState(),
+  );
 
   useEffect(() => {
-    saveState(state);
-  }, [state]);
+    if (tenantId) {
+      setState(loadState(tenantId));
+    }
+  }, [tenantId]);
+
+  useEffect(() => {
+    if (tenantId) saveState(state, tenantId);
+  }, [state, tenantId]);
 
   const alerts = useMemo(() => generateAlerts(state), [state]);
   const metrics = useMemo(
@@ -113,28 +163,67 @@ export function ProfitPulseProvider({ children }: { children: ReactNode }) {
     [state, alerts.length],
   );
 
-  const commit = useCallback((updater: (prev: ProfitPulseState) => ProfitPulseState) => {
-    setState((prev) => updater(prev));
-  }, []);
+  const commit = useCallback(
+    (updater: (prev: ProfitPulseState) => ProfitPulseState) => {
+      if (readOnly || !tenantId) return;
+      setState((prev) => updater(prev));
+    },
+    [readOnly, tenantId],
+  );
 
   const resetDemoData = useCallback(() => {
-    setState(resetStoredState());
-  }, []);
+    if (!tenantId || readOnly) return;
+    setState(resetStoredState(tenantId));
+    audit("data.reset", "workspace", "Reset demo data to seed state");
+  }, [tenantId, readOnly, audit]);
 
-  const exportJson = useCallback(() => exportStateJson(state), [state]);
+  const exportJson = useCallback(() => {
+    trackUsage("data_exports");
+    audit("data.export", "workspace", "Exported JSON workspace backup");
+    return exportStateJson(state);
+  }, [state, trackUsage, audit]);
 
-  const importJson = useCallback((raw: string) => {
-    setState(importStateJson(raw));
-  }, []);
+  const importJson = useCallback(
+    (raw: string) => {
+      if (!tenantId || readOnly) return;
+      if (!canAccess("integrations_import").allowed) {
+        toast({
+          title: "Import not available",
+          description: "Workspace import requires an Enterprise plan.",
+          variant: "destructive",
+        });
+        return;
+      }
+      setState(importStateJson(raw, tenantId));
+      trackUsage("data_imports");
+      audit("data.import", "workspace", "Imported JSON workspace backup");
+    },
+    [tenantId, readOnly, audit, canAccess, trackUsage, toast],
+  );
 
   const importCsv = useCallback(
     (csv: string): CsvImportResult => {
+      if (readOnly || !tenantId) {
+        return { imported: 0, errors: [{ row: 0, message: "Read-only access." }], revenueAdded: 0, expensesAdded: 0 };
+      }
+      if (!canAccess("integrations_import").allowed) {
+        toast({
+          title: "Import not available",
+          description: "CSV import requires an Enterprise plan.",
+          variant: "destructive",
+        });
+        return { imported: 0, errors: [{ row: 0, message: "Requires Enterprise plan." }], revenueAdded: 0, expensesAdded: 0 };
+      }
       const draft = structuredClone(state);
       const result = parseCsvImport(csv, draft);
-      if (result.imported > 0) setState(draft);
+      if (result.imported > 0) {
+        setState(draft);
+        trackUsage("data_imports", result.imported);
+        audit("data.import", "csv", `Imported ${result.revenueAdded} revenue and ${result.expensesAdded} expense rows`);
+      }
       return result;
     },
-    [state],
+    [state, readOnly, tenantId, audit, canAccess, trackUsage, toast],
   );
 
   const updateOrganization = useCallback(
@@ -159,6 +248,14 @@ export function ProfitPulseProvider({ children }: { children: ReactNode }) {
 
   const saveScenario = useCallback(
     (name: string) => {
+      if (!checkLimit("scenario_saves", state.savedScenarios.length)) {
+        toast({
+          title: "Scenario limit reached",
+          description: "Upgrade to Pro or Enterprise to save more scenarios.",
+          variant: "destructive",
+        });
+        return;
+      }
       commit((prev) => ({
         ...prev,
         savedScenarios: [
@@ -171,12 +268,21 @@ export function ProfitPulseProvider({ children }: { children: ReactNode }) {
           },
         ],
       }));
+      trackUsage("scenario_saves");
     },
-    [commit],
+    [commit, checkLimit, state.savedScenarios.length, trackUsage, toast],
   );
 
   const promoteFacilityToOpportunity = useCallback(
     (facilityId: string) => {
+      if (!checkLimit("opportunity_records", state.opportunities.length)) {
+        toast({
+          title: "Opportunity limit reached",
+          description: "Upgrade your plan to add more pipeline opportunities.",
+          variant: "destructive",
+        });
+        return;
+      }
       commit((prev) => {
         const facility = prev.facilities.find((f) => f.id === facilityId);
         if (!facility) return prev;
@@ -195,33 +301,59 @@ export function ProfitPulseProvider({ children }: { children: ReactNode }) {
         };
         return { ...prev, opportunities: [...prev.opportunities, opp] };
       });
+      trackUsage("opportunity_records");
     },
-    [commit],
+    [commit, checkLimit, state.opportunities.length, trackUsage, toast],
   );
 
-  const makeCrud = <T extends { id: string }>(key: EntityCollection) => ({
-    upsert: (record: T) =>
-      commit((prev) => ({ ...prev, [key]: upsertById(prev[key] as unknown as T[], record) })),
-    remove: (id: string) =>
-      commit((prev) => ({ ...prev, [key]: removeById(prev[key] as unknown as T[], id) })),
+  const makeCrud = <T extends { id: string }>(
+    key: EntityCollection,
+    label: string,
+    usageMetric?: UsageMetricKey,
+  ) => ({
+    upsert: (record: T) => {
+      commit((prev) => {
+        const exists = (prev[key] as unknown as T[]).some((x) => x.id === record.id);
+        if (!exists && usageMetric && !checkLimit(usageMetric, (prev[key] as unknown as T[]).length)) {
+          toast({
+            title: "Plan limit reached",
+            description: `Upgrade your plan to add more ${label} records.`,
+            variant: "destructive",
+          });
+          return prev;
+        }
+        const next = { ...prev, [key]: upsertById(prev[key] as unknown as T[], record) };
+        audit(exists ? "entity.update" : "entity.create", label, `${exists ? "Updated" : "Created"} ${label}`, record.id);
+        if (!exists && usageMetric) trackUsage(usageMetric);
+        return next;
+      });
+    },
+    remove: (id: string) => {
+      commit((prev) => {
+        audit("entity.delete", label, `Deleted ${label}`, id);
+        return { ...prev, [key]: removeById(prev[key] as unknown as T[], id) };
+      });
+    },
   });
 
-  const accountsCrud = makeCrud<Account>("accounts");
-  const facilitiesCrud = makeCrud<Facility>("facilities");
-  const revenueCrud = makeCrud<RevenueRecord>("revenueRecords");
-  const expenseCrud = makeCrud<ExpenseRecord>("expenseRecords");
-  const invoicesCrud = makeCrud<Invoice>("invoices");
-  const payablesCrud = makeCrud<PayableBill>("payables");
-  const staffingCrud = makeCrud<StaffingRecord>("staffing");
-  const opportunitiesCrud = makeCrud<Opportunity>("opportunities");
-  const risksCrud = makeCrud<RiskRecord>("risks");
-  const tasksCrud = makeCrud<Task>("tasks");
+  const accountsCrud = makeCrud<Account>("accounts", "account");
+  const facilitiesCrud = makeCrud<Facility>("facilities", "facility", ENTITY_USAGE.facilities);
+  const revenueCrud = makeCrud<RevenueRecord>("revenueRecords", "revenue", ENTITY_USAGE.revenueRecords);
+  const expenseCrud = makeCrud<ExpenseRecord>("expenseRecords", "expense", ENTITY_USAGE.expenseRecords);
+  const invoicesCrud = makeCrud<Invoice>("invoices", "invoice");
+  const payablesCrud = makeCrud<PayableBill>("payables", "payable");
+  const staffingCrud = makeCrud<StaffingRecord>("staffing", "staffing");
+  const opportunitiesCrud = makeCrud<Opportunity>("opportunities", "opportunity", ENTITY_USAGE.opportunities);
+  const risksCrud = makeCrud<RiskRecord>("risks", "risk");
+  const tasksCrud = makeCrud<Task>("tasks", "task");
 
   const value = useMemo<ProfitPulseContextValue>(
     () => ({
       state,
       metrics,
       alerts,
+      tenantId,
+      readOnly,
       resetDemoData,
       exportJson,
       importJson,
@@ -255,6 +387,8 @@ export function ProfitPulseProvider({ children }: { children: ReactNode }) {
       state,
       metrics,
       alerts,
+      tenantId,
+      readOnly,
       resetDemoData,
       exportJson,
       importJson,
@@ -395,4 +529,4 @@ export function createEmptyOpportunity(accountId?: string): Opportunity {
   };
 }
 
-export { createSeedState };
+export { createSeedState, createSeedStateForTenant } from "@/lib/profit-pulse/seed";

@@ -52,7 +52,7 @@ const complianceBadge = (status: Facility["complianceStatus"]) => {
 };
 
 export default function FacilityIntelligence() {
-  const { state, metrics, upsertFacility, deleteFacility, promoteFacilityToOpportunity } = useProfitPulse();
+  const { state, metrics, upsertFacility, deleteFacility, promoteFacilityToOpportunity, readOnly } = useProfitPulse();
   const { toast } = useToast();
   const [filter, setFilter] = useState<"all" | "at-risk">("all");
 
@@ -184,10 +184,12 @@ export default function FacilityIntelligence() {
               <p className="text-xs leading-relaxed flex-1">
                 <span className="font-semibold">Next action:</span> {f.recommendedAction || "Schedule compliance review"}
               </p>
+              {!readOnly && (
               <Button size="sm" variant="secondary" className="w-full gap-1.5 font-bold" onClick={() => handlePromote(f)}>
                 <TrendingUp className="w-3.5 h-3.5" />
                 Promote to opportunity
               </Button>
+              )}
             </div>
           );
         })}
@@ -248,6 +250,7 @@ export default function FacilityIntelligence() {
           onSave={upsertFacility}
           onDelete={deleteFacility}
           createRecord={() => createEmptyFacility(state.accounts[0]?.id)}
+          readOnly={readOnly}
           validate={validateFacility}
           emptyMessage="No facilities tracked. Add your first facility to connect Facility Intelligence."
         />

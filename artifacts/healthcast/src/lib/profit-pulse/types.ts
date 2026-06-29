@@ -157,6 +157,7 @@ export interface SavedScenario {
 
 export interface ProfitPulseState {
   version: 1;
+  tenantId?: string;
   organization: OrganizationSettings;
   accounts: Account[];
   facilities: Facility[];

@@ -1,5 +1,6 @@
 import type { ProfitPulseState } from "./types";
 import { newId } from "./id";
+import { DEFAULT_TENANT_ID, DEFAULT_TENANT_NAME } from "@/auth/types";
 
 const now = new Date();
 const iso = (daysAgo: number) => {
@@ -124,5 +125,22 @@ export function createSeedState(): ProfitPulseState {
       facilityIntelligenceRevenue: 25000,
     },
     savedScenarios: [],
+  };
+}
+
+export function createSeedStateForTenant(
+  tenantId: string = DEFAULT_TENANT_ID,
+  tenantName: string = DEFAULT_TENANT_NAME,
+): ProfitPulseState {
+  const seed = createSeedState();
+  return {
+    ...seed,
+    tenantId,
+    organization: {
+      ...seed.organization,
+      id: newId("org"),
+      name: tenantName,
+      legalName: `${tenantName} LLC`,
+    },
   };
 }

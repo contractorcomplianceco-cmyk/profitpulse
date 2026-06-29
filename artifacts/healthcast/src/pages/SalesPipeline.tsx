@@ -31,7 +31,7 @@ const itemVariants = {
 };
 
 export default function SalesPipeline() {
-  const { state, upsertOpportunity, deleteOpportunity } = useProfitPulse();
+  const { state, upsertOpportunity, deleteOpportunity, readOnly } = useProfitPulse();
   const weighted = state.opportunities.reduce((s, o) => s + o.value * (o.probability / 100), 0);
   const total = state.opportunities.reduce((s, o) => s + o.value, 0);
 
@@ -217,6 +217,7 @@ export default function SalesPipeline() {
         onSave={upsertOpportunity}
         onDelete={deleteOpportunity}
         createRecord={() => createEmptyOpportunity(state.accounts[0]?.id)}
+        readOnly={readOnly}
         validate={(o) => (!o.title.trim() || o.value <= 0 ? "Title and value required." : null)}
         emptyMessage="No opportunities in pipeline."
       />

@@ -31,6 +31,12 @@ import {
 } from "lucide-react";
 import { HealthScoreCard } from "./HealthScoreCard";
 import { isNavActive } from "@/lib/profit-pulse/nav";
+import { useAuth } from "@/context/AuthProvider";
+import { useBilling } from "@/context/BillingProvider";
+import { roleLabel } from "@/auth/permissions";
+import { TenantSwitcher } from "@/components/auth/TenantSwitcher";
+import { PlanBadge } from "@/components/billing/PlanBadge";
+import { LogOut, User, UserPlus, ScrollText, CreditCard } from "lucide-react";
 
 const NAV_SECTIONS = [
   {
@@ -42,6 +48,9 @@ const NAV_SECTIONS = [
       { href: "/demo/", label: "Watch Demo", icon: PlayCircle },
       { href: "/landing", label: "Marketing Site", icon: Megaphone },
       { href: "/settings", label: "White-Label Settings", icon: Palette },
+      { href: "/team", label: "Team & Invites", icon: UserPlus, adminOnly: true },
+      { href: "/audit", label: "Audit Log", icon: ScrollText, adminOnly: true },
+      { href: "/billing", label: "Plans & Billing", icon: CreditCard, adminOnly: true },
     ],
   },
   {
@@ -94,12 +103,25 @@ const NAV_SECTIONS = [
 
 export function SidebarNav() {
   const [location] = useLocation();
+  const { session, user, tenant, canAccessSettings } = useAuth();
+  const { canAccessRoute } = useBilling();
+
+  const sections = NAV_SECTIONS.map((section) => ({
+    ...section,
+    items: section.items.filter((item) => {
+      if (item.href === "/settings" && !canAccessSettings) return false;
+      if ("adminOnly" in item && item.adminOnly && !canAccessSettings) return false;
+      const access = canAccessRoute(item.href);
+      if ("allowed" in access && !access.allowed) return false;
+      return true;
+    }),
+  }));
 
   return (
     <aside className="w-[260px] flex-shrink-0 border-r border-border surface-gradient flex flex-col relative z-20 shadow-[0_8px_24px_-18px_hsl(217_60%_20%_/_0.35)]">
       <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-primary/20 to-transparent pointer-events-none"></div>
       <div className="flex-1 overflow-y-auto py-6 custom-scrollbar">
-        {NAV_SECTIONS.map((section, sectionIdx) => (
+        {sections.map((section, sectionIdx) => (
           <div key={section.title} className={cn(sectionIdx > 0 && "mt-6")}>
             <div className="px-4 mb-2">
               <h2 className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest">{section.title}</h2>
@@ -145,6 +167,31 @@ export function SidebarNav() {
           </div>
         ))}
       </div>
+
+      {session && <TenantSwitcher />}
+
+      {session && <PlanBadge />}
+
+      {session && (
+        <div className="border-t border-border px-4 py-3 space-y-2 bg-secondary/10">
+          <div className="flex items-start gap-2 text-xs">
+            <User className="w-3.5 h-3.5 mt-0.5 text-muted-foreground shrink-0" />
+            <div className="min-w-0">
+              <p className="font-semibold truncate">{user?.email ?? session.email}</p>
+              <p className="text-muted-foreground truncate">{tenant?.name ?? "Workspace"}</p>
+              <p className="text-[10px] uppercase tracking-wide text-primary font-bold mt-0.5">
+                {roleLabel(session.role)}
+              </p>
+            </div>
+          </div>
+          <Link href="/auth/logout">
+            <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-destructive transition-colors cursor-pointer">
+              <LogOut className="w-3.5 h-3.5" />
+              Sign out
+            </div>
+          </Link>
+        </div>
+      )}
       
       <HealthScoreCard />
     </aside>

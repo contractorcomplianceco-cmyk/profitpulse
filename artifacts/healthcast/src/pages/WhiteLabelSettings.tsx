@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   Palette,
   Check,
@@ -21,6 +21,8 @@ import { BRAND_PRESETS } from "@/brand/brandConfig";
 import { resolveAsset } from "@/lib/asset";
 import { isDemoMode } from "@/brand/demoMode";
 import { useProfitPulse } from "@/context/ProfitPulseProvider";
+import { useAuth } from "@/context/AuthProvider";
+import { useLocation } from "wouter";
 import { formatCompactCurrency } from "@/lib/format";
 
 function Field({
@@ -82,12 +84,22 @@ function ColorField({
 }
 
 export default function WhiteLabelSettings() {
+  const { canAccessSettings } = useAuth();
+  const [, navigate] = useLocation();
   const { brand, updateBrand, updateTheme, reset } = useBrand();
-  const { state, metrics, updateOrganization, resetDemoData, exportJson } = useProfitPulse();
+  const { state, metrics, updateOrganization, resetDemoData, exportJson, readOnly } = useProfitPulse();
   const productFullName = useProductFullName();
   const { toast } = useToast();
   const fileRef = useRef<HTMLInputElement>(null);
   const [activePreset, setActivePreset] = useState<string>("");
+
+  useEffect(() => {
+    if (!canAccessSettings) navigate("/");
+  }, [canAccessSettings, navigate]);
+
+  if (!canAccessSettings) {
+    return null;
+  }
 
   const onLogoUpload = (file: File | undefined) => {
     if (!file) return;

@@ -26,7 +26,7 @@ const itemVariants = {
 };
 
 export default function ArApCollections() {
-  const { state, metrics, upsertInvoice, deleteInvoice, upsertPayable, deletePayable } = useProfitPulse();
+  const { state, metrics, upsertInvoice, deleteInvoice, upsertPayable, deletePayable, readOnly } = useProfitPulse();
   const liveArAging = arAgingBuckets(state);
 
   return (
@@ -154,6 +154,7 @@ export default function ArApCollections() {
           onSave={upsertInvoice}
           onDelete={deleteInvoice}
           createRecord={() => createEmptyInvoice(state.accounts[0]?.id)}
+          readOnly={readOnly}
           validate={(r) => (!r.invoiceNumber.trim() || r.amount <= 0 ? "Invoice # and amount required." : null)}
           emptyMessage="No invoices."
         />
@@ -180,6 +181,7 @@ export default function ArApCollections() {
           onSave={upsertPayable}
           onDelete={deletePayable}
           createRecord={createEmptyPayable}
+          readOnly={readOnly}
           validate={(r) => (!r.vendor.trim() || r.amount <= 0 ? "Vendor and amount required." : null)}
           emptyMessage="No payables."
         />

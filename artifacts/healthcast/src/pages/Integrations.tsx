@@ -29,7 +29,7 @@ const itemVariants = {
 
 export default function Integrations() {
   const { toast } = useToast();
-  const { exportJson, importJson, importCsv, resetDemoData } = useProfitPulse();
+  const { exportJson, importJson, importCsv, resetDemoData, readOnly } = useProfitPulse();
   const fileRef = useRef<HTMLInputElement>(null);
   const [csvText, setCsvText] = useState("");
   const [csvErrors, setCsvErrors] = useState<string[]>([]);
@@ -101,7 +101,7 @@ export default function Integrations() {
       <PageHeader 
         title="Import Center & Integrations" 
         description="Export/import local data, CSV revenue & expenses, and manage integration connections."
-        actions={<Button variant="outline" onClick={resetDemoData}><RotateCcw className="w-4 h-4 mr-2" /> Reset Demo Data</Button>}
+        actions={!readOnly ? <Button variant="outline" onClick={resetDemoData}><RotateCcw className="w-4 h-4 mr-2" /> Reset Demo Data</Button> : undefined}
       />
 
       <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -110,9 +110,13 @@ export default function Integrations() {
           <CardContent className="space-y-3">
             <p className="text-sm text-muted-foreground">Full backup of all Profit Pulse records stored in this browser.</p>
             <div className="flex gap-2">
-              <Button onClick={handleExport} className="gap-2"><Download className="w-4 h-4" /> Export JSON</Button>
-              <Button variant="outline" onClick={() => fileRef.current?.click()} className="gap-2"><Upload className="w-4 h-4" /> Import JSON</Button>
-              <input ref={fileRef} type="file" accept=".json,application/json" className="hidden" onChange={(e) => handleImportFile(e.target.files?.[0])} />
+              <Button onClick={handleExport} className="gap-2" variant={readOnly ? "outline" : "default"}><Download className="w-4 h-4" /> Export JSON</Button>
+              {!readOnly && (
+                <>
+                  <Button variant="outline" onClick={() => fileRef.current?.click()} className="gap-2"><Upload className="w-4 h-4" /> Import JSON</Button>
+                  <input ref={fileRef} type="file" accept=".json,application/json" className="hidden" onChange={(e) => handleImportFile(e.target.files?.[0])} />
+                </>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -120,8 +124,8 @@ export default function Integrations() {
           <CardHeader><CardTitle className="text-base">CSV Import (Revenue & Expenses)</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             <p className="text-xs text-muted-foreground font-mono whitespace-pre-wrap bg-secondary/30 p-2 rounded border">{CSV_SAMPLE}</p>
-            <Textarea value={csvText} onChange={(e) => setCsvText(e.target.value)} placeholder="Paste CSV here..." rows={5} />
-            <Button onClick={handleCsvImport} disabled={!csvText.trim()}>Import CSV</Button>
+            <Textarea value={csvText} onChange={(e) => setCsvText(e.target.value)} placeholder="Paste CSV here..." rows={5} disabled={readOnly} />
+            {!readOnly && <Button onClick={handleCsvImport} disabled={!csvText.trim()}>Import CSV</Button>}
             {csvErrors.length > 0 && (
               <ul className="text-xs text-destructive space-y-1">{csvErrors.map((e, i) => <li key={i}>{e}</li>)}</ul>
             )}

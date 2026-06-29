@@ -53,6 +53,7 @@ interface EntityCrudTableProps<T extends { id: string }> {
   onSave: (record: T) => void;
   onDelete: (id: string) => void;
   createRecord: () => T;
+  readOnly?: boolean;
   validate?: (record: T) => string | null;
   getRecordLabel?: (record: T) => string;
 }
@@ -69,6 +70,7 @@ export function EntityCrudTable<T extends { id: string }>({
   onSave,
   onDelete,
   createRecord,
+  readOnly = false,
   validate,
   getRecordLabel,
 }: EntityCrudTableProps<T>) {
@@ -143,10 +145,12 @@ export function EntityCrudTable<T extends { id: string }>({
               />
             </div>
           )}
-          <Button size="sm" onClick={openNew} className="gap-1.5">
-            <Plus className="w-3.5 h-3.5" />
-            Add
-          </Button>
+          {!readOnly && (
+            <Button size="sm" onClick={openNew} className="gap-1.5">
+              <Plus className="w-3.5 h-3.5" />
+              Add
+            </Button>
+          )}
         </div>
       </div>
 
@@ -169,7 +173,7 @@ export function EntityCrudTable<T extends { id: string }>({
                     {col.label}
                   </th>
                 ))}
-                <th className="w-24 px-4 py-2.5" />
+                {!readOnly && <th className="w-24 px-4 py-2.5" />}
               </tr>
             </thead>
             <tbody>
@@ -182,22 +186,24 @@ export function EntityCrudTable<T extends { id: string }>({
                         : String(row[col.key] ?? "")}
                     </td>
                   ))}
-                  <td className="px-4 py-3">
-                    <div className="flex gap-1 justify-end">
-                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(row)} aria-label="Edit">
-                        <Pencil className="w-3.5 h-3.5" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-destructive"
-                        onClick={() => setDeleteTarget(row)}
-                        aria-label="Delete"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </Button>
-                    </div>
-                  </td>
+                  {!readOnly && (
+                    <td className="px-4 py-3">
+                      <div className="flex gap-1 justify-end">
+                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(row)} aria-label="Edit">
+                          <Pencil className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-destructive"
+                          onClick={() => setDeleteTarget(row)}
+                          aria-label="Delete"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

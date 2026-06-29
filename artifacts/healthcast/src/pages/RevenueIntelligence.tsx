@@ -32,7 +32,7 @@ const itemVariants = {
 const COLORS = ['hsl(var(--primary))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))', 'hsl(var(--chart-5))'];
 
 export default function RevenueIntelligence() {
-  const { state, metrics, upsertAccount, deleteAccount } = useProfitPulse();
+  const { state, metrics, upsertAccount, deleteAccount, readOnly } = useProfitPulse();
 
   return (
     <motion.div 
@@ -244,6 +244,7 @@ export default function RevenueIntelligence() {
         onSave={upsertAccount}
         onDelete={deleteAccount}
         createRecord={createEmptyAccount}
+        readOnly={readOnly}
         validate={(a) => (!a.name.trim() ? "Account name is required." : null)}
         emptyMessage="No accounts yet."
       />

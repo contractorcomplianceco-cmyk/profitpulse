@@ -32,7 +32,7 @@ const itemVariants = {
 };
 
 export default function ScenarioBuilder() {
-  const { state, metrics, updateScenarioAssumptions, saveScenario } = useProfitPulse();
+  const { state, metrics, updateScenarioAssumptions, saveScenario, readOnly } = useProfitPulse();
   const { toast } = useToast();
   const assumptions = state.scenarioAssumptions;
   const [saveOpen, setSaveOpen] = useState(false);
@@ -44,6 +44,7 @@ export default function ScenarioBuilder() {
   );
 
   const setAssumption = (key: keyof typeof assumptions, val: number) => {
+    if (readOnly) return;
     updateScenarioAssumptions({ [key]: val });
     if (key === "revenueGrowthPct" || key === "facilityIntelligenceRevenue") {
       updateChecklistItem("runScenario", true);
@@ -66,9 +67,11 @@ export default function ScenarioBuilder() {
         title="Scenario Modeler"
         description="Model revenue, margin, runway, and cash impact against your current books — assumptions auto-save as you adjust."
         actions={
-          <Button variant="outline" onClick={() => setSaveOpen(true)}>
-            Save scenario
-          </Button>
+          !readOnly ? (
+            <Button variant="outline" onClick={() => setSaveOpen(true)}>
+              Save scenario
+            </Button>
+          ) : undefined
         }
       />
 
