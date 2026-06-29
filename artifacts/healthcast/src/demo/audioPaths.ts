@@ -97,7 +97,10 @@ export async function resolveAudioUrl(candidates: readonly string[]): Promise<st
   for (const url of candidates) {
     try {
       const res = await fetch(url, { method: "HEAD" });
-      if (res.ok) return url;
+      if (!res.ok) continue;
+      const contentType = res.headers.get("content-type") ?? "";
+      if (!contentType.includes("audio/")) continue;
+      return url;
     } catch {
       /* try next */
     }
