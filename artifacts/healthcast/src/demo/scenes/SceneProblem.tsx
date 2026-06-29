@@ -53,7 +53,7 @@ export function SceneProblem() {
           {LEAKS.map((row, i) => (
             <motion.div
               key={row.label}
-              className="flex items-center justify-between gap-3 rounded-xl border border-[#fb7185]/20 bg-[#fb7185]/[0.06] px-3 py-2.5 md:px-5 md:py-4"
+              className="flex items-center justify-between gap-3 rounded-xl border border-[#fb7185]/20 bg-[#fb7185]/[0.06] px-3 py-2.5 md:px-5 md:py-4 demo-card-premium"
               initial={{ opacity: 0, x: -36 }}
               animate={phase >= 3 ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: i * 0.12, duration: 0.45 }}

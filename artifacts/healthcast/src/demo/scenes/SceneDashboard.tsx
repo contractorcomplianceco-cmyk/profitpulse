@@ -84,7 +84,7 @@ export function SceneDashboard() {
           {METRICS.map((m) => (
             <motion.div
               key={m.key}
-              className="relative rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.09] to-transparent p-3 md:p-5 overflow-hidden"
+              className="relative rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.09] to-transparent p-3 md:p-5 overflow-hidden demo-card-premium"
               initial={{ opacity: 0, y: 20, scale: 0.94 }}
               animate={phase >= 2 ? { opacity: 1, y: 0, scale: 1 } : {}}
               transition={{ delay: m.delay, duration: 0.5, type: "spring" }}

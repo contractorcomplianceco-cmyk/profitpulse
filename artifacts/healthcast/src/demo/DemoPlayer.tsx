@@ -210,7 +210,7 @@ export default function DemoPlayer({
   // instead of the rotate-from-active order used for the looping full-screen player.
   const durations = loop ? rotatedDurations : SCENE_DURATIONS;
 
-  const [muted, setMuted] = useState(true);
+  const [muted, setMuted] = useState(false);
   const [paused, setPaused] = useState(false);
   const [audioAvailability, setAudioAvailability] = useState<DemoAudioAvailability>({
     status: 'loading',
@@ -245,8 +245,8 @@ export default function DemoPlayer({
     probeDemoAudioDetailed().then((availability) => {
       if (cancelled) return;
       setAudioAvailability(availability);
-      // Video-first preview stays muted until the viewer opts in (no unmuted autoplay).
-      setMuted(true);
+      // Auto-play narration + music when assets are present; mute only if missing.
+      setMuted(availability.status !== 'available');
     });
     return () => {
       cancelled = true;
@@ -271,6 +271,10 @@ export default function DemoPlayer({
   const handleUnmute = useCallback(() => {
     if (!audioUnavailable) setMuted(false);
   }, [audioUnavailable]);
+
+  const handleAudioBlocked = useCallback(() => {
+    setMuted(true);
+  }, []);
 
   const audioBadge = (
     <AudioStatusBadge
@@ -320,6 +324,7 @@ export default function DemoPlayer({
             fill
             onSceneChange={onSceneChange}
             onVideoEnd={onEnded}
+            onAudioBlocked={handleAudioBlocked}
           />
         </div>
         <div className="flex-shrink-0">{controlBar}</div>
@@ -340,6 +345,7 @@ export default function DemoPlayer({
         fill={fill}
         onSceneChange={onSceneChange}
         onVideoEnd={onEnded}
+        onAudioBlocked={handleAudioBlocked}
       />
       <div
         ref={sensorRef}

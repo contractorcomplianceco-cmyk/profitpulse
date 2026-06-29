@@ -5,20 +5,23 @@ import { sceneMetaFor, SCENE_COUNT } from "../sceneMeta";
 
 const enter = {
   opacity: 0,
-  scale: 0.96,
-  filter: "blur(8px)",
+  scale: 0.94,
+  filter: "blur(12px)",
+  y: 18,
 };
 
 const center = {
   opacity: 1,
   scale: 1,
   filter: "blur(0px)",
+  y: 0,
 };
 
 const exit = {
   opacity: 0,
-  scale: 1.03,
-  filter: "blur(10px)",
+  scale: 1.04,
+  filter: "blur(14px)",
+  y: -12,
 };
 
 export function SceneShell({
@@ -38,7 +41,7 @@ export function SceneShell({
       initial={enter}
       animate={center}
       exit={exit}
-      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
     >
       {children}
       {meta && (

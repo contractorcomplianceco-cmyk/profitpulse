@@ -37,7 +37,7 @@ export function AudioStatusBadge({
       >
         <Volume2 className="w-3.5 h-3.5 text-[#49BFF2] shrink-0" />
         <span className="text-[10px] md:text-xs text-white/80 font-body truncate">
-          Preview muted · tap for narration
+          Tap to enable audio
         </span>
       </button>
     );

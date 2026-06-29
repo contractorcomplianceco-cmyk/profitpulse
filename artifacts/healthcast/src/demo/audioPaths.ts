@@ -72,6 +72,45 @@ export function sceneNarrationSeekSec(sceneKey: string): number {
   return 0;
 }
 
+/** Pause after narration before crossfade to the next scene. */
+export const NARRATION_POST_ROLL_MS = 750;
+
+export async function preloadPerSceneNarrations(): Promise<{
+  byScene: Map<string, NarrationPlayback>;
+  mode: DemoAudioAvailability["narrationMode"];
+}> {
+  const byScene = new Map<string, NarrationPlayback>();
+  let mode: DemoAudioAvailability["narrationMode"] = "none";
+
+  for (const key of SCENE_KEYS) {
+    const perScene = await resolveAudioUrl(perSceneNarrationCandidates(key));
+    if (perScene) {
+      byScene.set(key, { kind: "per-scene", url: perScene });
+      mode = "per-scene";
+    }
+  }
+
+  if (mode === "per-scene") {
+    for (const key of SCENE_KEYS) {
+      if (!byScene.has(key)) byScene.set(key, { kind: "none" });
+    }
+    return { byScene, mode };
+  }
+
+  const master = await resolveAudioUrl(NARRATION_MASTER_PATHS);
+  if (master) {
+    for (const key of SCENE_KEYS) {
+      byScene.set(key, { kind: "master", url: master, seekSec: sceneNarrationSeekSec(key) });
+    }
+    return { byScene, mode: "master" };
+  }
+
+  for (const key of SCENE_KEYS) {
+    byScene.set(key, { kind: "none" });
+  }
+  return { byScene, mode: "none" };
+}
+
 export async function resolveNarrationPlayback(sceneKey: string): Promise<NarrationPlayback> {
   const perScene = await resolveAudioUrl(perSceneNarrationCandidates(sceneKey));
   if (perScene) return { kind: "per-scene", url: perScene };

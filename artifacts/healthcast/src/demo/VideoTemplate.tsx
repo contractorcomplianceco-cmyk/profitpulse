@@ -4,7 +4,8 @@ import { useVideoPlayer } from "./lib/hooks";
 import { SCENE_DURATIONS, sceneMetaFor } from "./sceneMeta";
 import {
   MUSIC_PATHS,
-  resolveNarrationPlayback,
+  NARRATION_POST_ROLL_MS,
+  preloadPerSceneNarrations,
   resolveAudioUrl,
   type NarrationPlayback,
 } from "./audioPaths";
@@ -39,6 +40,7 @@ export default function VideoTemplate({
   fill = false,
   onSceneChange,
   onVideoEnd,
+  onAudioBlocked,
 }: {
   durations?: Record<string, number>;
   loop?: boolean;
@@ -47,8 +49,21 @@ export default function VideoTemplate({
   fill?: boolean;
   onSceneChange?: (sceneKey: string) => void;
   onVideoEnd?: () => void;
+  /** Browser blocked unmuted autoplay — parent can show tap-to-unmute fallback. */
+  onAudioBlocked?: () => void;
 } = {}) {
-  const { currentSceneKey } = useVideoPlayer({ durations, loop, isPaused, onVideoEnd });
+  const [narrationCache, setNarrationCache] = useState<Map<string, NarrationPlayback> | null>(null);
+  const [narrationMode, setNarrationMode] = useState<"per-scene" | "master" | "none">("none");
+
+  const narrationSync = narrationMode === "per-scene" && !muted;
+
+  const { currentSceneKey, advanceScene } = useVideoPlayer({
+    durations,
+    loop,
+    isPaused,
+    onVideoEnd,
+    narrationSync,
+  });
 
   useEffect(() => {
     onSceneChange?.(currentSceneKey);
@@ -60,17 +75,25 @@ export default function VideoTemplate({
 
   const musicRef = useRef<HTMLAudioElement | null>(null);
   const narrationRef = useRef<HTMLAudioElement | null>(null);
-  const narrationModeRef = useRef<NarrationPlayback["kind"]>("none");
+  const advanceAfterNarrationRef = useRef<number | null>(null);
+  const musicIndexRef = useRef(0);
 
   const [musicSrc, setMusicSrc] = useState<string | null>(null);
-  const [narrationPlayback, setNarrationPlayback] = useState<NarrationPlayback>({ kind: "none" });
-  const musicIndexRef = useRef(0);
+
+  const narrationPlayback =
+    narrationCache?.get(baseSceneKey) ?? ({ kind: "none" } satisfies NarrationPlayback);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const url = await resolveAudioUrl(MUSIC_PATHS);
-      if (!cancelled) setMusicSrc(url);
+      const [musicUrl, narrations] = await Promise.all([
+        resolveAudioUrl(MUSIC_PATHS),
+        preloadPerSceneNarrations(),
+      ]);
+      if (cancelled) return;
+      setMusicSrc(musicUrl);
+      setNarrationCache(narrations.byScene);
+      setNarrationMode(narrations.mode);
     })();
     return () => {
       cancelled = true;
@@ -86,28 +109,47 @@ export default function VideoTemplate({
     }
   }, []);
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const playback = await resolveNarrationPlayback(baseSceneKey);
-      if (!cancelled) setNarrationPlayback(playback);
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [baseSceneKey]);
-
   const restoreMusic = useCallback(() => {
     const music = musicRef.current;
     if (music) music.volume = MUSIC_BASE_VOLUME;
   }, []);
 
+  const notifyIfAutoplayBlocked = useCallback(
+    (err: unknown) => {
+      const domErr = err as DOMException | undefined;
+      if (domErr?.name === "NotAllowedError") {
+        onAudioBlocked?.();
+      }
+    },
+    [onAudioBlocked],
+  );
+
+  const clearAdvanceAfterNarration = useCallback(() => {
+    if (advanceAfterNarrationRef.current != null) {
+      window.clearTimeout(advanceAfterNarrationRef.current);
+      advanceAfterNarrationRef.current = null;
+    }
+  }, []);
+
+  const scheduleAdvanceAfterNarration = useCallback(() => {
+    if (!narrationSync || isPaused) return;
+    clearAdvanceAfterNarration();
+    advanceAfterNarrationRef.current = window.setTimeout(() => {
+      advanceAfterNarrationRef.current = null;
+      advanceScene();
+    }, NARRATION_POST_ROLL_MS);
+  }, [advanceScene, clearAdvanceAfterNarration, isPaused, narrationSync]);
+
+  useEffect(() => {
+    clearAdvanceAfterNarration();
+  }, [baseSceneKey, clearAdvanceAfterNarration]);
+
   useEffect(() => {
     const music = musicRef.current;
     if (!music || !musicSrc || muted) return;
     music.volume = MUSIC_BASE_VOLUME;
-    music.play().catch(() => {});
-  }, [musicSrc, muted]);
+    music.play().catch(notifyIfAutoplayBlocked);
+  }, [musicSrc, muted, notifyIfAutoplayBlocked]);
 
   useEffect(() => {
     const music = musicRef.current;
@@ -115,27 +157,24 @@ export default function VideoTemplate({
     if (isPaused) {
       music?.pause();
       narration?.pause();
+      clearAdvanceAfterNarration();
       return;
     }
-    if (music && musicSrc) music.play().catch(() => {});
-    if (narration && narrationPlayback.kind !== "none" && !muted) {
-      narration.play().catch(restoreMusic);
-    }
-  }, [isPaused, muted, musicSrc, narrationPlayback.kind, restoreMusic]);
+    if (music && musicSrc) music.play().catch(notifyIfAutoplayBlocked);
+  }, [isPaused, musicSrc, clearAdvanceAfterNarration, notifyIfAutoplayBlocked]);
 
   useEffect(() => {
     const narration = narrationRef.current;
     const music = musicRef.current;
     if (!narration || narrationPlayback.kind === "none") {
-      narrationModeRef.current = "none";
       restoreMusic();
       return;
     }
 
-    narrationModeRef.current = narrationPlayback.kind;
-
     if (narrationPlayback.kind === "per-scene") {
-      narration.src = narrationPlayback.url;
+      if (narration.src !== narrationPlayback.url) {
+        narration.src = narrationPlayback.url;
+      }
       narration.currentTime = 0;
     } else {
       if (narration.src !== narrationPlayback.url) {
@@ -151,61 +190,93 @@ export default function VideoTemplate({
 
     if (music) music.volume = MUSIC_DUCKED_VOLUME;
 
-    const onEnd = () => restoreMusic();
+    const onEnd = () => {
+      restoreMusic();
+      if (narrationPlayback.kind === "per-scene") {
+        scheduleAdvanceAfterNarration();
+      }
+    };
     const onErr = () => restoreMusic();
 
-    narration.play().catch(restoreMusic);
+    narration.load();
+    narration.play().catch((err) => {
+      notifyIfAutoplayBlocked(err);
+      restoreMusic();
+    });
     narration.addEventListener("ended", onEnd);
     narration.addEventListener("error", onErr);
 
     return () => {
       narration.removeEventListener("ended", onEnd);
       narration.removeEventListener("error", onErr);
+      clearAdvanceAfterNarration();
       restoreMusic();
     };
-  }, [baseSceneKey, narrationPlayback, muted, isPaused, restoreMusic]);
+  }, [
+    baseSceneKey,
+    narrationPlayback,
+    muted,
+    isPaused,
+    restoreMusic,
+    scheduleAdvanceAfterNarration,
+    clearAdvanceAfterNarration,
+    notifyIfAutoplayBlocked,
+  ]);
 
   return (
     <div
-      className={`w-full ${fill ? "h-full" : "h-screen min-h-[100dvh]"} overflow-hidden relative`}
+      className={`w-full ${fill ? "h-full" : "h-screen min-h-[100dvh]"} overflow-hidden relative hc-demo`}
       style={{ backgroundColor: "var(--color-bg-dark)" }}
     >
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute w-[80vw] h-[80vw] rounded-full opacity-[0.15] blur-[100px]"
+          className="absolute w-[80vw] h-[80vw] rounded-full opacity-[0.18] blur-[120px]"
           style={{ background: "var(--color-secondary)" }}
           animate={{
             x: ["-20%", "30%", "-10%", "-20%"],
             y: ["-10%", "20%", "40%", "-10%"],
-            scale: [1, 1.2, 0.9, 1],
+            scale: [1, 1.25, 0.92, 1],
           }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
         />
         <motion.div
-          className="absolute w-[60vw] h-[60vw] rounded-full opacity-[0.1] blur-[100px]"
+          className="absolute w-[60vw] h-[60vw] rounded-full opacity-[0.14] blur-[110px]"
           style={{ background: "var(--color-accent)" }}
           animate={{
             x: ["40%", "-10%", "50%", "40%"],
             y: ["50%", "10%", "-20%", "50%"],
-            scale: [1, 1.5, 1, 1],
+            scale: [1, 1.55, 1, 1],
           }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
         />
+        <motion.div
+          className="absolute inset-0 demo-light-sweep opacity-[0.07]"
+          animate={{ x: ["-120%", "220%"] }}
+          transition={{ duration: 9, repeat: Infinity, ease: "linear", repeatDelay: 4 }}
+        />
         <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-[0.035]"
           style={{
             backgroundImage:
               "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
             backgroundSize: "40px 40px",
           }}
         />
+        <div className="absolute inset-0 demo-vignette pointer-events-none" aria-hidden />
+        <div className="absolute inset-0 demo-film-grain pointer-events-none" aria-hidden />
       </div>
 
       {meta && (
         <div className="absolute top-3 left-3 md:top-4 md:left-4 z-30 flex flex-col gap-1">
-          <div className="px-2.5 py-1 rounded-full bg-black/45 border border-white/10 text-[10px] md:text-xs font-mono text-white/70">
+          <motion.div
+            className="px-2.5 py-1 rounded-full bg-black/50 border border-white/12 text-[10px] md:text-xs font-mono text-white/75 backdrop-blur-sm demo-scene-badge"
+            initial={{ opacity: 0, x: -8 }}
+            animate={{ opacity: 1, x: 0 }}
+            key={meta.key}
+            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          >
             Scene {meta.index} · {meta.label}
-          </div>
+          </motion.div>
         </div>
       )}
 

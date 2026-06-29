@@ -40,7 +40,7 @@ export function SceneOpening() {
           <img
             src={`${import.meta.env.BASE_URL}brand/profitpulse-shield.png`}
             alt=""
-            className="w-11 h-11 md:w-16 md:h-16 object-contain drop-shadow-[0_0_28px_rgba(73,191,242,0.45)]"
+            className="w-11 h-11 md:w-16 md:h-16 object-contain drop-shadow-[0_0_32px_rgba(73,191,242,0.55)]"
           />
           <div className="text-left">
             <h1 className="text-2xl sm:text-3xl md:text-5xl font-display font-bold text-white tracking-tight leading-tight">
@@ -66,7 +66,7 @@ export function SceneOpening() {
             return (
               <motion.div
                 key={kpi.label}
-                className="rounded-xl border border-white/10 bg-white/[0.06] backdrop-blur-sm p-3 md:p-4"
+                className="rounded-xl border border-white/10 bg-white/[0.06] backdrop-blur-sm p-3 md:p-4 demo-card-premium"
                 initial={{ opacity: 0, y: 28 }}
                 animate={phase >= 3 ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: i * 0.09, duration: 0.5, type: "spring" }}

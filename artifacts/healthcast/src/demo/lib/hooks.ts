@@ -1,6 +1,6 @@
 // Video player hook - handles recording lifecycle, scene advancement, and looping
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 declare global {
   interface Window {
@@ -13,12 +13,17 @@ export interface SceneDurations {
   [key: string]: number;
 }
 
+/** Extra headroom when scenes wait for narration `ended` before advancing. */
+export const NARRATION_SYNC_FALLBACK_MS = 4_500;
+
 export interface UseVideoPlayerOptions {
   durations: SceneDurations;
   onVideoEnd?: () => void;
   loop?: boolean;
   /** When true, scene advancement is frozen (play/pause). */
   isPaused?: boolean;
+  /** When true, timer is a safety cap; prefer advanceScene() after narration ends. */
+  narrationSync?: boolean;
 }
 
 export interface UseVideoPlayerReturn {
@@ -26,10 +31,11 @@ export interface UseVideoPlayerReturn {
   totalScenes: number;
   currentSceneKey: string;
   hasEnded: boolean;
+  advanceScene: () => void;
 }
 
 export function useVideoPlayer(options: UseVideoPlayerOptions): UseVideoPlayerReturn {
-  const { durations, onVideoEnd, loop = true, isPaused = false } = options;
+  const { durations, onVideoEnd, loop = true, isPaused = false, narrationSync = false } = options;
 
   // Captured once on mount -- durations must be a static object
   const sceneKeys = useRef(Object.keys(durations)).current;
@@ -39,42 +45,50 @@ export function useVideoPlayer(options: UseVideoPlayerOptions): UseVideoPlayerRe
   const [currentScene, setCurrentScene] = useState(0);
   const [hasEnded, setHasEnded] = useState(false);
 
+  const advanceScene = useCallback(() => {
+    if (isPaused) return;
+
+    setCurrentScene((prev) => {
+      if (prev >= totalScenes - 1) {
+        setHasEnded((ended) => {
+          if (!ended) {
+            window.stopRecording?.();
+            onVideoEnd?.();
+          }
+          return true;
+        });
+        return loop ? 0 : prev;
+      }
+      return prev + 1;
+    });
+  }, [isPaused, totalScenes, loop, onVideoEnd]);
+
   // Start recording on mount
   useEffect(() => {
     window.startRecording?.();
   }, []);
 
-  // Scene advancement -- loops independently of recording
+  // Scene advancement — timer fallback; narration-synced demos advance via advanceScene()
   useEffect(() => {
     if (hasEnded && !loop) return;
-    if (isPaused) return; // freeze on pause
+    if (isPaused) return;
 
-    const currentDuration = durationsArray[currentScene];
+    const baseDuration = durationsArray[currentScene] ?? 10_000;
+    const currentDuration = narrationSync
+      ? baseDuration + NARRATION_SYNC_FALLBACK_MS
+      : baseDuration;
 
-    const timer = setTimeout(() => {
-      // Last scene just finished playing
-      if (currentScene >= totalScenes - 1) {
-        if (!hasEnded) {
-          window.stopRecording?.();
-          setHasEnded(true);
-          onVideoEnd?.();
-        }
-        if (loop) {
-          setCurrentScene(0);
-        }
-      } else {
-        setCurrentScene(prev => prev + 1);
-      }
-    }, currentDuration);
+    const timer = setTimeout(advanceScene, currentDuration);
 
     return () => clearTimeout(timer);
-  }, [currentScene, totalScenes, durationsArray, hasEnded, loop, onVideoEnd, isPaused]);
+  }, [currentScene, durationsArray, hasEnded, loop, isPaused, narrationSync, advanceScene]);
 
   return {
     currentScene,
     totalScenes,
     currentSceneKey: sceneKeys[currentScene],
     hasEnded,
+    advanceScene,
   };
 }
 

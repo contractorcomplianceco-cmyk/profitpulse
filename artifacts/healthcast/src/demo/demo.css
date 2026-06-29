@@ -24,6 +24,55 @@
 .hc-demo .preserve-3d { transform-style: preserve-3d; }
 .hc-demo .backface-hidden { backface-visibility: hidden; }
 
+/* Premium demo atmosphere */
+.hc-demo .demo-vignette {
+  background: radial-gradient(ellipse at center, transparent 45%, rgba(3, 18, 40, 0.55) 100%);
+}
+
+.hc-demo .demo-film-grain {
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+.hc-demo .demo-light-sweep {
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(73, 191, 242, 0.35) 50%,
+    transparent 60%
+  );
+  width: 50%;
+  height: 100%;
+}
+
+.hc-demo .demo-scene-badge {
+  box-shadow: 0 0 24px rgba(73, 191, 242, 0.12);
+}
+
+.hc-demo .demo-caption-glow {
+  animation: demo-caption-pulse 4s ease-in-out infinite;
+}
+
+@keyframes demo-caption-pulse {
+  0%, 100% { box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(73, 191, 242, 0.08); }
+  50% { box-shadow: 0 8px 48px rgba(0, 0, 0, 0.5), 0 0 28px rgba(73, 191, 242, 0.14); }
+}
+
+.hc-demo .demo-card-premium {
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.hc-demo .demo-card-premium:hover {
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    0 0 20px rgba(73, 191, 242, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
 @media (max-width: 640px) {
   .hc-demo .demo-control-btn {
     width: 2.75rem;

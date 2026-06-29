@@ -56,7 +56,7 @@ export function SceneWorkflow() {
         </motion.div>
 
         <motion.div
-          className="rounded-xl border border-white/10 bg-[#0b1424]/90 overflow-hidden shadow-2xl"
+          className="rounded-xl border border-white/10 bg-[#0b1424]/90 overflow-hidden shadow-2xl demo-card-premium"
           initial={{ opacity: 0, y: 24 }}
           animate={phase >= 1 ? { opacity: 1, y: 0 } : {}}
         >

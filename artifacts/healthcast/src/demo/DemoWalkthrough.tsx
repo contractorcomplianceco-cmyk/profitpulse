@@ -13,7 +13,7 @@ export default function DemoWalkthrough() {
       >
         <PlayCircle className="w-3.5 h-3.5 text-[#49BFF2]" aria-hidden />
         <span className="text-[10px] md:text-xs text-white/75 font-body tracking-wide">
-          Product demo · sample data · tap unmute for audio
+          Product demo · sample data · narration on
         </span>
       </div>
       <DemoPlayer alwaysShowControls />

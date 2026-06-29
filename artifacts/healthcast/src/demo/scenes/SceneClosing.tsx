@@ -71,7 +71,7 @@ export function SceneClosing() {
           initial={{ opacity: 0, y: 14 }}
           animate={phase >= 3 ? { opacity: 1, y: 0 } : {}}
         >
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 md:px-6 md:py-3 rounded-full bg-white text-[#071827] font-bold text-xs md:text-sm shadow-lg">
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 md:px-6 md:py-3 rounded-full bg-white text-[#071827] font-bold text-xs md:text-sm shadow-[0_8px_32px_rgba(73,191,242,0.25)]">
             <Play className="w-4 h-4" />
             Sample walkthrough
           </div>

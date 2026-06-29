@@ -19,7 +19,7 @@ export function SceneInsight() {
     <SceneShell sceneKey="insight">
       <div className="relative z-10 w-full max-w-lg px-4 md:px-8">
         <motion.div
-          className="rounded-2xl border border-[#49BFF2]/35 bg-gradient-to-b from-[#0f2744]/95 to-[#071827] p-5 md:p-8 shadow-[0_0_50px_rgba(73,191,242,0.12)]"
+          className="rounded-2xl border border-[#49BFF2]/35 bg-gradient-to-b from-[#0f2744]/95 to-[#071827] p-5 md:p-8 shadow-[0_0_60px_rgba(73,191,242,0.18)] demo-card-premium"
           initial={{ opacity: 0, scale: 0.9, y: 28 }}
           animate={phase >= 1 ? { opacity: 1, scale: 1, y: 0 } : {}}
           transition={{ type: "spring", stiffness: 110, damping: 16 }}

@@ -24,7 +24,7 @@ export const ROSE_SCENES: SceneMeta[] = [
     label: "Command view",
     caption:
       "ProfitPulse is your executive command view — cash, margin, pipeline, and risk in one place.",
-    durationMs: 13_000,
+    durationMs: 13_500,
   },
   {
     key: "problem",
@@ -32,7 +32,7 @@ export const ROSE_SCENES: SceneMeta[] = [
     label: "The problem",
     caption:
       "Profit leaks when margins are unclear and visibility arrives weeks too late.",
-    durationMs: 12_500,
+    durationMs: 13_200,
   },
   {
     key: "dashboard",
@@ -40,7 +40,7 @@ export const ROSE_SCENES: SceneMeta[] = [
     label: "Live dashboard",
     caption:
       "Revenue, costs, margin, and risk — illustrated with sample contractor data and trend cards.",
-    durationMs: 12_500,
+    durationMs: 12_800,
   },
   {
     key: "workflow",
@@ -48,7 +48,7 @@ export const ROSE_SCENES: SceneMeta[] = [
     label: "Team workflow",
     caption:
       "Leaders review jobs, projects, and accounts together — one shared workflow, no blind spots.",
-    durationMs: 12_500,
+    durationMs: 13_000,
   },
   {
     key: "insight",
@@ -56,7 +56,7 @@ export const ROSE_SCENES: SceneMeta[] = [
     label: "Margin insight",
     caption:
       "Sample AI-style guidance shows how margin alerts could look — illustrative, not live AI.",
-    durationMs: 17_500,
+    durationMs: 18_000,
   },
   {
     key: "outcome",
@@ -64,7 +64,7 @@ export const ROSE_SCENES: SceneMeta[] = [
     label: "The outcome",
     caption:
       "Illustrative outcomes — sharper pricing, protected margin, and leadership visibility.",
-    durationMs: 11_500,
+    durationMs: 11_800,
   },
   {
     key: "closing",
@@ -72,7 +72,7 @@ export const ROSE_SCENES: SceneMeta[] = [
     label: "Rose demo",
     caption:
       "Product demo — sample data only, no login, no live integrations.",
-    durationMs: 13_500,
+    durationMs: 14_300,
   },
 ];
 

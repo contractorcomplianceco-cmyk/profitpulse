@@ -38,7 +38,7 @@ export function SceneOutcome() {
             return (
               <motion.div
                 key={w.label}
-                className="rounded-xl border border-white/10 bg-white/[0.05] p-3 md:p-4 text-left"
+                className="rounded-xl border border-white/10 bg-white/[0.05] p-3 md:p-4 text-left demo-card-premium"
                 initial={{ opacity: 0, y: 22 }}
                 animate={phase >= 2 ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: i * 0.12 }}
