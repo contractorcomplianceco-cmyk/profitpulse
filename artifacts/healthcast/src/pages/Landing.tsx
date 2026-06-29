@@ -138,12 +138,12 @@ export default function Landing() {
     navigate("/");
   };
 
-  // In the demo build, pop up the video walkthrough on load.
+  // Demo build: video walkthrough is the first experience.
   useEffect(() => {
     if (!isDemoMode) return;
-    const t = setTimeout(() => setStartPopup(true), 1100);
+    const t = setTimeout(() => navigate("/demo/"), 600);
     return () => clearTimeout(t);
-  }, []);
+  }, [navigate]);
 
   // Video-first client demo at /demo (public, no login).
   const enterVideoDemo = () => navigate("/demo/");

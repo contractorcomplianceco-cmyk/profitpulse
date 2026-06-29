@@ -128,8 +128,8 @@ export function DemoPromo() {
               ProfitPulse product demo
             </DialogTitle>
             <DialogDescription className="text-white/70 mt-2 text-sm leading-relaxed">
-              Watch the video walkthrough first — cash, revenue, staffing, risk, and
-              scenario modeling in under two minutes.
+              Start with the video walkthrough — cash, revenue, staffing, risk, and
+              scenario modeling with sample data. No login required.
             </DialogDescription>
           </div>
           <div className="flex flex-col gap-2.5 px-6 py-5 bg-background">

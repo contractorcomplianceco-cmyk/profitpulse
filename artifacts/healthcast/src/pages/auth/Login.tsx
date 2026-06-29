@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useAuth } from "@/context/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { CcaLogo } from "@/components/layout/CcaLogo";
 import { DEFAULT_TENANT_NAME } from "@/auth/types";
 import { Checkbox } from "@/components/ui/checkbox";
+import { demoConfig } from "@/brand/demoMode";
+import { PlayCircle } from "lucide-react";
 
 export default function AuthLogin() {
   const { login, session } = useAuth();
@@ -49,7 +51,17 @@ export default function AuthLogin() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <Link href="/demo/">
+            <Button type="button" variant="default" className="w-full gap-2 mb-5">
+              <PlayCircle className="w-4 h-4" />
+              {demoConfig.enterDemoLabel}
+            </Button>
+          </Link>
+          <p className="text-center text-xs text-muted-foreground mb-5 -mt-2">
+            Video walkthrough first — sample data, no login required.
+          </p>
+
+          <form onSubmit={handleSubmit} className="space-y-4 border-t border-border pt-5">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input

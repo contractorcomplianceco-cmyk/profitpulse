@@ -39,7 +39,7 @@ export const ROSE_SCENES: SceneMeta[] = [
     index: 3,
     label: "Live dashboard",
     caption:
-      "Revenue, costs, margin, and risk — with trend cards that update as your business moves.",
+      "Revenue, costs, margin, and risk — illustrated with sample contractor data and trend cards.",
     durationMs: 13_000,
   },
   {
@@ -55,7 +55,7 @@ export const ROSE_SCENES: SceneMeta[] = [
     index: 5,
     label: "Margin insight",
     caption:
-      "Sample AI-style guidance flags margin pressure before it becomes a surprise at month-end.",
+      "Sample AI-style guidance shows how margin alerts could look — illustrative, not live AI.",
     durationMs: 12_000,
   },
   {
@@ -63,7 +63,7 @@ export const ROSE_SCENES: SceneMeta[] = [
     index: 6,
     label: "The outcome",
     caption:
-      "Sharper pricing, protected margin, and leadership visibility — decisions you can stand behind.",
+      "Illustrative outcomes — sharper pricing, protected margin, and leadership visibility.",
     durationMs: 11_000,
   },
   {
@@ -71,7 +71,7 @@ export const ROSE_SCENES: SceneMeta[] = [
     index: 7,
     label: "Rose demo",
     caption:
-      "Ready for Rose — sample data only, no login, no live integrations.",
+      "Product demo — sample data only, no login, no live integrations.",
     durationMs: 10_000,
   },
 ];

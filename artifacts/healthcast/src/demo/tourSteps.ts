@@ -88,8 +88,8 @@ export const TOUR_STEPS: TourStep[] = [
     target: "",
     placement: "center",
     isFinale: true,
-    title: "This could be running your business",
+    title: "Explore the interactive workspace next",
     body:
-      "Everything you just saw runs on your own accounting, CRM, and ad data. Start a free trial, or book a walkthrough and we'll set it up with you.",
+      "This video used sample data only. Sign in to click through the workspace sandbox, or contact us when you are ready for a live rollout.",
   },
 ];

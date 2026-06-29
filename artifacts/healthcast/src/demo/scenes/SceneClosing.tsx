@@ -32,7 +32,7 @@ export function SceneClosing() {
         >
           <Sparkles className="w-4 h-4 text-[#49BFF2]" />
           <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-[#49BFF2]">
-            Ready for Rose
+            Product demo
           </span>
         </motion.div>
 
@@ -73,7 +73,7 @@ export function SceneClosing() {
         >
           <div className="inline-flex items-center gap-2 px-5 py-2.5 md:px-6 md:py-3 rounded-full bg-white text-[#071827] font-bold text-xs md:text-sm shadow-lg">
             <Play className="w-4 h-4" />
-            Rose presentation walkthrough
+            Sample walkthrough
           </div>
           <p className="text-[10px] md:text-xs text-white/40 font-body max-w-xs">
             Sample data · no login · no live integrations
