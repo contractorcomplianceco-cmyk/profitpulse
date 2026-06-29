@@ -7,6 +7,10 @@ import NotFound from "@/pages/not-found";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { BrandProvider } from "@/brand/BrandProvider";
 import { ProfitPulseProvider } from "@/context/ProfitPulseProvider";
+import { AuthProvider } from "@/context/AuthProvider";
+import { BillingProvider } from "@/context/BillingProvider";
+import { AuthGate } from "@/components/auth/AuthGate";
+import { withFeatureGate } from "@/components/billing/withFeatureGate";
 import { GuidedTour } from "@/demo/GuidedTour";
 import { DemoFunnelProvider, useDemoFunnel } from "@/demo/DemoFunnel";
 import { isDemoMode } from "@/brand/demoMode";
@@ -38,42 +42,82 @@ import FacilityIntelligence from "@/pages/FacilityIntelligence";
 import Welcome from "@/pages/Welcome";
 import Landing from "@/pages/Landing";
 import WhiteLabelSettings from "@/pages/WhiteLabelSettings";
+import TeamPage from "@/pages/Team";
+import AuditLogPage from "@/pages/AuditLog";
 import RequestDemo from "@/pages/RequestDemo";
 import BuyNow from "@/pages/BuyNow";
 import SignUp from "@/pages/SignUp";
 import DemoWalkthrough from "@/demo/DemoWalkthrough";
+import AuthLogin from "@/pages/auth/Login";
+import AuthLogout from "@/pages/auth/Logout";
+import AuthSession from "@/pages/auth/Session";
+import BillingPage from "@/pages/Billing";
+import {
+  isPublicDemoRoute,
+  PUBLIC_MARKETING_ROUTES,
+} from "@/routing/publicRoutes";
 
 const queryClient = new QueryClient();
+
+const GatedExecutiveOverview = withFeatureGate("/", ExecutiveOverview);
+const GatedCashFlow = withFeatureGate("/cash-flow", CashFlow);
+const GatedRevenueIntelligence = withFeatureGate("/revenue-intelligence", RevenueIntelligence);
+const GatedProfitability = withFeatureGate("/profitability", Profitability);
+const GatedArAp = withFeatureGate("/ar-ap-collections", ArApCollections);
+const GatedMarketingRoi = withFeatureGate("/marketing-roi", MarketingRoi);
+const GatedSalesPipeline = withFeatureGate("/sales-pipeline", SalesPipeline);
+const GatedStaffing = withFeatureGate("/staffing-payroll", StaffingPayroll);
+const GatedDept = withFeatureGate("/department-performance", DepartmentPerformance);
+const GatedClient = withFeatureGate("/client-profitability", ClientProfitability);
+const GatedHistory = withFeatureGate("/historical-trends", HistoricalTrends);
+const GatedMarket = withFeatureGate("/market-economy", MarketEconomy);
+const GatedFuturecast = withFeatureGate("/futurecast", Futurecast);
+const GatedScenario = withFeatureGate("/scenario-builder", ScenarioBuilder);
+const GatedAlerts = withFeatureGate("/alerts", Alerts);
+const GatedBriefing = withFeatureGate("/daily-briefing", DailyBriefing);
+const GatedReports = withFeatureGate("/reports", Reports);
+const GatedIntegrations = withFeatureGate("/integrations", Integrations);
+const GatedCopilot = withFeatureGate("/copilot", CfoCopilot);
+const GatedGoals = withFeatureGate("/goals", GoalsOkrs);
+const GatedCashCalendar = withFeatureGate("/cash-calendar", CashCalendar);
+const GatedCompliance = withFeatureGate("/compliance", ComplianceRisk);
+const GatedFacility = withFeatureGate("/facility-intelligence", FacilityIntelligence);
+const GatedSettings = withFeatureGate("/settings", WhiteLabelSettings);
+const GatedTeam = withFeatureGate("/team", TeamPage);
+const GatedAudit = withFeatureGate("/audit", AuditLogPage);
 
 function Router() {
   return (
     <AppLayout>
       <Switch>
         <Route path="/welcome" component={Welcome} />
-        <Route path="/" component={ExecutiveOverview} />
-        <Route path="/cash-flow" component={CashFlow} />
-        <Route path="/revenue-intelligence" component={RevenueIntelligence} />
-        <Route path="/profitability" component={Profitability} />
-        <Route path="/ar-ap-collections" component={ArApCollections} />
-        <Route path="/marketing-roi" component={MarketingRoi} />
-        <Route path="/sales-pipeline" component={SalesPipeline} />
-        <Route path="/staffing-payroll" component={StaffingPayroll} />
-        <Route path="/department-performance" component={DepartmentPerformance} />
-        <Route path="/client-profitability" component={ClientProfitability} />
-        <Route path="/historical-trends" component={HistoricalTrends} />
-        <Route path="/market-economy" component={MarketEconomy} />
-        <Route path="/futurecast" component={Futurecast} />
-        <Route path="/scenario-builder" component={ScenarioBuilder} />
-        <Route path="/alerts" component={Alerts} />
-        <Route path="/daily-briefing" component={DailyBriefing} />
-        <Route path="/reports" component={Reports} />
-        <Route path="/integrations" component={Integrations} />
-        <Route path="/copilot" component={CfoCopilot} />
-        <Route path="/goals" component={GoalsOkrs} />
-        <Route path="/cash-calendar" component={CashCalendar} />
-        <Route path="/compliance" component={ComplianceRisk} />
-        <Route path="/facility-intelligence" component={FacilityIntelligence} />
-        <Route path="/settings" component={WhiteLabelSettings} />
+        <Route path="/" component={GatedExecutiveOverview} />
+        <Route path="/cash-flow" component={GatedCashFlow} />
+        <Route path="/revenue-intelligence" component={GatedRevenueIntelligence} />
+        <Route path="/profitability" component={GatedProfitability} />
+        <Route path="/ar-ap-collections" component={GatedArAp} />
+        <Route path="/marketing-roi" component={GatedMarketingRoi} />
+        <Route path="/sales-pipeline" component={GatedSalesPipeline} />
+        <Route path="/staffing-payroll" component={GatedStaffing} />
+        <Route path="/department-performance" component={GatedDept} />
+        <Route path="/client-profitability" component={GatedClient} />
+        <Route path="/historical-trends" component={GatedHistory} />
+        <Route path="/market-economy" component={GatedMarket} />
+        <Route path="/futurecast" component={GatedFuturecast} />
+        <Route path="/scenario-builder" component={GatedScenario} />
+        <Route path="/alerts" component={GatedAlerts} />
+        <Route path="/daily-briefing" component={GatedBriefing} />
+        <Route path="/reports" component={GatedReports} />
+        <Route path="/integrations" component={GatedIntegrations} />
+        <Route path="/copilot" component={GatedCopilot} />
+        <Route path="/goals" component={GatedGoals} />
+        <Route path="/cash-calendar" component={GatedCashCalendar} />
+        <Route path="/compliance" component={GatedCompliance} />
+        <Route path="/facility-intelligence" component={GatedFacility} />
+        <Route path="/settings" component={GatedSettings} />
+        <Route path="/team" component={GatedTeam} />
+        <Route path="/audit" component={GatedAudit} />
+        <Route path="/billing" component={BillingPage} />
         <Route component={NotFound} />
       </Switch>
     </AppLayout>
@@ -106,8 +150,9 @@ function DemoGate({ children }: { children: React.ReactNode }) {
     }
   }, [unlocked, submitLead]);
 
-  const PUBLIC = ["/landing", "/landing/", "/request-demo", "/buy", "/signup", "/demo", "/demo/"];
-  const isPublic = PUBLIC.includes(location);
+  const isPublic =
+    isPublicDemoRoute(location) ||
+    (PUBLIC_MARKETING_ROUTES as readonly string[]).includes(location);
   const bypass = unlocked || hasSkipFlag();
 
   useEffect(() => {
@@ -120,34 +165,53 @@ function DemoGate({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function MainAppShell() {
+  return (
+    <BillingProvider>
+      <ProfitPulseProvider>
+        <DemoFunnelProvider>
+          <DemoGate>
+            <Switch>
+              <Route path="/auth/login" component={AuthLogin} />
+              <Route path="/auth/logout" component={AuthLogout} />
+              <Route path="/auth/session" component={AuthSession} />
+              <Route path="/landing" component={Landing} />
+              <Route path="/landing/" component={Landing} />
+              <Route path="/request-demo" component={RequestDemo} />
+              <Route path="/buy" component={BuyNow} />
+              <Route path="/signup" component={SignUp} />
+              <Route>
+                <AuthGate>
+                  <Router />
+                </AuthGate>
+              </Route>
+            </Switch>
+          </DemoGate>
+          <GuidedTour />
+        </DemoFunnelProvider>
+      </ProfitPulseProvider>
+    </BillingProvider>
+  );
+}
+
 function App() {
   return (
     <BrandProvider>
-      <ProfitPulseProvider>
-      <DemoFunnelProvider>
+      <AuthProvider>
         <QueryClientProvider client={queryClient}>
           <TooltipProvider>
             <WouterRouter hook={useHashLocation}>
-              <DemoGate>
-                <Switch>
-                  <Route path="/demo" component={DemoWalkthrough} />
-                  <Route path="/demo/" component={DemoWalkthrough} />
-                  <Route path="/landing" component={Landing} />
-                  <Route path="/landing/" component={Landing} />
-                  <Route path="/request-demo" component={RequestDemo} />
-                  <Route path="/buy" component={BuyNow} />
-                  <Route path="/signup" component={SignUp} />
-                  <Route component={Router} />
-                </Switch>
-              </DemoGate>
+              <Switch>
+                {/* Public Rose demo — no login, no workspace providers, sample scenes only */}
+                <Route path="/demo" component={DemoWalkthrough} />
+                <Route path="/demo/" component={DemoWalkthrough} />
+                <Route component={MainAppShell} />
+              </Switch>
             </WouterRouter>
-            {/* Guided interactive product tour overlay (driven by ?tour=1 or demo mode) */}
-            <GuidedTour />
             <Toaster />
           </TooltipProvider>
         </QueryClientProvider>
-      </DemoFunnelProvider>
-      </ProfitPulseProvider>
+      </AuthProvider>
     </BrandProvider>
   );
 }
