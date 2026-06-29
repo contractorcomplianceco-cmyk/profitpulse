@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Repeat, Volume2, VolumeX, ChevronUp, ChevronDown, Play, Pause } from 'lucide-react';
+import { Repeat, Volume2, VolumeX, ChevronUp, ChevronDown, Play, Pause, RotateCcw } from 'lucide-react';
 import VideoTemplate, { SCENE_DURATIONS } from './VideoTemplate';
 import { useSceneControls } from './useSceneControls';
 
@@ -18,6 +18,7 @@ interface ControlBarProps {
   onTogglePaused: () => void;
   onToggleLock: () => void;
   onToggleMuted: () => void;
+  onRestart: () => void;
   onJumpTo: (index: number) => void;
   onToggleCollapsed: () => void;
 }
@@ -70,7 +71,7 @@ function ProgressSegments({
 
 function ControlBar({
   visible, collapsed, locked, muted, paused, sceneKeys, activeIndex, activeDuration, tick,
-  onTogglePaused, onToggleLock, onToggleMuted, onJumpTo, onToggleCollapsed,
+  onTogglePaused, onToggleLock, onToggleMuted, onRestart, onJumpTo, onToggleCollapsed,
 }: ControlBarProps) {
   return (
     <div
@@ -116,6 +117,15 @@ function ControlBar({
         aria-pressed={!muted}
       >
         {muted ? <VolumeX className="w-8 h-8" /> : <Volume2 className="w-8 h-8" />}
+      </button>
+
+      <button
+        onClick={onRestart}
+        className="w-14 h-14 flex items-center justify-center transition-colors rounded-lg shrink-0 text-white/60 hover:text-white hover:bg-white/10"
+        title="Restart walkthrough"
+        aria-label="Restart walkthrough"
+      >
+        <RotateCcw className="w-7 h-7" />
       </button>
 
       <div className="w-px self-stretch bg-white/15" aria-hidden="true" />
@@ -165,7 +175,7 @@ export default function DemoPlayer({
 } = {}) {
   const {
     sceneKeys, activeIndex, locked, mountKey, tick,
-    durations: rotatedDurations, activeDuration, onSceneChange, jumpTo, toggleLock,
+    durations: rotatedDurations, activeDuration, onSceneChange, jumpTo, toggleLock, restart,
   } = useSceneControls(SCENE_DURATIONS);
 
   // When not looping (popup), always play scenes in natural order 1→6 and stop,
@@ -223,6 +233,10 @@ export default function DemoPlayer({
       onTogglePaused={() => setPaused(p => !p)}
       onToggleLock={toggleLock}
       onToggleMuted={() => setMuted(m => !m)}
+      onRestart={() => {
+        restart();
+        setPaused(false);
+      }}
       onJumpTo={jumpTo}
       onToggleCollapsed={handleToggleCollapsed}
     />

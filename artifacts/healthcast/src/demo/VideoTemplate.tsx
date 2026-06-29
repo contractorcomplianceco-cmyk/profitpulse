@@ -1,33 +1,30 @@
-import { useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useVideoPlayer } from './lib/hooks';
-import { Scene1 } from './scenes/Scene1';
-import { Scene2 } from './scenes/Scene2';
-import { Scene3 } from './scenes/Scene3';
-import { Scene4 } from './scenes/Scene4';
-import { Scene5 } from './scenes/Scene5';
-import { Scene6 } from './scenes/Scene6';
+import { useCallback, useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useVideoPlayer } from "./lib/hooks";
+import { SCENE_DURATIONS, sceneMetaFor } from "./sceneMeta";
+import { MUSIC_PATHS, narrationCandidates, resolveAudioUrl } from "./audioPaths";
+import { SceneOpening } from "./scenes/SceneOpening";
+import { SceneProblem } from "./scenes/SceneProblem";
+import { SceneInsight } from "./scenes/SceneInsight";
+import { SceneWorkflow } from "./scenes/SceneWorkflow";
+import { SceneAlert } from "./scenes/SceneAlert";
+import { SceneOutcome } from "./scenes/SceneOutcome";
+import { SceneClosing } from "./scenes/SceneClosing";
 
-export const SCENE_DURATIONS = {
-  intro: 9800,
-  dashboard: 15400,
-  navigation: 12800,
-  action: 13200,
-  connected: 8800,
-  outro: 9200
-};
+export { SCENE_DURATIONS };
 
 const SCENE_COMPONENTS: Record<string, React.ComponentType> = {
-  intro: Scene1,
-  dashboard: Scene2,
-  navigation: Scene3,
-  action: Scene4,
-  connected: Scene5,
-  outro: Scene6,
+  opening: SceneOpening,
+  problem: SceneProblem,
+  insight: SceneInsight,
+  workflow: SceneWorkflow,
+  alert: SceneAlert,
+  outcome: SceneOutcome,
+  closing: SceneClosing,
 };
 
-const MUSIC_BASE_VOLUME = 0.24;
-const MUSIC_DUCKED_VOLUME = 0.08;
+const MUSIC_BASE_VOLUME = 0.22;
+const MUSIC_DUCKED_VOLUME = 0.07;
 
 export default function VideoTemplate({
   durations = SCENE_DURATIONS,
@@ -42,7 +39,6 @@ export default function VideoTemplate({
   loop?: boolean;
   muted?: boolean;
   isPaused?: boolean;
-  /** Fill the parent container (h-full) instead of the viewport (h-screen). */
   fill?: boolean;
   onSceneChange?: (sceneKey: string) => void;
   onVideoEnd?: () => void;
@@ -53,21 +49,63 @@ export default function VideoTemplate({
     onSceneChange?.(currentSceneKey);
   }, [currentSceneKey, onSceneChange]);
 
-  const baseSceneKey = currentSceneKey.replace(/_r[12]$/, '') as keyof typeof SCENE_DURATIONS;
+  const baseSceneKey = currentSceneKey.replace(/_r[12]$/, "");
   const SceneComponent = SCENE_COMPONENTS[baseSceneKey];
+  const meta = sceneMetaFor(baseSceneKey);
 
   const musicRef = useRef<HTMLAudioElement | null>(null);
   const narrationRef = useRef<HTMLAudioElement | null>(null);
+  const [musicSrc, setMusicSrc] = useState<string | null>(null);
+  const [narrationSrc, setNarrationSrc] = useState<string | null>(null);
+  const musicIndexRef = useRef(0);
 
-  // Continuous background music bed.
+  // Resolve background music (graceful fallback).
   useEffect(() => {
-    const music = musicRef.current;
-    if (!music) return;
-    music.volume = MUSIC_BASE_VOLUME;
-    music.play().catch(() => {});
+    let cancelled = false;
+    (async () => {
+      const url = await resolveAudioUrl(MUSIC_PATHS);
+      if (!cancelled) setMusicSrc(url);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  // Play/pause the audio with the player.
+  const tryNextMusic = useCallback(() => {
+    musicIndexRef.current += 1;
+    if (musicIndexRef.current < MUSIC_PATHS.length) {
+      setMusicSrc(MUSIC_PATHS[musicIndexRef.current]);
+    } else {
+      setMusicSrc(null);
+    }
+  }, []);
+
+  // Resolve per-scene narration.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const url = await resolveAudioUrl(narrationCandidates(baseSceneKey));
+      if (!cancelled) setNarrationSrc(url);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [baseSceneKey]);
+
+  const restoreMusic = useCallback(() => {
+    const music = musicRef.current;
+    if (music) music.volume = MUSIC_BASE_VOLUME;
+  }, []);
+
+  // Start music bed when source is ready.
+  useEffect(() => {
+    const music = musicRef.current;
+    if (!music || !musicSrc || muted) return;
+    music.volume = MUSIC_BASE_VOLUME;
+    music.play().catch(() => {});
+  }, [musicSrc, muted]);
+
+  // Play/pause with player state.
   useEffect(() => {
     const music = musicRef.current;
     const narration = narrationRef.current;
@@ -75,32 +113,24 @@ export default function VideoTemplate({
       music?.pause();
       narration?.pause();
     } else {
-      if (music) music.play().catch(() => {});
-      if (narration && !muted && narration.src) narration.play().catch(() => {});
+      if (music && musicSrc) music.play().catch(() => {});
+      if (narration && narrationSrc && !muted) narration.play().catch(restoreMusic);
     }
-  }, [isPaused, muted]);
+  }, [isPaused, muted, musicSrc, narrationSrc, restoreMusic]);
 
-  // Per-scene narration: restart from the top on each scene, duck the music
-  // while it plays, then restore the music bed when it finishes. Narration only
-  // starts once the player is unmuted (browser autoplay policy / UX), and the
-  // music volume is always restored on end/error/cleanup so it can never get
-  // stuck ducked if playback is interrupted.
+  // Per-scene narration with music ducking.
   useEffect(() => {
     const narration = narrationRef.current;
     const music = musicRef.current;
-    if (!narration) return;
+    if (!narration || !narrationSrc) {
+      restoreMusic();
+      return;
+    }
 
-    const restoreMusic = () => {
-      if (music) music.volume = MUSIC_BASE_VOLUME;
-    };
-
-    narration.src = `${import.meta.env.BASE_URL}demo/audio/narration/${baseSceneKey}.mp3`;
+    narration.src = narrationSrc;
     narration.currentTime = 0;
-    narration.volume = 1;
 
-    // While muted, keep the (silent) music bed at base volume and don't bother
-    // ducking; restart narration from the scene boundary once unmuted.
-    if (muted) {
+    if (muted || isPaused) {
       restoreMusic();
       return;
     }
@@ -108,74 +138,74 @@ export default function VideoTemplate({
     if (music) music.volume = MUSIC_DUCKED_VOLUME;
     narration.play().catch(restoreMusic);
 
-    narration.addEventListener('ended', restoreMusic);
-    narration.addEventListener('error', restoreMusic);
-    narration.addEventListener('pause', restoreMusic);
+    narration.addEventListener("ended", restoreMusic);
+    narration.addEventListener("error", restoreMusic);
     return () => {
-      narration.removeEventListener('ended', restoreMusic);
-      narration.removeEventListener('error', restoreMusic);
-      narration.removeEventListener('pause', restoreMusic);
+      narration.removeEventListener("ended", restoreMusic);
+      narration.removeEventListener("error", restoreMusic);
       restoreMusic();
     };
-  }, [currentSceneKey, baseSceneKey, muted]);
+  }, [baseSceneKey, narrationSrc, muted, isPaused, restoreMusic]);
 
   return (
     <div
-      className={`w-full ${fill ? 'h-full' : 'h-screen'} overflow-hidden relative`}
-      style={{ backgroundColor: 'var(--color-bg-dark)' }}
+      className={`w-full ${fill ? "h-full" : "h-screen min-h-[100dvh]"} overflow-hidden relative`}
+      style={{ backgroundColor: "var(--color-bg-dark)" }}
     >
-      {/* Persistent background layer */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Abstract blurred shapes that drift continuously */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute w-[80vw] h-[80vw] rounded-full opacity-[0.15] blur-[100px]"
-          style={{ background: 'var(--color-secondary)' }}
+          style={{ background: "var(--color-secondary)" }}
           animate={{
-            x: ['-20%', '30%', '-10%', '-20%'],
-            y: ['-10%', '20%', '40%', '-10%'],
+            x: ["-20%", "30%", "-10%", "-20%"],
+            y: ["-10%", "20%", "40%", "-10%"],
             scale: [1, 1.2, 0.9, 1],
           }}
-          transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
         />
         <motion.div
           className="absolute w-[60vw] h-[60vw] rounded-full opacity-[0.1] blur-[80px]"
-          style={{ background: 'var(--color-accent)' }}
+          style={{ background: "var(--color-accent)" }}
           animate={{
-            x: ['40%', '-10%', '50%', '40%'],
-            y: ['50%', '10%', '-20%', '50%'],
+            x: ["40%", "-10%", "50%", "40%"],
+            y: ["50%", "10%", "-20%", "50%"],
             scale: [1, 1.5, 1, 1],
           }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
         />
-
-        {/* Subtle grid pattern overlay */}
         <div
           className="absolute inset-0 opacity-[0.03]"
           style={{
-            backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
-            backgroundSize: '40px 40px',
-            backgroundPosition: 'center center'
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
           }}
         />
       </div>
 
-      <AnimatePresence mode="popLayout">
+      {/* Scene index pill (mobile-friendly label) */}
+      {meta && (
+        <div className="absolute top-4 right-4 z-30 px-3 py-1 rounded-full bg-black/40 border border-white/10 text-[10px] md:text-xs font-mono text-white/70">
+          {meta.label}
+        </div>
+      )}
+
+      <AnimatePresence mode="wait">
         {SceneComponent && <SceneComponent key={currentSceneKey} />}
       </AnimatePresence>
 
-      <audio
-        ref={musicRef}
-        src={`${import.meta.env.BASE_URL}demo/audio/bg_music.mp3`}
-        preload="auto"
-        autoPlay
-        loop
-        muted={muted}
-      />
-      <audio
-        ref={narrationRef}
-        preload="auto"
-        muted={muted}
-      />
+      {musicSrc && (
+        <audio
+          ref={musicRef}
+          src={musicSrc}
+          preload="auto"
+          autoPlay
+          loop
+          muted={muted}
+          onError={tryNextMusic}
+        />
+      )}
+      <audio ref={narrationRef} preload="auto" muted={muted} />
     </div>
   );
 }

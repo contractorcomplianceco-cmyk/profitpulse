@@ -62,6 +62,13 @@ export function useSceneControls(baseDurations: Record<string, number>) {
     setTick((t) => t + 1);
   }, []);
 
+  const restart = useCallback(() => {
+    setActiveIndex(0);
+    setLocked(false);
+    setMountKey((k) => k + 1);
+    setTick((t) => t + 1);
+  }, []);
+
   return {
     sceneKeys,
     activeIndex,
@@ -73,5 +80,6 @@ export function useSceneControls(baseDurations: Record<string, number>) {
     onSceneChange,
     jumpTo,
     toggleLock,
+    restart,
   };
 }

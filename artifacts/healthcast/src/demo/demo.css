@@ -12,6 +12,8 @@
   --color-warning: #f59e0b;
   --color-error: #fb7185;
   font-family: 'DM Sans', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
 .hc-demo .font-display { font-family: 'Space Grotesk', sans-serif; }
@@ -21,3 +23,10 @@
 .hc-demo .perspective-1000 { perspective: 1000px; }
 .hc-demo .preserve-3d { transform-style: preserve-3d; }
 .hc-demo .backface-hidden { backface-visibility: hidden; }
+
+@media (max-width: 640px) {
+  .hc-demo .demo-control-btn {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+}
