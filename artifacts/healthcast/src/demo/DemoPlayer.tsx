@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Repeat, Volume2, VolumeX, ChevronUp, ChevronDown, Play, Pause, RotateCcw } from 'lucide-react';
 import VideoTemplate, { SCENE_DURATIONS } from './VideoTemplate';
 import { useSceneControls } from './useSceneControls';
-import { probeDemoAudio, type DemoAudioStatus } from './audioPaths';
+import { probeDemoAudioDetailed, type DemoAudioAvailability } from './audioPaths';
 import { AudioStatusBadge } from './components/AudioStatusBadge';
 import { sceneMetaFor } from './sceneMeta';
 
@@ -22,6 +22,7 @@ interface ControlBarProps {
   onToggleLock: () => void;
   onToggleMuted: () => void;
   onRestart: () => void;
+  audioUnavailable: boolean;
   onJumpTo: (index: number) => void;
   onToggleCollapsed: () => void;
 }
@@ -74,7 +75,7 @@ function ProgressSegments({
 
 function ControlBar({
   visible, collapsed, locked, muted, paused, sceneKeys, activeIndex, activeDuration, tick,
-  onTogglePaused, onToggleLock, onToggleMuted, onRestart, onJumpTo, onToggleCollapsed,
+  onTogglePaused, onToggleLock, onToggleMuted, onRestart, audioUnavailable, onJumpTo, onToggleCollapsed,
 }: ControlBarProps) {
   return (
     <div
@@ -109,17 +110,38 @@ function ControlBar({
       </button>
 
       <button
-        onClick={onToggleMuted}
+        onClick={() => {
+          if (!audioUnavailable) onToggleMuted();
+        }}
+        disabled={audioUnavailable}
         className={`w-14 h-14 flex items-center justify-center transition-colors rounded-lg shrink-0 ${
-          muted
-            ? 'text-white/60 hover:text-white hover:bg-white/10'
-            : 'text-white bg-white/15 hover:bg-white/25'
+          audioUnavailable
+            ? 'text-white/30 cursor-default'
+            : muted
+              ? 'text-white/60 hover:text-white hover:bg-white/10'
+              : 'text-white bg-white/15 hover:bg-white/25'
         }`}
-        title={muted ? 'Unmute' : 'Mute'}
-        aria-label={muted ? 'Unmute' : 'Mute'}
-        aria-pressed={!muted}
+        title={
+          audioUnavailable
+            ? 'Audio files not found — captions on'
+            : muted
+              ? 'Unmute'
+              : 'Mute'
+        }
+        aria-label={
+          audioUnavailable
+            ? 'Audio unavailable'
+            : muted
+              ? 'Unmute'
+              : 'Mute'
+        }
+        aria-pressed={audioUnavailable ? undefined : !muted}
       >
-        {muted ? <VolumeX className="w-8 h-8" /> : <Volume2 className="w-8 h-8" />}
+        {audioUnavailable || muted ? (
+          <VolumeX className={`w-8 h-8 ${audioUnavailable ? 'opacity-50' : ''}`} />
+        ) : (
+          <Volume2 className="w-8 h-8" />
+        )}
       </button>
 
       <button
@@ -188,9 +210,14 @@ export default function DemoPlayer({
   // instead of the rotate-from-active order used for the looping full-screen player.
   const durations = loop ? rotatedDurations : SCENE_DURATIONS;
 
-  const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(true);
   const [paused, setPaused] = useState(false);
-  const [audioStatus, setAudioStatus] = useState<DemoAudioStatus>('loading');
+  const [audioAvailability, setAudioAvailability] = useState<DemoAudioAvailability>({
+    status: 'loading',
+    music: false,
+    narration: false,
+    narrationMode: 'none',
+  });
   const sensorRef = useRef<HTMLDivElement | null>(null);
   const [collapsed, setCollapsed] = useState(false);
   const [hovering, setHovering] = useState(false);
@@ -215,8 +242,14 @@ export default function DemoPlayer({
 
   useEffect(() => {
     let cancelled = false;
-    probeDemoAudio().then((status) => {
-      if (!cancelled) setAudioStatus(status);
+    probeDemoAudioDetailed().then((availability) => {
+      if (cancelled) return;
+      setAudioAvailability(availability);
+      if (availability.status === 'available') {
+        setMuted(false);
+      } else {
+        setMuted(true);
+      }
     });
     return () => {
       cancelled = true;
@@ -236,6 +269,8 @@ export default function DemoPlayer({
 
   const barVisible = alwaysShowControls || !collapsed || hovering || tapPinned;
 
+  const audioUnavailable = audioAvailability.status === 'unavailable';
+
   const controlBar = (
     <ControlBar
       visible={barVisible}
@@ -250,6 +285,7 @@ export default function DemoPlayer({
       onTogglePaused={() => setPaused(p => !p)}
       onToggleLock={toggleLock}
       onToggleMuted={() => setMuted(m => !m)}
+      audioUnavailable={audioUnavailable}
       onRestart={() => {
         restart();
         setPaused(false);
@@ -265,7 +301,7 @@ export default function DemoPlayer({
     return (
       <div className="flex flex-col w-full">
         <div className="relative w-full" style={{ aspectRatio: '16 / 9' }}>
-          <AudioStatusBadge status={audioStatus} />
+          <AudioStatusBadge availability={audioAvailability} />
           <VideoTemplate
             key={mountKey}
             durations={durations}
@@ -285,7 +321,7 @@ export default function DemoPlayer({
   // Layout A: overlaid control bar (full-screen /demo page).
   return (
     <div className={`relative w-full ${fill ? 'h-full' : 'h-screen'}`}>
-      <AudioStatusBadge status={audioStatus} />
+      <AudioStatusBadge availability={audioAvailability} />
       <VideoTemplate
         key={mountKey}
         durations={durations}

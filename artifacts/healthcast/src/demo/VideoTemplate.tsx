@@ -2,7 +2,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useVideoPlayer } from "./lib/hooks";
 import { SCENE_DURATIONS, sceneMetaFor } from "./sceneMeta";
-import { MUSIC_PATHS, narrationCandidates, resolveAudioUrl } from "./audioPaths";
+import {
+  MUSIC_PATHS,
+  resolveNarrationPlayback,
+  resolveAudioUrl,
+  type NarrationPlayback,
+} from "./audioPaths";
 import { SceneOpening } from "./scenes/SceneOpening";
 import { SceneProblem } from "./scenes/SceneProblem";
 import { SceneDashboard } from "./scenes/SceneDashboard";
@@ -55,11 +60,12 @@ export default function VideoTemplate({
 
   const musicRef = useRef<HTMLAudioElement | null>(null);
   const narrationRef = useRef<HTMLAudioElement | null>(null);
+  const narrationModeRef = useRef<NarrationPlayback["kind"]>("none");
+
   const [musicSrc, setMusicSrc] = useState<string | null>(null);
-  const [narrationSrc, setNarrationSrc] = useState<string | null>(null);
+  const [narrationPlayback, setNarrationPlayback] = useState<NarrationPlayback>({ kind: "none" });
   const musicIndexRef = useRef(0);
 
-  // Resolve background music (graceful fallback).
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -80,12 +86,11 @@ export default function VideoTemplate({
     }
   }, []);
 
-  // Resolve per-scene narration.
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const url = await resolveAudioUrl(narrationCandidates(baseSceneKey));
-      if (!cancelled) setNarrationSrc(url);
+      const playback = await resolveNarrationPlayback(baseSceneKey);
+      if (!cancelled) setNarrationPlayback(playback);
     })();
     return () => {
       cancelled = true;
@@ -97,7 +102,6 @@ export default function VideoTemplate({
     if (music) music.volume = MUSIC_BASE_VOLUME;
   }, []);
 
-  // Start music bed when source is ready.
   useEffect(() => {
     const music = musicRef.current;
     if (!music || !musicSrc || muted) return;
@@ -105,30 +109,40 @@ export default function VideoTemplate({
     music.play().catch(() => {});
   }, [musicSrc, muted]);
 
-  // Play/pause with player state.
   useEffect(() => {
     const music = musicRef.current;
     const narration = narrationRef.current;
     if (isPaused) {
       music?.pause();
       narration?.pause();
-    } else {
-      if (music && musicSrc) music.play().catch(() => {});
-      if (narration && narrationSrc && !muted) narration.play().catch(restoreMusic);
+      return;
     }
-  }, [isPaused, muted, musicSrc, narrationSrc, restoreMusic]);
+    if (music && musicSrc) music.play().catch(() => {});
+    if (narration && narrationPlayback.kind !== "none" && !muted) {
+      narration.play().catch(restoreMusic);
+    }
+  }, [isPaused, muted, musicSrc, narrationPlayback.kind, restoreMusic]);
 
-  // Per-scene narration with music ducking.
   useEffect(() => {
     const narration = narrationRef.current;
     const music = musicRef.current;
-    if (!narration || !narrationSrc) {
+    if (!narration || narrationPlayback.kind === "none") {
+      narrationModeRef.current = "none";
       restoreMusic();
       return;
     }
 
-    narration.src = narrationSrc;
-    narration.currentTime = 0;
+    narrationModeRef.current = narrationPlayback.kind;
+
+    if (narrationPlayback.kind === "per-scene") {
+      narration.src = narrationPlayback.url;
+      narration.currentTime = 0;
+    } else {
+      if (narration.src !== narrationPlayback.url) {
+        narration.src = narrationPlayback.url;
+      }
+      narration.currentTime = narrationPlayback.seekSec;
+    }
 
     if (muted || isPaused) {
       restoreMusic();
@@ -136,16 +150,20 @@ export default function VideoTemplate({
     }
 
     if (music) music.volume = MUSIC_DUCKED_VOLUME;
-    narration.play().catch(restoreMusic);
 
-    narration.addEventListener("ended", restoreMusic);
-    narration.addEventListener("error", restoreMusic);
+    const onEnd = () => restoreMusic();
+    const onErr = () => restoreMusic();
+
+    narration.play().catch(restoreMusic);
+    narration.addEventListener("ended", onEnd);
+    narration.addEventListener("error", onErr);
+
     return () => {
-      narration.removeEventListener("ended", restoreMusic);
-      narration.removeEventListener("error", restoreMusic);
+      narration.removeEventListener("ended", onEnd);
+      narration.removeEventListener("error", onErr);
       restoreMusic();
     };
-  }, [baseSceneKey, narrationSrc, muted, isPaused, restoreMusic]);
+  }, [baseSceneKey, narrationPlayback, muted, isPaused, restoreMusic]);
 
   return (
     <div
@@ -164,7 +182,7 @@ export default function VideoTemplate({
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
         />
         <motion.div
-          className="absolute w-[60vw] h-[60vw] rounded-full opacity-[0.1] blur-[80px]"
+          className="absolute w-[60vw] h-[60vw] rounded-full opacity-[0.1] blur-[100px]"
           style={{ background: "var(--color-accent)" }}
           animate={{
             x: ["40%", "-10%", "50%", "40%"],
@@ -183,7 +201,6 @@ export default function VideoTemplate({
         />
       </div>
 
-      {/* Scene index pill (mobile-friendly label) */}
       {meta && (
         <div className="absolute top-3 left-3 md:top-4 md:left-4 z-30 flex flex-col gap-1">
           <div className="px-2.5 py-1 rounded-full bg-black/45 border border-white/10 text-[10px] md:text-xs font-mono text-white/70">

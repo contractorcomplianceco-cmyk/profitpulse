@@ -1,10 +1,16 @@
+import { ROSE_SCENES } from "./sceneMeta";
+
 const BASE = import.meta.env.BASE_URL;
 
-/** Canonical Rose demo audio paths (see docs/DEMO-AUDIO.md). */
+/**
+ * Canonical Profit Pulse demo audio (see docs/PROFITPULSE_DEMO_NARRATION.md).
+ * Place files at:
+ *   artifacts/healthcast/public/demo/music.mp3
+ *   artifacts/healthcast/public/demo/narration.mp3
+ */
 export const EXPECTED_AUDIO = {
   music: `${BASE}demo/music.mp3`,
-  narrationFallback: `${BASE}demo/narration.mp3`,
-  narrationDir: `${BASE}demo/narration/`,
+  narration: `${BASE}demo/narration.mp3`,
   perScene: (sceneKey: string) => `${BASE}demo/narration/${sceneKey}.mp3`,
 } as const;
 
@@ -13,9 +19,8 @@ export const MUSIC_PATHS = [
   `${BASE}demo/audio/bg_music.mp3`,
 ] as const;
 
-export const NARRATION_FALLBACK = EXPECTED_AUDIO.narrationFallback;
+export const NARRATION_MASTER_PATHS = [EXPECTED_AUDIO.narration] as const;
 
-/** Alternate filenames if Rose scene keys were renamed. */
 const NARRATION_ALIASES: Partial<Record<string, string[]>> = {
   dashboard: ["insight"],
   insight: ["alert"],
@@ -41,20 +46,52 @@ export const SCENE_KEYS = [
   "closing",
 ] as const;
 
-export function narrationCandidates(sceneKey: string): string[] {
+/** Per-scene file candidates (excludes master narration.mp3). */
+export function perSceneNarrationCandidates(sceneKey: string): string[] {
   const aliases = NARRATION_ALIASES[sceneKey] ?? [];
-  const candidates = [
+  return [
     EXPECTED_AUDIO.perScene(sceneKey),
     ...aliases.map((a) => EXPECTED_AUDIO.perScene(a)),
     LEGACY_NARRATION[sceneKey]
       ? `${BASE}demo/audio/narration/${LEGACY_NARRATION[sceneKey]}.mp3`
       : null,
-    NARRATION_FALLBACK,
   ].filter((x): x is string => Boolean(x));
-  return [...new Set(candidates)];
+}
+
+export type NarrationPlayback =
+  | { kind: "none" }
+  | { kind: "per-scene"; url: string }
+  | { kind: "master"; url: string; seekSec: number };
+
+export function sceneNarrationSeekSec(sceneKey: string): number {
+  let ms = 0;
+  for (const scene of ROSE_SCENES) {
+    if (scene.key === sceneKey) return ms / 1000;
+    ms += scene.durationMs;
+  }
+  return 0;
+}
+
+export async function resolveNarrationPlayback(sceneKey: string): Promise<NarrationPlayback> {
+  const perScene = await resolveAudioUrl(perSceneNarrationCandidates(sceneKey));
+  if (perScene) return { kind: "per-scene", url: perScene };
+
+  const master = await resolveAudioUrl(NARRATION_MASTER_PATHS);
+  if (master) {
+    return { kind: "master", url: master, seekSec: sceneNarrationSeekSec(sceneKey) };
+  }
+
+  return { kind: "none" };
 }
 
 export type DemoAudioStatus = "loading" | "available" | "unavailable";
+
+export interface DemoAudioAvailability {
+  status: DemoAudioStatus;
+  music: boolean;
+  narration: boolean;
+  narrationMode: "per-scene" | "master" | "none";
+}
 
 export async function resolveAudioUrl(candidates: readonly string[]): Promise<string | null> {
   for (const url of candidates) {
@@ -68,14 +105,37 @@ export async function resolveAudioUrl(candidates: readonly string[]): Promise<st
   return null;
 }
 
-export async function probeDemoAudio(): Promise<DemoAudioStatus> {
-  const music = await resolveAudioUrl(MUSIC_PATHS);
-  if (music) return "available";
+export async function probeDemoAudioDetailed(): Promise<DemoAudioAvailability> {
+  const music = Boolean(await resolveAudioUrl(MUSIC_PATHS));
+
+  let narration = false;
+  let narrationMode: DemoAudioAvailability["narrationMode"] = "none";
 
   for (const key of SCENE_KEYS) {
-    const narration = await resolveAudioUrl(narrationCandidates(key));
-    if (narration) return "available";
+    const perScene = await resolveAudioUrl(perSceneNarrationCandidates(key));
+    if (perScene) {
+      narration = true;
+      narrationMode = "per-scene";
+      break;
+    }
   }
 
-  return "unavailable";
+  if (!narration) {
+    const master = await resolveAudioUrl(NARRATION_MASTER_PATHS);
+    if (master) {
+      narration = true;
+      narrationMode = "master";
+    }
+  }
+
+  const status: DemoAudioStatus =
+    music || narration ? "available" : "unavailable";
+
+  return { status, music, narration, narrationMode };
+}
+
+/** @deprecated use probeDemoAudioDetailed */
+export async function probeDemoAudio(): Promise<DemoAudioStatus> {
+  const d = await probeDemoAudioDetailed();
+  return d.status;
 }

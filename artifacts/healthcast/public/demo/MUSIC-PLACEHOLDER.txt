@@ -1,7 +1,2 @@
-Background music MP3 for the Rose demo walkthrough.
-
-Expected filename: music.mp3 (this file)
-Runtime URL: /demo/music.mp3
-
-See docs/DEMO-AUDIO.md for recording instructions.
-The walkthrough works without this file.
+Expected: music.mp3 (background loop)
+See docs/PROFITPULSE_DEMO_NARRATION.md

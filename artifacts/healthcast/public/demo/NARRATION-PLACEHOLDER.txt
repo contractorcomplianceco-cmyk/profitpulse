@@ -1,6 +1,8 @@
-Optional single-track narration fallback for the Rose demo.
+Expected Profit Pulse demo audio (see docs/PROFITPULSE_DEMO_NARRATION.md):
 
-Expected filename: narration.mp3 (replace this note with the MP3)
-Runtime URL: /demo/narration.mp3
+  music.mp3       — background music (required path)
+  narration.mp3   — master narration track (optional if per-scene files exist)
 
-Per-scene files in narration/ are preferred. See docs/ROSE-NARRATION-SCRIPT.md.
+Per-scene alternative: narration/opening.mp3 … narration/closing.mp3
+
+Demo works without these files (captions + timed scenes).
