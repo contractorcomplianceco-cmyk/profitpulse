@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PageHeader } from "@/components/dashboard/PageHeader";
+import { PreviewModuleBanner } from "@/components/profit-pulse/PreviewModuleBanner";
 import { InsightCard } from "@/components/dashboard/InsightCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -157,17 +158,18 @@ export default function CfoCopilot() {
     <motion.div variants={containerVariants} initial="hidden" animate="show" className="space-y-6 pb-12">
       <PageHeader
         title="AI CFO Copilot"
-        description="Ask anything about the company's finances. Answers are grounded in live ledger, AR/AP, payroll, pipeline, and market data."
+        description="Preview UI — illustrative responses only, not connected to live AI or accounting systems."
         actions={
           <Badge
             variant="outline"
-            className="bg-primary/10 border-primary/30 text-primary font-bold tracking-widest uppercase text-[10px] px-3 py-1 flex items-center gap-1.5"
+            className="bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-400 font-bold tracking-widest uppercase text-[10px] px-3 py-1"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse-glow" />
-            Online
+            Preview
           </Badge>
         }
       />
+
+      <PreviewModuleBanner detail="Canned demo responses for layout review. Use Executive Overview, Alerts, and Scenario Modeler for live sample metrics." />
 
       <motion.div variants={itemVariants} className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {stats.map((stat) => (

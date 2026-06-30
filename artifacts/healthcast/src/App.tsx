@@ -201,8 +201,12 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <TooltipProvider>
             <WouterRouter hook={useHashLocation}>
+              {/*
+                DEMO REGRESSION GUARD (P1-12): /demo MUST stay public, video-first, no AuthGate.
+                DemoWalkthrough routes are declared BEFORE MainAppShell so login is never required.
+                Do not wrap /demo in AuthGate, ProfitPulseProvider billing funnel, or workspace providers.
+              */}
               <Switch>
-                {/* Public Rose demo — no login, no workspace providers, sample scenes only */}
                 <Route path="/demo" component={DemoWalkthrough} />
                 <Route path="/demo/" component={DemoWalkthrough} />
                 <Route component={MainAppShell} />

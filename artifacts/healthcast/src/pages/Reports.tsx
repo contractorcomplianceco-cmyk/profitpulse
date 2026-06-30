@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { PageHeader } from "@/components/dashboard/PageHeader";
+import { PreviewModuleBanner } from "@/components/profit-pulse/PreviewModuleBanner";
 import { KpiCard } from "@/components/dashboard/KpiCard";
 import { ChartCard } from "@/components/dashboard/ChartCard";
 import { InsightCard } from "@/components/dashboard/InsightCard";
@@ -27,8 +28,8 @@ export default function Reports() {
 
   const handleExport = (name: string) => {
     toast({
-      title: "Exporting Report",
-      description: `${name} is being generated and compiled into PDF/Excel.`,
+      title: "Preview — export not available",
+      description: `${name} is sample UI only. Use Integrations for CSV/JSON backup in this evaluation workspace.`,
     });
   };
 
@@ -45,9 +46,11 @@ export default function Reports() {
     <motion.div variants={containerVariants} initial="hidden" animate="show" className="space-y-6 pb-12">
       <PageHeader 
         title="Reports Archive" 
-        description="Comprehensive generated reports, historical statements, and board decks."
+        description="Preview report library — exports planned; use Integrations for CSV/JSON today."
         actions={<Button variant="outline">Schedule Report</Button>}
       />
+
+      <PreviewModuleBanner />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <motion.div variants={itemVariants}>

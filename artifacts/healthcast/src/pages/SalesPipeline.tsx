@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useMemo } from "react";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { KpiCard } from "@/components/dashboard/KpiCard";
 import { ChartCard } from "@/components/dashboard/ChartCard";
@@ -13,6 +14,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { pipelineKpis, pipelineStages, salespersonPerformance, staleDeals } from "@/data/pipelineData";
 import { useProfitPulse, createEmptyOpportunity } from "@/context/ProfitPulseProvider";
 import { EntityCrudTable } from "@/components/profit-pulse/EntityCrudTable";
+import { LiveDataBanner } from "@/components/profit-pulse/LiveDataBanner";
+import { deriveJobSnapshots } from "@/lib/profit-pulse/calculations";
 import type { Opportunity } from "@/lib/profit-pulse/types";
 
 const containerVariants = {
@@ -33,7 +36,7 @@ const itemVariants = {
 export default function SalesPipeline() {
   const { state, upsertOpportunity, deleteOpportunity, readOnly } = useProfitPulse();
   const weighted = state.opportunities.reduce((s, o) => s + o.value * (o.probability / 100), 0);
-  const total = state.opportunities.reduce((s, o) => s + o.value, 0);
+  const derivedJobs = useMemo(() => deriveJobSnapshots(state), [state]);
 
   return (
     <motion.div 
@@ -44,9 +47,51 @@ export default function SalesPipeline() {
     >
       <PageHeader 
         title="Sales Pipeline" 
-        description="Pipeline velocity, conversion metrics, and sales rep performance" 
+        description="Pipeline velocity and active jobs derived from opportunities + sample books" 
         actions={<Button variant="outline" className="border-border hover:bg-card">Drilldown Analysis</Button>}
       />
+
+      <LiveDataBanner detail={`${state.opportunities.length} pipeline opportunities · ${derivedJobs.length} active jobs shown below`} />
+
+      <motion.div variants={itemVariants} className="bg-card/50 backdrop-blur-xl border border-border/50 rounded-xl overflow-hidden">
+        <div className="p-4 border-b border-border/50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div>
+            <h3 className="text-base font-semibold">Active jobs (derived)</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Sample view from pipeline + revenue/cost records · full job tracking in a future release
+            </p>
+          </div>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-500/10 border border-amber-500/25 px-2 py-1 rounded w-fit">
+            Sample data
+          </span>
+        </div>
+        <Table>
+          <TableHeader>
+            <TableRow className="border-border/50 hover:bg-transparent">
+              <TableHead className="text-muted-foreground">Job / Project</TableHead>
+              <TableHead className="text-muted-foreground">Client</TableHead>
+              <TableHead className="text-right text-muted-foreground">Contract</TableHead>
+              <TableHead className="text-right text-muted-foreground">Revenue</TableHead>
+              <TableHead className="text-right text-muted-foreground">Margin</TableHead>
+              <TableHead className="text-muted-foreground">Stage</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {derivedJobs.map((job) => (
+              <TableRow key={job.id} className="border-border/50 hover:bg-card/50">
+                <TableCell className="font-medium">{job.name}</TableCell>
+                <TableCell className="text-muted-foreground">{job.accountName}</TableCell>
+                <TableCell className="text-right">{formatCompactCurrency(job.contractValue)}</TableCell>
+                <TableCell className="text-right">{formatCompactCurrency(job.revenueToDate)}</TableCell>
+                <TableCell className={`text-right font-semibold ${job.marginPct < state.organization.marginThresholdPct ? "text-destructive" : "text-success"}`}>
+                  {formatPercent(job.marginPct)}
+                </TableCell>
+                <TableCell className="capitalize text-xs">{job.status}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <motion.div variants={itemVariants}>

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { PageHeader } from "@/components/dashboard/PageHeader";
+import { PreviewModuleBanner } from "@/components/profit-pulse/PreviewModuleBanner";
 import { KpiCard } from "@/components/dashboard/KpiCard";
 import { ChartCard } from "@/components/dashboard/ChartCard";
 import { InsightCard } from "@/components/dashboard/InsightCard";
@@ -29,9 +30,11 @@ export default function DailyBriefing() {
     <motion.div variants={containerVariants} initial="hidden" animate="show" className="space-y-6 pb-12">
       <PageHeader 
         title="Daily Executive Briefing" 
-        description={`AI-Synthesized CFO Memo for ${dateStr}`}
+        description={`Preview memo layout · ${dateStr}`}
         actions={<Button variant="outline">Share Briefing</Button>}
       />
+
+      <PreviewModuleBanner detail="Static sample narrative. Live alerts and KPIs are on Executive Overview and Alerts." />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <motion.div variants={itemVariants}>

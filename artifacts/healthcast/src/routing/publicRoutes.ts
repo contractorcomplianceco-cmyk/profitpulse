@@ -4,6 +4,13 @@ export const PUBLIC_DEMO_ROUTES = [
   "/demo/",
 ] as const;
 
+/** Invariants enforced by scripts/verify-demo-routes.mjs — do not regress. */
+export const DEMO_ROUTE_INVARIANTS = {
+  publicPaths: PUBLIC_DEMO_ROUTES,
+  requiresAuth: false,
+  videoFirst: true,
+} as const;
+
 export const PUBLIC_MARKETING_ROUTES = [
   "/landing",
   "/landing/",

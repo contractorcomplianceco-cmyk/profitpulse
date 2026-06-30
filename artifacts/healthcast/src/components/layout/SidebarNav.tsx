@@ -38,6 +38,8 @@ import { TenantSwitcher } from "@/components/auth/TenantSwitcher";
 import { PlanBadge } from "@/components/billing/PlanBadge";
 import { demoConfig } from "@/brand/demoMode";
 import { LogOut, User, UserPlus, ScrollText, CreditCard } from "lucide-react";
+import { isPreviewModuleRoute } from "@/lib/profit-pulse/previewModules";
+import { PreviewNavBadge } from "@/components/profit-pulse/PreviewNavBadge";
 
 const NAV_SECTIONS = [
   {
@@ -132,6 +134,7 @@ export function SidebarNav() {
                 const isExternal = "external" in item && item.external;
                 const isActive = !isExternal && isNavActive(location, item.href);
                 const Icon = item.icon;
+                const isPreview = isPreviewModuleRoute(item.href);
 
                 const inner = (
                   <div
@@ -146,7 +149,8 @@ export function SidebarNav() {
                       <span className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r-full bg-cyan shadow-[0_0_10px_hsl(var(--cyan))]" />
                     )}
                     <Icon className={cn("w-4 h-4 flex-shrink-0 transition-colors", isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-primary")} />
-                    <span className="truncate tracking-wide">{item.label}</span>
+                    <span className="truncate tracking-wide flex-1 min-w-0">{item.label}</span>
+                    {isPreview && !isActive && <PreviewNavBadge />}
                   </div>
                 );
 

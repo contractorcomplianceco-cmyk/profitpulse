@@ -339,3 +339,198 @@ export function calendarEvents(state: ProfitPulseState, ref = new Date()): {
   }
   return events.sort((a, b) => a.date.localeCompare(b.date));
 }
+
+const RECURRING_CATEGORY_RE = /retainer|contract|monthly|service agreement/i;
+
+function isRecurringCategory(category: string): boolean {
+  return RECURRING_CATEGORY_RE.test(category);
+}
+
+export function revenueByMonthLast6(state: ProfitPulseState, ref = new Date()): {
+  month: string;
+  recurring: number;
+  oneTime: number;
+  total: number;
+}[] {
+  const months: { month: string; recurring: number; oneTime: number; total: number }[] = [];
+  for (let i = 5; i >= 0; i--) {
+    const end = new Date(ref);
+    end.setDate(end.getDate() - i * 30);
+    const start = new Date(end);
+    start.setDate(start.getDate() - 30);
+
+    let recurring = 0;
+    let oneTime = 0;
+    for (const r of state.revenueRecords) {
+      const d = parseDate(r.date);
+      const daysAgo = daysBetween(d, end);
+      if (daysAgo < 0 || daysAgo > 30) continue;
+      if (isRecurringCategory(r.category)) recurring += r.amount;
+      else oneTime += r.amount;
+    }
+    const label = end.toLocaleDateString("en-US", { month: "short" });
+    months.push({ month: label, recurring, oneTime, total: recurring + oneTime });
+  }
+  return months;
+}
+
+export function revenueByStateLive(state: ProfitPulseState): { state: string; value: number }[] {
+  const map = new Map<string, number>();
+  for (const r of state.revenueRecords) {
+    const acc = state.accounts.find((a) => a.id === r.accountId);
+    const st = acc?.state ?? "—";
+    map.set(st, (map.get(st) ?? 0) + r.amount);
+  }
+  return Array.from(map.entries())
+    .map(([state, value]) => ({ state, value }))
+    .sort((a, b) => b.value - a.value);
+}
+
+export function revenueByCategoryWithShare(state: ProfitPulseState): { name: string; value: number; share: number }[] {
+  const items = revenueByCategory(state);
+  const total = items.reduce((s, i) => s + i.value, 0) || 1;
+  return items.map((i) => ({
+    name: i.name,
+    value: i.value,
+    share: Math.round((i.value / total) * 100),
+  }));
+}
+
+export function recurringRevenueMetrics(state: ProfitPulseState, ref = new Date()) {
+  const total30 = monthlyRevenueTotal(state, ref);
+  const recurring = sum(
+    state.revenueRecords.filter(
+      (r) => isRecurringCategory(r.category) && isWithinPastDays(r.date, ref, 30),
+    ),
+    (r) => r.amount,
+  );
+  const fixedOverhead = monthlyExpensesTotal(state, ref) * 0.65;
+  const coverage = fixedOverhead > 0 ? (recurring / fixedOverhead) * 100 : 0;
+  const renewals = sum(
+    state.invoices.filter((i) => i.status === "sent" || i.status === "partial"),
+    (i) => i.amount - i.amountPaid,
+  );
+  return { recurring, coverage, renewals, oneTime: total30 - recurring };
+}
+
+function expensesForAccount(state: ProfitPulseState, accountId: string, ref = new Date()): number {
+  const direct = sum(
+    state.expenseRecords.filter(
+      (e) => e.accountId === accountId && isWithinPastDays(e.date, ref, 90),
+    ),
+    (e) => e.amount,
+  );
+  if (direct > 0) return direct;
+  const accountRev = sum(
+    state.revenueRecords.filter((r) => r.accountId === accountId && isWithinPastDays(r.date, ref, 90)),
+    (r) => r.amount,
+  );
+  const totalRev = sum(
+    state.revenueRecords.filter((r) => isWithinPastDays(r.date, ref, 90)),
+    (r) => r.amount,
+  );
+  const totalExp = monthlyExpensesTotal(state, ref) * 3;
+  if (totalRev <= 0) return 0;
+  return totalExp * (accountRev / totalRev);
+}
+
+export function marginByCategoryLive(state: ProfitPulseState, ref = new Date()): { name: string; margin: number; revenue: number }[] {
+  return revenueByCategory(state).map((cat) => {
+    const revRecords = state.revenueRecords.filter((r) => r.category === cat.name && isWithinPastDays(r.date, ref, 90));
+    const rev = sum(revRecords, (r) => r.amount);
+    const acctIds = new Set(revRecords.map((r) => r.accountId));
+    let exp = 0;
+    for (const id of acctIds) exp += expensesForAccount(state, id, ref);
+    if (exp === 0 && rev > 0) {
+      exp = rev * (1 - grossMarginPct(monthlyRevenueTotal(state, ref), monthlyExpensesTotal(state, ref)) / 100);
+    }
+    const margin = rev > 0 ? ((rev - exp) / rev) * 100 : 0;
+    return { name: cat.name, margin: Math.round(margin * 10) / 10, revenue: rev };
+  });
+}
+
+export function expenseByCategoryLive(state: ProfitPulseState, ref = new Date()): { category: string; amount: number }[] {
+  const map = new Map<string, number>();
+  for (const e of state.expenseRecords.filter((x) => isWithinPastDays(x.date, ref, 90))) {
+    map.set(e.category, (map.get(e.category) ?? 0) + e.amount);
+  }
+  return Array.from(map.entries())
+    .map(([category, amount]) => ({ category, amount }))
+    .sort((a, b) => b.amount - a.amount);
+}
+
+export function lowMarginAccountsLive(
+  state: ProfitPulseState,
+  thresholdPct?: number,
+  ref = new Date(),
+): { id: string; name: string; margin: number; reason: string; revenue: number }[] {
+  const threshold = thresholdPct ?? state.organization.marginThresholdPct;
+  return state.accounts
+    .map((acc) => {
+      const rev = sum(
+        state.revenueRecords.filter((r) => r.accountId === acc.id && isWithinPastDays(r.date, ref, 90)),
+        (r) => r.amount,
+      );
+      const exp = expensesForAccount(state, acc.id, ref);
+      const margin = rev > 0 ? ((rev - exp) / rev) * 100 : 0;
+      let reason = "Below target margin";
+      if (acc.status === "at-risk") reason = "At-risk account · collection delays";
+      else if (exp > rev * 0.85) reason = "Labor and materials over plan";
+      return { id: acc.id, name: acc.name, margin: Math.round(margin * 10) / 10, reason, revenue: rev };
+    })
+    .filter((a) => a.revenue > 0 && a.margin < threshold)
+    .sort((a, b) => a.margin - b.margin)
+    .slice(0, 5);
+}
+
+export interface DerivedJobSnapshot {
+  id: string;
+  name: string;
+  accountName: string;
+  contractValue: number;
+  revenueToDate: number;
+  costToDate: number;
+  marginPct: number;
+  status: string;
+}
+
+export function deriveJobSnapshots(state: ProfitPulseState, ref = new Date()): DerivedJobSnapshot[] {
+  const openOpps = state.opportunities.filter((o) => o.stage !== "lost" && o.stage !== "won");
+  const snapshots: DerivedJobSnapshot[] = openOpps.map((opp) => {
+    const acc = state.accounts.find((a) => a.id === opp.accountId);
+    const revenueToDate = sum(
+      state.revenueRecords.filter((r) => r.accountId === opp.accountId && isWithinPastDays(r.date, ref, 120)),
+      (r) => r.amount,
+    );
+    const costToDate = expensesForAccount(state, opp.accountId, ref);
+    const marginPct = revenueToDate > 0 ? ((revenueToDate - costToDate) / revenueToDate) * 100 : 0;
+    return {
+      id: opp.id,
+      name: opp.title,
+      accountName: acc?.name ?? "Unknown client",
+      contractValue: opp.value,
+      revenueToDate,
+      costToDate,
+      marginPct: Math.round(marginPct * 10) / 10,
+      status: opp.stage,
+    };
+  });
+
+  return snapshots.sort((a, b) => a.marginPct - b.marginPct).slice(0, 6);
+}
+
+export interface IntegrationSyncRow {
+  name: string;
+  status: "manual" | "preview";
+  detail: string;
+}
+
+export function integrationSyncStatus(): IntegrationSyncRow[] {
+  return [
+    { name: "CSV Import", status: "manual", detail: "Manual · Integrations page" },
+    { name: "JSON Backup", status: "manual", detail: "Manual · Settings export" },
+    { name: "QuickBooks", status: "preview", detail: "Preview · not connected" },
+    { name: "Google Ads", status: "preview", detail: "Preview · not connected" },
+    { name: "Payroll API", status: "preview", detail: "Preview · not connected" },
+  ];
+}

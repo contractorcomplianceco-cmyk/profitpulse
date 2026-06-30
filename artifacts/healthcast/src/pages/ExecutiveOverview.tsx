@@ -7,7 +7,6 @@ import { FunnelChart } from "@/components/charts/FunnelChart";
 import { TrendLine } from "@/components/charts/TrendLine";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { integrationsData } from "@/data/overviewData";
 import { 
   ArrowUpRight, 
   ArrowDownRight, 
@@ -36,7 +35,8 @@ import {
   Bell,
   LineChart,
   PieChart,
-  Info
+  Info,
+  Plug
 } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, Cell } from "recharts";
 import { useProfitPulse } from "@/context/ProfitPulseProvider";
@@ -46,6 +46,7 @@ import {
   arAgingBuckets,
   cashProjection90d,
   computeScenarioProjection,
+  integrationSyncStatus,
 } from "@/lib/profit-pulse/calculations";
 import { LiveDataBanner } from "@/components/profit-pulse/LiveDataBanner";
 import { ExecutiveKpiCard } from "@/components/profit-pulse/ExecutiveKpiCard";
@@ -314,10 +315,12 @@ export default function ExecutiveOverview() {
 
   const handleReportClick = (name: string) => {
     toast({
-      title: "Generating Report",
-      description: `${name} is being prepared for download...`,
+      title: "Preview — reports module",
+      description: `${name} export is planned; use Integrations for CSV/JSON backup today.`,
     });
   };
+
+  const integrationRows = useMemo(() => integrationSyncStatus(), []);
 
   return (
     <motion.div 
@@ -736,27 +739,24 @@ export default function ExecutiveOverview() {
       {/* E) BOTTOM INTEGRATION STRIP */}
       <motion.div variants={itemVariants} className="mt-4 pt-4 border-t border-border">
         <div className="flex items-center justify-between mb-3 px-1">
-          <h3 className="text-[10px] font-semibold tracking-wider text-muted-foreground uppercase">System Integrations Sync Status</h3>
-          <Link href="/integrations" className="text-[10px] text-primary hover:text-primary/80">View All Integrations</Link>
+          <h3 className="text-[10px] font-semibold tracking-wider text-muted-foreground uppercase">Data & Integrations</h3>
+          <Link href="/integrations" className="text-[10px] text-primary hover:text-primary/80">Integrations</Link>
         </div>
         <div className="flex gap-3 overflow-x-auto pb-2 custom-scrollbar">
-          {integrationsData.map((integration, i) => {
-            const Icon = IconMap[integration.icon];
-            return (
-              <div key={i} className="flex items-center gap-3 bg-card border border-border rounded-lg py-2 px-3 flex-shrink-0 min-w-[160px]">
+          {integrationRows.map((integration) => (
+              <div key={integration.name} className="flex items-center gap-3 bg-card border border-border rounded-lg py-2 px-3 flex-shrink-0 min-w-[160px]">
                 <div className="p-1.5 bg-secondary/30 rounded flex-shrink-0">
-                  {Icon && <Icon className="w-3.5 h-3.5 text-muted-foreground" />}
+                  <Plug className="w-3.5 h-3.5 text-muted-foreground" />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[11px] font-medium text-foreground flex items-center gap-1.5">
                     {integration.name}
-                    <div className="w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_5px_hsl(var(--success))]" />
+                    <div className={`w-1.5 h-1.5 rounded-full ${integration.status === "manual" ? "bg-success shadow-[0_0_5px_hsl(var(--success))]" : "bg-amber-500"}`} />
                   </span>
-                  <span className="text-[9px] text-muted-foreground">Last sync: {integration.time}</span>
+                  <span className="text-[9px] text-muted-foreground">{integration.detail}</span>
                 </div>
               </div>
-            )
-          })}
+            ))}
         </div>
       </motion.div>
       
